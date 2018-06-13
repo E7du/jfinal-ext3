@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2016, BruceZCQ (zcq@zhucongqi.cn).
+ * Copyright (c) 2018, Jobsz (zcq@zhucongqi.cn).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import com.jfinal.log.Log;
 import com.jfinal.upload.UploadFile;
 
 /**
- * @author BruceZCQ Jun 22, 20154:15:48 PM
+ * @author Jobsz Jun 22, 20154:15:48 PM
  */
 public abstract class ControllerExt extends com.jfinal.core.Controller {
 

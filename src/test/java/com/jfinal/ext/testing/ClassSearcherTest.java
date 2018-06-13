@@ -9,7 +9,7 @@ import java.util.List;
 import com.jfinal.ext.kit.ClassSearcher;
 
 /**
- * @author BruceZCQ
+ * @author Jobsz
  *
  */
 public class ClassSearcherTest {

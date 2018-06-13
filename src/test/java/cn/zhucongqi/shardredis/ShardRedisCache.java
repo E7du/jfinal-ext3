@@ -15,7 +15,7 @@ import com.jfinal.ext.plugin.redis.ShardRedisPlugin;
 import redis.clients.jedis.JedisShardInfo;
 
 /**
- * @author BruceZCQ
+ * @author Jobsz
  *
  */
 public class ShardRedisCache {
@@ -33,8 +33,8 @@ public class ShardRedisCache {
 		redis.start();
 		
 		ShardCache cache = ShardRedis.userShard();
-		cache.set("zcq", "--BruceZCQ---");
-		cache.set("zcq1", "--BruceZCQ---");
+		cache.set("zcq", "--Jobsz---");
+		cache.set("zcq1", "--Jobsz---");
 		
 		Map<Object, Object> map = new HashMap<Object, Object>();
 		map.put("name", "朱丛启");

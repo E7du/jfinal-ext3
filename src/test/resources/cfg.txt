@@ -7,16 +7,16 @@
 # 5. db.user: db username;
 # 6. db.password: db password, 
 #	use `java -cp druid-xx.jar com.alibaba.druid.filter.config.ConfigTools your_password`
-#	generate your encrypt password;
+#	generate your encrypt password, default password 'admin' by druid-1.1.10.jar;
 # 7. db.initsize: db pool init size;
 # 8. db.maxactive: db pool maxactive;
 # 9. db.showsql: ture, show execute sql;
 #---------------------------------------------------------------------------------#
 db.ds = mysql
 db.mysql.active = true
-db.mysql.url = 49.4.7.194/test
+db.mysql.url = localhost/zcq
 db.mysql.user = root
-db.mysql.password = gXJiMbGfjmVzRHHj6exd0rD0jJ6QTcJgDwG0uVKgZC40NvxNSQUVO1YIS6LxZzqxbdjsaA0/tfyTG43febEw4Q==
+db.mysql.password = lCzd9geWAuAuJtLhpaG/J+d28H8KiMFAWopxXkYpMNdUai6Xe/LsPqMQeg5MIrmvtMa+hzycdRhWs29ZUPU1IQ==
 db.mysql.initsize = 10
 db.mysql.maxactive = 100
 db.showsql = true
@@ -42,9 +42,9 @@ ge.model.tablecolumn=true
 ge.mappingarpkit=false
 ge.tablemapping=true
 ge.mappingkit.classname=GalaxyTableMappingKit
-ge.base.model.outdir=./src/main/java/com/gp/test/api/base/model
+ge.base.model.outdir=./src/test/java/com/gp/test/api/base/model
 ge.base.model.package=com.gp.test.api.base.model
-ge.model.outdir=./src/main/java/com/gp/test/api/model
+ge.model.outdir=./src/test/java/com/gp/test/api/model
 ge.model.package=com.gp.test.api.model
 ge.model.extmodelpackage= cn.zcq.model.TestExtModel
 ge.model.extibeanpackage= cn.zcq.model.TestExtIBean
@@ -60,4 +60,4 @@ app.dev = true
 app.uploads.basedir = /var/uploads
 app.downloads.basedir = /var/downloads
 app.post = false
-app.name = jfinal-ext2-demo
+app.name = jfinal-ext3-demo

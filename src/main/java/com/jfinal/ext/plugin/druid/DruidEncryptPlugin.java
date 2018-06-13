@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2016, BruceZCQ (zcq@zhucongqi.cn).
+ * Copyright (c) 2018, Jobsz (zcq@zhucongqi.cn).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import com.jfinal.plugin.druid.DruidPlugin;
 /**
  *  生成加密密码:
  *  java -cp druid-xx.jar com.alibaba.druid.filter.config.ConfigTools your_password
- * @author BruceZCQ
+ * @author Jobsz
  */
 public class DruidEncryptPlugin extends DruidPlugin {
 

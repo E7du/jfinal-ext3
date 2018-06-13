@@ -15,7 +15,7 @@ import com.jfinal.template.Engine;
  */
 
 /**
- * @author BruceZCQ
+ * @author Jobsz
  *
  */
 public class TestConfig extends JFinalConfigExt {

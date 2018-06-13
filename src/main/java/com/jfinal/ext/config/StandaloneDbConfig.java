@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2016, BruceZCQ (zcq@zhucongqi.cn).
+ * Copyright (c) 2018, Jobsz (zcq@zhucongqi.cn).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.template.Engine;
 
 /**
- * @author BruceZCQ
+ * @author Jobsz
  */
 public class StandaloneDbConfig {
 	

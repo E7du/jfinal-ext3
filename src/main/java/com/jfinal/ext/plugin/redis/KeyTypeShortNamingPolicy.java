@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2016, BruceZCQ (zcq@zhucongqi.cn).
+ * Copyright (c) 2018, Jobsz (zcq@zhucongqi.cn).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import com.jfinal.plugin.redis.IKeyNamingPolicy;
 
 /**
  * 简短的类型名称Policy
- * @author BruceZCQ [zcq@zhucongqi.cn]
+ * @author Jobsz [zcq@zhucongqi.cn]
  * @version
  */
 public class KeyTypeShortNamingPolicy implements IKeyNamingPolicy {
