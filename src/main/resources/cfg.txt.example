@@ -1,0 +1,59 @@
+#---------------------------------------------------------------------------------#
+#  database　Config
+# ->. db.active:ture, use db;
+# ->. db.dscnt: db datasource count;
+# ->. db.cfgname*: configname;
+# ->. db.url*: db url;
+# ->. db.user: db username;
+# ->. db.password: db password, 
+#	use `java -cp druid-xx.jar com.alibaba.druid.filter.config.ConfigTools your_password`
+#	generate your encrypt password;
+# ->. db.initsize: db pool init size;
+# ->. db.maxactive: db pool maxactive;
+# ->. db.showsql: ture, show execute sql;
+#---------------------------------------------------------------------------------#
+db.ds = mysql
+db.mysql.active = true
+db.mysql.url = localhost/zcq
+db.mysql.user = 
+db.mysql.password = lCzd9geWAuAuJtLhpaG/J+d28H8KiMFAWopxXkYpMNdUai6Xe/LsPqMQeg5MIrmvtMa+hzycdRhWs29ZUPU1IQ==
+db.mysql.initsize = 10
+db.mysql.maxactive = 100
+db.showsql = true
+#---------------------------------------------------------------------------------#
+# Generator Config
+# ->. ge.dict: true, generate the data dict;
+# ->. ge.model.dao: true, generate the model instance;
+# ->. ge.model.table: true, generate the db table's name;
+# ->. ge.model.tablecolumn: true, generate the db table's column name;
+# ->. ge.mappingarpkit: true, generate arp mappingkit; 
+# ->. ge.tablemapping: true, generate table and class mapping;
+# ->. ge.mappingkit.classname: set mappingkit class name, default `_MappingKit`;
+# ->. ge.base.model.outdir: the basemodel output dir path;
+# ->. ge.base.model.package: the basemodel package;
+# ->. ge.model.outdir: the model output dir path;
+# ->. ge.model.package: the model package;
+#---------------------------------------------------------------------------------#
+ge.dict=true
+ge.model.dao=true
+ge.model.table=true
+ge.model.tablecolumn=true
+ge.mappingarpkit=true
+ge.tablemapping=true
+ge.mappingkit.classname=_MappingKit
+ge.base.model.outdir=
+ge.base.model.package=
+ge.model.outdir=
+ge.model.package=
+#---------------------------------------------------------------------------------#
+## App Config
+# ->. app.dev: true, the app is debug mode;
+# ->. app.upload.basedir: upload file save base dir;
+# ->. app.post: ture, use Http Post method;
+# ->. app.name: app's name;
+#---------------------------------------------------------------------------------#
+app.dev = true
+app.uploads.basedir = /var/uploads
+app.downloads.basedir = /var/downloads
+app.post = true
+app.name = 

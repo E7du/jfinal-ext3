@@ -1,0 +1,63 @@
+#---------------------------------------------------------------------------------#
+#  database　Config
+# 1. db.active:ture, use db;
+# 2. db.dscnt: db datasource count;
+# 3. db.cfgname*: configname;
+# 4. db.url*: db url;
+# 5. db.user: db username;
+# 6. db.password: db password, 
+#	use `java -cp druid-xx.jar com.alibaba.druid.filter.config.ConfigTools your_password`
+#	generate your encrypt password;
+# 7. db.initsize: db pool init size;
+# 8. db.maxactive: db pool maxactive;
+# 9. db.showsql: ture, show execute sql;
+#---------------------------------------------------------------------------------#
+db.ds = mysql
+db.mysql.active = true
+db.mysql.url = 49.4.7.194/test
+db.mysql.user = root
+db.mysql.password = gXJiMbGfjmVzRHHj6exd0rD0jJ6QTcJgDwG0uVKgZC40NvxNSQUVO1YIS6LxZzqxbdjsaA0/tfyTG43febEw4Q==
+db.mysql.initsize = 10
+db.mysql.maxactive = 100
+db.showsql = true
+#---------------------------------------------------------------------------------#
+# Generator Config
+# ->. ge.dict: true, generate the data dict;
+# ->. ge.model.dao: true, generate the model instance;
+# ->. ge.model.table: true, generate the db table's name;
+# ->. ge.model.tablecolumn: true, generate the db table's column name;
+# ->. ge.mappingarpkit: true generate arp mappingkit; 
+# ->. ge.mappingkit.classname: set mappingkit class name, default `_MappingKit`;
+# ->. ge.base.model.outdir: the basemodel output dir path;
+# ->. ge.base.model.package: the basemodel package;
+# ->. ge.model.outdir: the model output dir path;
+# ->. ge.model.package: the model package;
+# ->. ge.model.extmodelpackage: the extend Model
+# ->. ge.model.extibeanpackage: the extend IBean
+#---------------------------------------------------------------------------------#
+ge.dict=false
+ge.model.dao=false
+ge.model.table=true
+ge.model.tablecolumn=true
+ge.mappingarpkit=false
+ge.tablemapping=true
+ge.mappingkit.classname=GalaxyTableMappingKit
+ge.base.model.outdir=./src/main/java/com/gp/test/api/base/model
+ge.base.model.package=com.gp.test.api.base.model
+ge.model.outdir=./src/main/java/com/gp/test/api/model
+ge.model.package=com.gp.test.api.model
+ge.model.extmodelpackage= cn.zcq.model.TestExtModel
+ge.model.extibeanpackage= cn.zcq.model.TestExtIBean
+
+#---------------------------------------------------------------------------------#
+## App Config
+# 1. app.dev: true, the app is debug mode;
+# 2. app.upload.basedir: upload file save base dir;
+# 3. app.post: ture, use Http Post method;
+# 4. app.name: app's name;
+#---------------------------------------------------------------------------------#
+app.dev = true
+app.uploads.basedir = /var/uploads
+app.downloads.basedir = /var/downloads
+app.post = false
+app.name = jfinal-ext2-demo
