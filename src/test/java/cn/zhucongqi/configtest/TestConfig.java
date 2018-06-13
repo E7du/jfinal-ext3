@@ -8,6 +8,7 @@ import com.jfinal.core.JFinal;
 import com.jfinal.ext.config.JFinalConfigExt;
 import com.jfinal.ext.config.JFinalExt;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.template.Engine;
 
 /**
  * 
@@ -32,43 +33,41 @@ public class TestConfig extends JFinalConfigExt {
 
 	@Override
 	public void configMoreConstants(Constants me) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void configMoreRoutes(Routes me) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void configMorePlugins(Plugins me) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void configTablesMapping(String configName, ActiveRecordPlugin arp) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void configMoreInterceptors(Interceptors me) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void configMoreHandlers(Handlers me) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void afterJFinalStarted() {
-		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void configEngine(Engine arg0) {
 		
 	}
 

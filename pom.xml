@@ -32,110 +32,79 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
-		<!-- <dependency>
+		<!-- test -->
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
+			<version>4.12</version>
 			<scope>test</scope>
-		</dependency> -->
-		<!-- <dependency>
-			<groupId>com.jfinal</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>8.1.8</version>
-			<scope>provided</scope>
-		</dependency> -->
+		</dependency> 
+		<!-- jfinal core -->
 		<dependency>
 			<groupId>com.jfinal</groupId>
 			<artifactId>jfinal</artifactId>
 			<version>3.4</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>3.2.4.RELEASE</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- DB -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
-			<version>1.0.24</version>
+			<version>1.1.10</version>
+		</dependency>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP-java6</artifactId>
+			<version>2.3.13</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.11</version>
+		</dependency> 
+		<!-- json -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.47</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
+			<version>1.2.17</version>
 		</dependency>
+		<!-- upload -->
 		<dependency>
 			<groupId>com.jfinal</groupId>
 			<artifactId>cos</artifactId>
-			<version>26Dec2008</version>
+			<version>2017.5</version>
 		</dependency>
 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.6</version>
+			<groupId>com.jfinal</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>8.1.8</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.freemarker</groupId>
-			<artifactId>freemarker</artifactId>
-			<version>2.3.21</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>4.3.8.RELEASE</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- cache -->
 		<dependency>
-			<groupId>org.quartz-scheduler</groupId>
-			<artifactId>quartz</artifactId>
-			<version>1.8.6</version>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.6.6</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- redis -->
 		<dependency>
-			<groupId>org.quartz-scheduler</groupId>
-			<artifactId>quartz</artifactId>
-			<version>2.2.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>3.10.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml</artifactId>
-			<version>3.10.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongo-java-driver</artifactId>
-			<version>2.11.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>it.sauronsoftware.cron4j</groupId>
-			<artifactId>cron4j</artifactId>
-			<version>2.2.5</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-core</artifactId>
-			<version>5.7.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.jms</groupId>
-			<artifactId>jms-api</artifactId>
-			<version>1.1-rev-1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.jxls</groupId>
-			<artifactId>jxls-core</artifactId>
-			<version>0.9.9</version>
-			<scope>provided</scope>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>3.2.5</version>
 		</dependency>
 		<dependency>
 			<groupId>redis.clients</groupId>
@@ -144,27 +113,14 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+    		<groupId>org.apache.commons</groupId>
+   			<artifactId>commons-pool2</artifactId>
+    		<version>2.4.2</version>
+		</dependency>
+		<dependency>
 			<groupId>de.ruedigermoeller</groupId>
 			<artifactId>fst</artifactId>
 			<version>2.29</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.crazycake</groupId>
-			<artifactId>shiro-redis</artifactId>
-			<version>1.0.0-RELEASE</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-all</artifactId>
-			<version>1.2.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.jxls</groupId>
-			<artifactId>jxls-core</artifactId>
-			<version>0.9.9</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -182,11 +138,6 @@
 			<artifactId>guava</artifactId>
 			<version>18.0</version>
 		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.34</version>
-		</dependency> -->
 	</dependencies>
 	<build>
 		<plugins>

@@ -24,6 +24,7 @@ import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.plugin.IPlugin;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.template.Engine;
 
 /**
  * @author BruceZCQ
@@ -148,6 +149,11 @@ public class StandaloneDbConfig {
 
 		@Override
 		public void afterJFinalStarted() {
+			
+		}
+
+		@Override
+		public void configEngine(Engine e) {
 			
 		}
 	}

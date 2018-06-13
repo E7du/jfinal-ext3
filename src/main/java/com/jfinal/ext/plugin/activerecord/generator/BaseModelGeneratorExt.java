@@ -115,7 +115,6 @@ public class BaseModelGeneratorExt extends BaseModelGenerator {
 		super.genBaseModelContent(tableMeta);
 	}
 
-    @Override
     protected void genImport(StringBuilder ret) {
         //	       "import com.jfinal.plugin.activerecord.Model;%n"
         //	     + "import com.jfinal.plugin.activerecord.IBean;%n%n";
@@ -138,7 +137,6 @@ public class BaseModelGeneratorExt extends BaseModelGenerator {
     /**
      * 指定 extIBean
      */
-    @Override
     protected void genClassDefine(TableMeta tableMeta, StringBuilder ret) {
 
         ret.append(String.format(extClassDefineTemplate, tableMeta.baseModelName, tableMeta.baseModelName,
@@ -146,7 +144,6 @@ public class BaseModelGeneratorExt extends BaseModelGenerator {
                 this.extIBean));
     }
 
-	@Override
 	protected void genSetMethodName(ColumnMeta columnMeta, StringBuilder ret) {
 		if (!this.modelClass.contains(this.baseModelClassName)) {
 			this.modelClass.add(this.baseModelClassName);
@@ -163,6 +160,6 @@ public class BaseModelGeneratorExt extends BaseModelGenerator {
 			//add column name
 			ret.append(String.format(this.tableColumnNameTemplate, columnMeta.name.toUpperCase(), columnMeta.name));
 		}
-		super.genSetMethodName(columnMeta, ret);
+		//super.genSetMethodName(columnMeta, ret);
 	}
 }
