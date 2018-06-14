@@ -31,8 +31,6 @@ import com.jfinal.ext.interceptor.NotFoundActionInterceptor;
 import com.jfinal.ext.interceptor.OnExceptionInterceptorExt;
 import com.jfinal.ext.interceptor.POST;
 import com.jfinal.ext.kit.PageViewKit;
-import com.jfinal.ext.plugin.activerecord.generator.BaseModelGeneratorExt;
-import com.jfinal.ext.plugin.activerecord.generator.MappingKitGeneratorExt;
 import com.jfinal.ext.plugin.druid.DruidEncryptPlugin;
 import com.jfinal.ext.route.AutoBindRoutes;
 import com.jfinal.ext.upload.filerenamepolicy.RandomFileRenamePolicy;
@@ -49,7 +47,6 @@ import com.jfinal.upload.OreillyCos;
 /**
  * @author Jobsz
  */
-@SuppressWarnings("deprecation")
 public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	
 	private final static String cfg = "jf-app-cfg.txt";
@@ -314,9 +311,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		
 		if (this.geRuned) {
 			dp.start();
-			//Jfinal-ext2-code
-			//this.geExt2(dp);
-			//jf3.4
 			BaseModelGenerator baseGe = new BaseModelGenerator(this.getBaseModelPackage(), this.getBaseModelOutDir());
 			ModelGenerator modelGe = new ModelGenerator(this.getModelPackage(), this.getBaseModelPackage(), this.getModelOutDir());
 			modelGe.setGenerateDaoInModel(this.getGeDaoInModel());
@@ -333,28 +327,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		return dp;
 	}
 
-	@SuppressWarnings("unused")
-	@Deprecated
-	private void geExt2(DruidEncryptPlugin dp) {
-		BaseModelGeneratorExt baseGe = new BaseModelGeneratorExt(this.getBaseModelPackage(), this.getBaseModelOutDir());
-		baseGe.setGenerateTableNameInModel(this.getGeTableNameInModel());
-		baseGe.setGenerateTableColumnNameInModel(this.getGeTableColumnName());
-        baseGe.setExtModelPackage(this.getExtModelPackage());
-        baseGe.setExtIBeanPackage(this.getExtIBeanPackage());
-		ModelGenerator modelGe = new ModelGenerator(this.getModelPackage(), this.getBaseModelPackage(), this.getModelOutDir());
-		modelGe.setGenerateDaoInModel(this.getGeDaoInModel());
-		Generator ge = new Generator(dp.getDataSource(), baseGe, modelGe);
-		MappingKitGeneratorExt mappingKitGe = new MappingKitGeneratorExt(this.getModelPackage(), this.getModelOutDir());
-		if (!JFinalConfigExt.DEFAULT_MAPPINGKIT_CLASS_NAME.equals(this.getMappingKitClassName())) {
-			mappingKitGe.setMappingKitClassName(this.getMappingKitClassName());
-		}
-        mappingKitGe.setExtModelPackage(this.getExtModelPackage());
-		mappingKitGe.setGenerateMappingArpKit(this.getGeMappingArpKit());
-		mappingKitGe.setGenerateTableMapping(this.getGeTableMapping());
-		ge.setMappingKitGenerator(mappingKitGe);
-		ge.setGenerateDataDictionary(this.getGeDictionary());
-		ge.generate();
-	}
 	/**
 	 * 获取ActiveRecordPlugin 
 	 * @param dp DruidPlugin
@@ -380,7 +352,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	}
 	
 	private Boolean geDaoInModel = null;
-	private Boolean geTableNameInModel = null;
 	
 	private boolean getGeDictionary() {
 		this.loadPropertyFile();
@@ -424,51 +395,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		}
 		return this.mappingKitClassName;
 	}
-
-	@SuppressWarnings("unused")
-	@Deprecated
-	private boolean getGeTableNameInModel() {
-		this.loadPropertyFile();
-		if (this.geTableNameInModel == null) {
-			this.geTableNameInModel = this.getPropertyToBoolean("ge.model.table", Boolean.TRUE);
-		}
-		return this.geTableNameInModel.booleanValue();
-	}
-	
-	@SuppressWarnings("unused")
-	@Deprecated
-	private boolean getGeMappingArpKit() {
-		this.loadPropertyFile();
-		return this.getPropertyToBoolean("ge.mappingarpkit", true);
-	}
-
-	@SuppressWarnings("unused")
-	@Deprecated
-	private boolean getGeTableMapping() {
-		this.loadPropertyFile();
-		return this.getPropertyToBoolean("ge.tablemapping", true);
-	}
-
-	@SuppressWarnings("unused")
-	@Deprecated
-	private boolean getGeTableColumnName() {
-		this.loadPropertyFile();
-		return this.getPropertyToBoolean("ge.model.tablecolumn", true);
-	}
-
-	@SuppressWarnings("unused")
-	@Deprecated
-    private String getExtModelPackage() {
-        this.loadPropertyFile();
-        return this.getProperty("ge.model.extmodelpackage");
-    }
-
-	@SuppressWarnings("unused")
-	@Deprecated
-    private String getExtIBeanPackage() {
-        this.loadPropertyFile();
-        return this.getProperty("ge.model.extibeanpackage");
-    }
 
 	//=========== Override
 	
