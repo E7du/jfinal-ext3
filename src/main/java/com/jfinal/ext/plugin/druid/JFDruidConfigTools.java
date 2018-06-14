@@ -11,7 +11,7 @@ import com.alibaba.druid.filter.config.ConfigTools;
 public class JFDruidConfigTools {
 
 	public static void main(String[] args) throws Exception {
-        String password = "admin";//args[0];
+        String password = "dbadmin@ikaihuo.com";//args[0];
         String cipherText = ConfigTools.encrypt(password);
         System.out.println("encrypt password:" + cipherText);
         System.out.println("decrypt password:" + ConfigTools.decrypt(cipherText));

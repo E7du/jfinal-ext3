@@ -26,6 +26,7 @@ import com.jfinal.plugin.activerecord.generator.TableMeta;
  * BaseModelGenerator Extension
  * @author Jobsz
  */
+@Deprecated
 public class BaseModelGeneratorExt extends BaseModelGenerator {
 	
 	private List<String> columns = new ArrayList<String>();

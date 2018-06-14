@@ -24,6 +24,7 @@ import com.jfinal.plugin.activerecord.generator.TableMeta;
  * MappingKitGenerator Extension: config generate mapping
  * @author Jobsz
  */
+@Deprecated
 public class MappingKitGeneratorExt extends MappingKitGenerator {
 
 	private boolean generateMappingArpKit = true;
