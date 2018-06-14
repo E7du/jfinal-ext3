@@ -48,7 +48,7 @@
 		<!-- jfinal core -->
 		<dependency>
 			<groupId>com.jfinal</groupId>
-			<artifactId>jfinal</artifactId>
+			<artifactId>jfinal-e7du</artifactId>
 			<version>3.4</version>
 			<scope>provided</scope>
 		</dependency>
