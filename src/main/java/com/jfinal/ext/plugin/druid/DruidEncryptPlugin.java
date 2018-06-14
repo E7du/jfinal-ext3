@@ -17,6 +17,7 @@ package com.jfinal.ext.plugin.druid;
 
 import java.sql.SQLException;
 
+import com.alibaba.druid.filter.config.ConfigTools;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.jfinal.plugin.druid.DruidPlugin;
 
@@ -35,7 +36,7 @@ public class DruidEncryptPlugin extends DruidPlugin {
 	public DruidEncryptPlugin(String url, String username, String password) {
 		super(url, username, password);
 	}
-
+	
 	/**
 	 * @param url
 	 * @param username
@@ -56,12 +57,27 @@ public class DruidEncryptPlugin extends DruidPlugin {
 	public DruidEncryptPlugin(String url, String username, String password, String driverClass, String filters) {
 		super(url, username, password, driverClass, filters);
 	}
+	
+	/**
+	 * decryptedPassword with publich key
+	 * @param publicKey
+	 * @param password
+	 * @return
+	 */
+	public static String decryptedPassword(String publicKey, String password) {
+		try {
+			return ConfigTools.decrypt(publicKey, password);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return password;
+	}
 
 	@Override
 	public boolean start() {
 		boolean ret = super.start();
 		DruidDataSource ds = (DruidDataSource) this.getDataSource();
-		ds.setConnectionProperties("config.decrypt=true");
+		//ds.setConnectionProperties("config.decrypt=true");
 		try {
 			ds.setFilters("config");
 		} catch (SQLException e1) {

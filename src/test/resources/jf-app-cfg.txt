@@ -1,22 +1,24 @@
 #---------------------------------------------------------------------------------#
 #  database　Config
-# 1. db.active:ture, use db;
-# 2. db.dscnt: db datasource count;
-# 3. db.cfgname*: configname;
-# 4. db.url*: db url;
-# 5. db.user: db username;
-# 6. db.password: db password, 
+# ->. db.active:ture, use db;
+# ->. db.dscnt: db datasource count;
+# ->. db.cfgname*: configname;
+# ->. db.url*: db url;
+# ->. db.user: db username;
+# ->. db.password.pkey: db password public key
+# ->. db.password: db password, 
 #	use `java -cp druid-xx.jar com.alibaba.druid.filter.config.ConfigTools your_password`
 #	generate your encrypt password, default password 'admin' by druid-1.1.10.jar;
-# 7. db.initsize: db pool init size;
-# 8. db.maxactive: db pool maxactive;
-# 9. db.showsql: ture, show execute sql;
+# ->. db.initsize: db pool init size;
+# ->. db.maxactive: db pool maxactive;
+# ->. db.showsql: ture, show execute sql;
 #---------------------------------------------------------------------------------#
 db.ds = mysql
 db.mysql.active = true
 db.mysql.url = 192.168.52.148/jf
 db.mysql.user = root
-db.mysql.password = ZkRGBdgFSgSSdVVtYTpUVY/4vB6RByncJdIvOn7pOV/oNfCLFdSq2FQ9otxhrIvbMe19oFFkdxA+BB3dfSr4Qg==
+db.mysql.password.pkey = MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJbIzkTcjrlDwB3vdc6gKwJ5gAMGRazWOrOeuMCxI2Lb7n/d4DoBySUdM+7HT6Gkfbfz6BM1o/2Gp0PkhkEHAx8CAwEAAQ==
+db.mysql.password = TVL59a5MXxM3EB7Ylzf8idFijFX97+ZRxZG+2PpkR4pPCQ5TLtZAok88IGW05CxRvC56ekO++yWhepAEL118lw==
 db.mysql.initsize = 10
 db.mysql.maxactive = 100
 db.showsql = true

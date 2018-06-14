@@ -5,6 +5,7 @@
 # ->. db.cfgname*: configname;
 # ->. db.url*: db url;
 # ->. db.user: db username;
+# ->. db.password.pkey: db password public key
 # ->. db.password: db password, 
 #	use `java -cp druid-xx.jar com.alibaba.druid.filter.config.ConfigTools your_password`
 #	generate your encrypt password, default password 'admin' by druid-1.1.10.jar;
@@ -16,7 +17,8 @@ db.ds = mysql
 db.mysql.active = true
 db.mysql.url = localhost/zcq
 db.mysql.user = 
-db.mysql.password = LSVUhrYSfYbLuLF//NjdrVF4m6GcOxW47/LEUv/ukQ3wtCiKsmThr9rS7zLNzshAmDPuH25Eov8U/eoZqXXNOg==
+db.mysql.password.pkey = MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJbIzkTcjrlDwB3vdc6gKwJ5gAMGRazWOrOeuMCxI2Lb7n/d4DoBySUdM+7HT6Gkfbfz6BM1o/2Gp0PkhkEHAx8CAwEAAQ==
+db.mysql.password = TVL59a5MXxM3EB7Ylzf8idFijFX97+ZRxZG+2PpkR4pPCQ5TLtZAok88IGW05CxRvC56ekO++yWhepAEL118lw==
 db.mysql.initsize = 10
 db.mysql.maxactive = 100
 db.showsql = true

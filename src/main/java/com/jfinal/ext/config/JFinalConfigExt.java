@@ -257,6 +257,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	private static final String ACTIVE_TEMPLATE = "db.%s.active";
 	private static final String URL_TEMPLATE = "jdbc:%s://%s";
 	private static final String USER_TEMPLATE = "db.%s.user";
+	private static final String PASSWORD_PKEY_TEMPLATE = "db.%s.password.pkey";
 	private static final String PASSWORD_TEMPLATE = "db.%s.password";
 	private static final String INITSIZE_TEMPLATE = "db.%s.initsize";
 	private static final String MAXSIZE_TEMPLATE = "db.%s.maxactive";
@@ -299,9 +300,11 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		if (!url.endsWith(endsWith)) {
 			url += endsWith;
 		}
-		DruidEncryptPlugin dp = new DruidEncryptPlugin(url,
-				this.getProperty(String.format(USER_TEMPLATE, ds)),
-				this.getProperty(String.format(PASSWORD_TEMPLATE, ds)));
+		
+		String password = this.getProperty(String.format(PASSWORD_TEMPLATE, ds));
+		password = DruidEncryptPlugin.decryptedPassword(this.getProperty(String.format(PASSWORD_PKEY_TEMPLATE, ds)), password);
+		String user = this.getProperty(String.format(USER_TEMPLATE, ds));
+		DruidEncryptPlugin dp = new DruidEncryptPlugin(url, user, password);
 		dp.setInitialSize(this.getPropertyToInt(String.format(INITSIZE_TEMPLATE, ds)));
 		dp.setMaxActive(this.getPropertyToInt(String.format(MAXSIZE_TEMPLATE, ds)));
 		dp.addFilter(new StatFilter());
@@ -406,4 +409,5 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		}
 		return p;
 	}
+	
 }
