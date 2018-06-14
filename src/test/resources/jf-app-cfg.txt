@@ -24,30 +24,19 @@ db.showsql = true
 # Generator Config
 # ->. ge.dict: true, generate the data dict;
 # ->. ge.model.dao: true, generate the model instance;
-# ->. ge.model.table: true, generate the db table's name;
-# ->. ge.model.tablecolumn: true, generate the db table's column name;
-# ->. ge.mappingarpkit: true generate arp mappingkit; 
 # ->. ge.mappingkit.classname: set mappingkit class name, default `_MappingKit`;
 # ->. ge.base.model.outdir: the basemodel output dir path;
 # ->. ge.base.model.package: the basemodel package;
 # ->. ge.model.outdir: the model output dir path;
 # ->. ge.model.package: the model package;
-# ->. ge.model.extmodelpackage: the extend Model
-# ->. ge.model.extibeanpackage: the extend IBean
 #---------------------------------------------------------------------------------#
 ge.dict=true
 ge.model.dao=true
-ge.model.table=true
-ge.model.tablecolumn=true
-ge.mappingarpkit=false
-ge.tablemapping=true
 ge.mappingkit.classname=TableMappingKit
 ge.base.model.outdir=./src/test/java/com/test/api/base/model
 ge.base.model.package=com.test.api.base.model
 ge.model.outdir=./src/test/java/com/test/api/model
 ge.model.package=com.test.api.model
-ge.model.extmodelpackage= cn.zcq.model.TestExtModel
-ge.model.extibeanpackage= cn.zcq.model.TestExtIBean
 
 #---------------------------------------------------------------------------------#
 ## App Config
