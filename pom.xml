@@ -191,7 +191,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${basedir}/src/main/ext/java</source>
+								<source>${basedir}/src/main/java</source>
 							</sources>
 						</configuration>
 					</execution>
