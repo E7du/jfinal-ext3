@@ -1,22 +1,24 @@
 #---------------------------------------------------------------------------------#
 #  database　Config
-# 1. db.active:ture, use db;
-# 2. db.dscnt: db datasource count;
-# 3. db.cfgname*: configname;
-# 4. db.url*: db url;
-# 5. db.user: db username;
-# 6. db.password: db password, 
+# ->. db.active:ture, use db;
+# ->. db.dscnt: db datasource count;
+# ->. db.cfgname*: configname;
+# ->. db.url*: db url;
+# ->. db.user: db username;
+# ->. db.password.pkey: db password public key
+# ->. db.password: db password, 
 #	use `java -cp druid-xx.jar com.alibaba.druid.filter.config.ConfigTools your_password`
 #	generate your encrypt password, default password 'admin' by druid-1.1.10.jar;
-# 7. db.initsize: db pool init size;
-# 8. db.maxactive: db pool maxactive;
-# 9. db.showsql: ture, show execute sql;
+# ->. db.initsize: db pool init size;
+# ->. db.maxactive: db pool maxactive;
+# ->. db.showsql: ture, show execute sql;
 #---------------------------------------------------------------------------------#
 db.ds = mysql
 db.mysql.active = true
-db.mysql.url = localhost/zcq
+db.mysql.url = 192.168.52.148/jf
 db.mysql.user = root
-db.mysql.password = lCzd9geWAuAuJtLhpaG/J+d28H8KiMFAWopxXkYpMNdUai6Xe/LsPqMQeg5MIrmvtMa+hzycdRhWs29ZUPU1IQ==
+db.mysql.password.pkey = MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJbIzkTcjrlDwB3vdc6gKwJ5gAMGRazWOrOeuMCxI2Lb7n/d4DoBySUdM+7HT6Gkfbfz6BM1o/2Gp0PkhkEHAx8CAwEAAQ==
+db.mysql.password = TVL59a5MXxM3EB7Ylzf8idFijFX97+ZRxZG+2PpkR4pPCQ5TLtZAok88IGW05CxRvC56ekO++yWhepAEL118lw==
 db.mysql.initsize = 10
 db.mysql.maxactive = 100
 db.showsql = true
@@ -24,30 +26,19 @@ db.showsql = true
 # Generator Config
 # ->. ge.dict: true, generate the data dict;
 # ->. ge.model.dao: true, generate the model instance;
-# ->. ge.model.table: true, generate the db table's name;
-# ->. ge.model.tablecolumn: true, generate the db table's column name;
-# ->. ge.mappingarpkit: true generate arp mappingkit; 
 # ->. ge.mappingkit.classname: set mappingkit class name, default `_MappingKit`;
 # ->. ge.base.model.outdir: the basemodel output dir path;
 # ->. ge.base.model.package: the basemodel package;
 # ->. ge.model.outdir: the model output dir path;
 # ->. ge.model.package: the model package;
-# ->. ge.model.extmodelpackage: the extend Model
-# ->. ge.model.extibeanpackage: the extend IBean
 #---------------------------------------------------------------------------------#
-ge.dict=false
-ge.model.dao=false
-ge.model.table=true
-ge.model.tablecolumn=true
-ge.mappingarpkit=false
-ge.tablemapping=true
-ge.mappingkit.classname=GalaxyTableMappingKit
-ge.base.model.outdir=./src/test/java/com/gp/test/api/base/model
-ge.base.model.package=com.gp.test.api.base.model
-ge.model.outdir=./src/test/java/com/gp/test/api/model
-ge.model.package=com.gp.test.api.model
-ge.model.extmodelpackage= cn.zcq.model.TestExtModel
-ge.model.extibeanpackage= cn.zcq.model.TestExtIBean
+ge.dict=true
+ge.model.dao=true
+ge.mappingkit.classname=TableMappingKit
+ge.base.model.outdir=./src/test/java/com/test/api/base/model
+ge.base.model.package=com.test.api.base.model
+ge.model.outdir=./src/test/java/com/test/api/model
+ge.model.package=com.test.api.model
 
 #---------------------------------------------------------------------------------#
 ## App Config

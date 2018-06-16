@@ -5,6 +5,7 @@
 # ->. db.cfgname*: configname;
 # ->. db.url*: db url;
 # ->. db.user: db username;
+# ->. db.password.pkey: db password public key
 # ->. db.password: db password, 
 #	use `java -cp druid-xx.jar com.alibaba.druid.filter.config.ConfigTools your_password`
 #	generate your encrypt password, default password 'admin' by druid-1.1.10.jar;
@@ -16,7 +17,8 @@ db.ds = mysql
 db.mysql.active = true
 db.mysql.url = localhost/zcq
 db.mysql.user = 
-db.mysql.password = LSVUhrYSfYbLuLF//NjdrVF4m6GcOxW47/LEUv/ukQ3wtCiKsmThr9rS7zLNzshAmDPuH25Eov8U/eoZqXXNOg==
+db.mysql.password.pkey = MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJbIzkTcjrlDwB3vdc6gKwJ5gAMGRazWOrOeuMCxI2Lb7n/d4DoBySUdM+7HT6Gkfbfz6BM1o/2Gp0PkhkEHAx8CAwEAAQ==
+db.mysql.password = TVL59a5MXxM3EB7Ylzf8idFijFX97+ZRxZG+2PpkR4pPCQ5TLtZAok88IGW05CxRvC56ekO++yWhepAEL118lw==
 db.mysql.initsize = 10
 db.mysql.maxactive = 100
 db.showsql = true
@@ -24,10 +26,6 @@ db.showsql = true
 # Generator Config
 # ->. ge.dict: true, generate the data dict;
 # ->. ge.model.dao: true, generate the model instance;
-# ->. ge.model.table: true, generate the db table's name;
-# ->. ge.model.tablecolumn: true, generate the db table's column name;
-# ->. ge.mappingarpkit: true, generate arp mappingkit; 
-# ->. ge.tablemapping: true, generate table and class mapping;
 # ->. ge.mappingkit.classname: set mappingkit class name, default `_MappingKit`;
 # ->. ge.base.model.outdir: the basemodel output dir path;
 # ->. ge.base.model.package: the basemodel package;
@@ -36,10 +34,6 @@ db.showsql = true
 #---------------------------------------------------------------------------------#
 ge.dict=true
 ge.model.dao=true
-ge.model.table=true
-ge.model.tablecolumn=true
-ge.mappingarpkit=true
-ge.tablemapping=true
 ge.mappingkit.classname=_MappingKit
 ge.base.model.outdir=
 ge.base.model.package=

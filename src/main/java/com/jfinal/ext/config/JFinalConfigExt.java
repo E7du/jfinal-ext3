@@ -31,14 +31,14 @@ import com.jfinal.ext.interceptor.NotFoundActionInterceptor;
 import com.jfinal.ext.interceptor.OnExceptionInterceptorExt;
 import com.jfinal.ext.interceptor.POST;
 import com.jfinal.ext.kit.PageViewKit;
-import com.jfinal.ext.plugin.activerecord.generator.BaseModelGeneratorExt;
-import com.jfinal.ext.plugin.activerecord.generator.MappingKitGeneratorExt;
 import com.jfinal.ext.plugin.druid.DruidEncryptPlugin;
 import com.jfinal.ext.route.AutoBindRoutes;
 import com.jfinal.ext.upload.filerenamepolicy.RandomFileRenamePolicy;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.plugin.activerecord.generator.BaseModelGenerator;
 import com.jfinal.plugin.activerecord.generator.Generator;
+import com.jfinal.plugin.activerecord.generator.MappingKitGenerator;
 import com.jfinal.plugin.activerecord.generator.ModelGenerator;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.render.ViewType;
@@ -46,11 +46,10 @@ import com.jfinal.upload.OreillyCos;
 
 /**
  * @author Jobsz
- *
  */
 public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	
-	private final static String cfg = "cfg.txt";
+	private final static String cfg = "jf-app-cfg.txt";
 	
 	public static String APP_NAME = null;
 	protected boolean geRuned = false;
@@ -258,6 +257,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	private static final String ACTIVE_TEMPLATE = "db.%s.active";
 	private static final String URL_TEMPLATE = "jdbc:%s://%s";
 	private static final String USER_TEMPLATE = "db.%s.user";
+	private static final String PASSWORD_PKEY_TEMPLATE = "db.%s.password.pkey";
 	private static final String PASSWORD_TEMPLATE = "db.%s.password";
 	private static final String INITSIZE_TEMPLATE = "db.%s.initsize";
 	private static final String MAXSIZE_TEMPLATE = "db.%s.maxactive";
@@ -300,9 +300,11 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		if (!url.endsWith(endsWith)) {
 			url += endsWith;
 		}
-		DruidEncryptPlugin dp = new DruidEncryptPlugin(url,
-				this.getProperty(String.format(USER_TEMPLATE, ds)),
-				this.getProperty(String.format(PASSWORD_TEMPLATE, ds)));
+		
+		String password = this.getProperty(String.format(PASSWORD_TEMPLATE, ds));
+		password = DruidEncryptPlugin.decryptedPassword(this.getProperty(String.format(PASSWORD_PKEY_TEMPLATE, ds)), password);
+		String user = this.getProperty(String.format(USER_TEMPLATE, ds));
+		DruidEncryptPlugin dp = new DruidEncryptPlugin(url, user, password);
 		dp.setInitialSize(this.getPropertyToInt(String.format(INITSIZE_TEMPLATE, ds)));
 		dp.setMaxActive(this.getPropertyToInt(String.format(MAXSIZE_TEMPLATE, ds)));
 		dp.addFilter(new StatFilter());
@@ -312,21 +314,14 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		
 		if (this.geRuned) {
 			dp.start();
-			BaseModelGeneratorExt baseGe = new BaseModelGeneratorExt(this.getBaseModelPackage(), this.getBaseModelOutDir());
-			baseGe.setGenerateTableNameInModel(this.getGeTableNameInModel());
-			baseGe.setGenerateTableColumnNameInModel(this.getGeTableColumnName());
-            baseGe.setExtModelPackage(this.getExtModelPackage());
-            baseGe.setExtIBeanPackage(this.getExtIBeanPackage());
+			BaseModelGenerator baseGe = new BaseModelGenerator(this.getBaseModelPackage(), this.getBaseModelOutDir());
 			ModelGenerator modelGe = new ModelGenerator(this.getModelPackage(), this.getBaseModelPackage(), this.getModelOutDir());
 			modelGe.setGenerateDaoInModel(this.getGeDaoInModel());
 			Generator ge = new Generator(dp.getDataSource(), baseGe, modelGe);
-			MappingKitGeneratorExt mappingKitGe = new MappingKitGeneratorExt(this.getModelPackage(), this.getModelOutDir());
+			MappingKitGenerator mappingKitGe = new MappingKitGenerator(this.getModelPackage(), this.getModelOutDir());
 			if (!JFinalConfigExt.DEFAULT_MAPPINGKIT_CLASS_NAME.equals(this.getMappingKitClassName())) {
 				mappingKitGe.setMappingKitClassName(this.getMappingKitClassName());
 			}
-            mappingKitGe.setExtModelPackage(this.getExtModelPackage());
-			mappingKitGe.setGenerateMappingArpKit(this.getGeMappingArpKit());
-			mappingKitGe.setGenerateTableMapping(this.getGeTableMapping());
 			ge.setMappingKitGenerator(mappingKitGe);
 			ge.setGenerateDataDictionary(this.getGeDictionary());
 			ge.generate();
@@ -334,7 +329,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		
 		return dp;
 	}
-	
+
 	/**
 	 * 获取ActiveRecordPlugin 
 	 * @param dp DruidPlugin
@@ -360,7 +355,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	}
 	
 	private Boolean geDaoInModel = null;
-	private Boolean geTableNameInModel = null;
 	
 	private boolean getGeDictionary() {
 		this.loadPropertyFile();
@@ -385,14 +379,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		return this.geDaoInModel.booleanValue();
 	}
 	
-	private boolean getGeTableNameInModel() {
-		this.loadPropertyFile();
-		if (this.geTableNameInModel == null) {
-			this.geTableNameInModel = this.getPropertyToBoolean("ge.model.table", Boolean.TRUE);
-		}
-		return this.geTableNameInModel.booleanValue();
-	}
-	
 	private String getModelOutDir() {
 		this.loadPropertyFile();
 		return this.getProperty("ge.model.outdir");
@@ -412,31 +398,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		}
 		return this.mappingKitClassName;
 	}
-	
-	private boolean getGeMappingArpKit() {
-		this.loadPropertyFile();
-		return this.getPropertyToBoolean("ge.mappingarpkit", true);
-	}
-	
-	private boolean getGeTableMapping() {
-		this.loadPropertyFile();
-		return this.getPropertyToBoolean("ge.tablemapping", true);
-	}
-	
-	private boolean getGeTableColumnName() {
-		this.loadPropertyFile();
-		return this.getPropertyToBoolean("ge.model.tablecolumn", true);
-	}
-
-    private String getExtModelPackage() {
-        this.loadPropertyFile();
-        return this.getProperty("ge.model.extmodelpackage");
-    }
-
-    private String getExtIBeanPackage() {
-        this.loadPropertyFile();
-        return this.getProperty("ge.model.extibeanpackage");
-    }
 
 	//=========== Override
 	
@@ -448,4 +409,5 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		}
 		return p;
 	}
+	
 }

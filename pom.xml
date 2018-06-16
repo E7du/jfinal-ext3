@@ -39,10 +39,16 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency> 
+		<dependency>
+   			 <groupId>org.slf4j</groupId>
+   			 <artifactId>slf4j-nop</artifactId>
+    		<version>1.7.25</version>
+    		<scope>test</scope>
+		</dependency>
 		<!-- jfinal core -->
 		<dependency>
 			<groupId>com.jfinal</groupId>
-			<artifactId>jfinal</artifactId>
+			<artifactId>jfinal-e7du</artifactId>
 			<version>3.4</version>
 			<scope>provided</scope>
 		</dependency>
@@ -159,9 +165,6 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
-						<configuration>
-							<additionalparam>-Xdoclint:none</additionalparam>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
