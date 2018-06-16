@@ -159,6 +159,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9.1</version>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+					<encoding>UTF-8</encoding>
+				</configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -178,25 +182,6 @@
 						<goals>
 							<goal>jar-no-fork</goal>
 						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<id>add-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${basedir}/src/main/java</source>
-							</sources>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
