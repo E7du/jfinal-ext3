@@ -7,7 +7,7 @@
 	<packaging>jar</packaging>
 	<name>jfinal-ext3</name>
 	<description>jfinal-ext3</description>
-	<url>http://github.com/E7du/jfinal-ext3/</url>
+	<url>https://github.com/E7du/jfinal-ext3/</url>
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>
@@ -19,7 +19,7 @@
 			<name>Jobsz</name>
 			<email>zcq@zhucongqi.cn</email>
 			<organization>E7du Co.,Ltd.</organization>
-			<organizationUrl>http://github.com/E7du/</organizationUrl>
+			<organizationUrl>https://github.com/E7du/</organizationUrl>
 		</developer>
 	</developers>
 	<scm>

@@ -20,7 +20,7 @@ import com.jfinal.aop.Invocation;
 import com.jfinal.ext.core.ControllerExt;
 
 /**
- * ExceptionInterceptor
+ * OnExceptionInterceptorExt
  * @author Jobsz
  */
 public class OnExceptionInterceptorExt implements Interceptor {
