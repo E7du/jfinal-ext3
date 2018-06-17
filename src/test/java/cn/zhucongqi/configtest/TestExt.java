@@ -6,7 +6,9 @@
  */
 package cn.zhucongqi.configtest;
 
-import com.jfinal.ext.config.StandaloneDbConfig;
+import com.jfinal.ext.config.StandaloneAppConfig;
+import com.jfinal.kit.HashKit;
+import com.test.api.model.User;
 
 /**
  * 
@@ -20,8 +22,15 @@ public class TestExt {
 
     public static void main(String args[]) {
 
-        StandaloneDbConfig.startGe();
-
+        StandaloneAppConfig.start();
+        
+    	
+		User u = new User();
+		u.setId(101L);
+		u.setName("zcq 😝");
+		u.setAddr(HashKit.generateSalt(12));
+//		
+		u.save();
     }
 
 }

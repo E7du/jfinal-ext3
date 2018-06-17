@@ -67,8 +67,8 @@ public class TestConfig extends JFinalConfigExt {
 	}
 
 	@Override
-	public void configEngineMore(Engine arg0) {
-		
+	public void configEngineMore(Engine me) {
+		me.setBaseTemplatePath("sql.txt");
 	}
 
 }

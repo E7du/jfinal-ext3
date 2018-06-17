@@ -9,6 +9,14 @@ import com.jfinal.plugin.activerecord.IBean;
 @SuppressWarnings("serial")
 public abstract class BaseUser<M extends BaseUser<M>> extends Model<M> implements IBean {
 
+	public void setId(java.lang.Long id) {
+		set("id", id);
+	}
+	
+	public java.lang.Long getId() {
+		return getLong("id");
+	}
+
 	public void setName(java.lang.String name) {
 		set("name", name);
 	}
@@ -23,14 +31,6 @@ public abstract class BaseUser<M extends BaseUser<M>> extends Model<M> implement
 	
 	public java.lang.String getAddr() {
 		return getStr("addr");
-	}
-
-	public void setId(java.lang.Integer id) {
-		set("id", id);
-	}
-	
-	public java.lang.Integer getId() {
-		return getInt("id");
 	}
 
 }

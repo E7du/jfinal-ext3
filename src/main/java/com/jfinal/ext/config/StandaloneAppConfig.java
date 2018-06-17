@@ -27,15 +27,16 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.template.Engine;
 
 /**
+ * StandaloneAppConfig
  * @author Jobsz
  */
-public class StandaloneDbConfig {
+public class StandaloneAppConfig {
 	
-	private static StandaloneDbConfig instance = null;
-	private JFinalSubConfig cfg = null;
+	private static StandaloneAppConfig instance = null;
+	private JFinalAppConfig cfg = null;
 	
-	private StandaloneDbConfig(boolean geRuned) {
-		this.cfg = new JFinalSubConfig(geRuned);
+	private StandaloneAppConfig(boolean geRuned) {
+		this.cfg = new JFinalAppConfig(geRuned);
 		this.cfg.start();
 	}
 	
@@ -43,8 +44,8 @@ public class StandaloneDbConfig {
 	 * 启动数据库配置
 	 */
 	public static void start() {
-		if (StandaloneDbConfig.instance == null) {
-			StandaloneDbConfig.instance = new StandaloneDbConfig(false);
+		if (StandaloneAppConfig.instance == null) {
+			StandaloneAppConfig.instance = new StandaloneAppConfig(false);
 		}
 	}
 	
@@ -52,22 +53,26 @@ public class StandaloneDbConfig {
 	 * 生成 Model+BaseModel
 	 */
 	public static void startGe() {
-		if (StandaloneDbConfig.instance == null) {
-			StandaloneDbConfig.instance = new StandaloneDbConfig(true);
+		if (StandaloneAppConfig.instance == null) {
+			StandaloneAppConfig.instance = new StandaloneAppConfig(true);
 		}
 	}
 	
 	public static void stop() {
-		if (StandaloneDbConfig.instance != null) {
-			StandaloneDbConfig.instance.cfg.stop();
+		if (StandaloneAppConfig.instance != null) {
+			StandaloneAppConfig.instance.cfg.stop();
 		}
 	}
 	
-	private static class JFinalSubConfig extends JFinalConfigExt {
+	/**
+	 * Client App config
+	 * @author Jobsz
+	 */
+	private final static class JFinalAppConfig extends JFinalConfigExt {
 
 		private static final Plugins plugins = new Plugins();
 		
-		public JFinalSubConfig(boolean geRuned) {
+		public JFinalAppConfig(boolean geRuned) {
 			this.geRuned = geRuned;
 			this.configPlugin(plugins);
 		}

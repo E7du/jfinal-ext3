@@ -15,7 +15,7 @@
  */
 package com.jfinal.ext.ge;
 
-import com.jfinal.ext.config.StandaloneDbConfig;
+import com.jfinal.ext.config.StandaloneAppConfig;
 
 /**
  * Generate Tool
@@ -28,7 +28,7 @@ public class Ge {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		StandaloneDbConfig.startGe();
+		StandaloneAppConfig.startGe();
 	}
 
 }

@@ -5,10 +5,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.jfinal.ext.config.StandaloneDbConfig;
+import com.jfinal.ext.config.StandaloneAppConfig;
 import com.jfinal.kit.HashKit;
-
-import cn.zcq.model.Zcq;
+import com.test.api.model.User;
 
 public class StandaloneConfig {
 
@@ -30,13 +29,13 @@ public class StandaloneConfig {
 	
 	@Test
 	public void test() {
-		StandaloneDbConfig.start();
+		StandaloneAppConfig.start();
 		
-		Zcq zcq = new Zcq();
-		zcq.setId(0L);
-		zcq.setAddr(HashKit.generateSalt(12));
+		User u = new User();
+		u.setId(0L);
+		u.setAddr(HashKit.generateSalt(12));
 //		
-		zcq.save();
+		u.save();
 //		
 //		Table table = TableMapping.me().getTable(Zcq.class);
 //		System.out.println(table.getName());
