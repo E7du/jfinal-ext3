@@ -153,7 +153,7 @@ public class StandaloneDbConfig {
 		}
 
 		@Override
-		public void configEngine(Engine e) {
+		public void configEngineMore(Engine e) {
 			
 		}
 	}

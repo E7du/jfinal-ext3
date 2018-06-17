@@ -67,7 +67,7 @@ public class TestConfig extends JFinalConfigExt {
 	}
 
 	@Override
-	public void configEngine(Engine arg0) {
+	public void configEngineMore(Engine arg0) {
 		
 	}
 

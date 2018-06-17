@@ -42,6 +42,7 @@ import com.jfinal.plugin.activerecord.generator.MappingKitGenerator;
 import com.jfinal.plugin.activerecord.generator.ModelGenerator;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.render.ViewType;
+import com.jfinal.template.Engine;
 import com.jfinal.upload.OreillyCos;
 
 /**
@@ -83,6 +84,11 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * Config other more handler
 	 */
 	public abstract void configMoreHandlers(Handlers me);
+	
+	/**
+	 * Config engine more
+	 */
+	public abstract void configEngineMore(Engine e);
 
 	/**
 	 * After JFinalStarted
@@ -175,6 +181,13 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		me.add(new ActionExtentionHandler());
 		// config others
 		configMoreHandlers(me);
+	}
+	
+	/**
+	 * Config engine
+	 */
+	public void configEngine(Engine e) {
+		e.setDevMode(this.getAppDevMode());
 	}
 	
 	public void afterJFinalStart() {
