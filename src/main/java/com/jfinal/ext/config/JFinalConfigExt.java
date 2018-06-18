@@ -17,6 +17,8 @@ package com.jfinal.ext.config;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.wall.WallFilter;
@@ -54,6 +56,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	
 	public static String APP_NAME = null;
 	protected boolean geRuned = false;
+	private Set<String> dses = null;
 	
 	/**
 	 * Config other More constant
@@ -143,6 +146,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * Config plugin
 	 */
 	public void configPlugin(Plugins me) {
+			this.dses = new HashSet<String>();
 			String[] dses = this.getDataSource();
 			for (String ds : dses) {
 				if (!this.getDbActiveState(ds)) {
@@ -152,7 +156,10 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 				me.add(drp);
 				ActiveRecordPlugin arp = this.getActiveRecordPlugin(ds, drp);
 				me.add(arp);
-				configTablesMapping(ds, arp);
+				if (!this.dses.contains(ds)) {
+					configTablesMapping(ds, arp);
+					this.dses.add(ds);
+				}
 		}
 		// config others
 		configMorePlugins(me);
