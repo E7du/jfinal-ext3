@@ -17,8 +17,6 @@ package com.jfinal.ext.config;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.wall.WallFilter;
@@ -56,7 +54,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	
 	public static String APP_NAME = null;
 	protected boolean geRuned = false;
-	private Set<String> dses = null;
 	
 	/**
 	 * Config other More constant
@@ -72,11 +69,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * Config other more plugin
 	 */
 	public abstract void configMorePlugins(Plugins me);
-	
-	/**
-	 * Config other Tables Mapping
-	 */
-	public abstract void configTablesMapping(String dsName, ActiveRecordPlugin arp);
 	
 	/**
 	 * Config other more interceptor applied to all actions.
@@ -146,7 +138,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * Config plugin
 	 */
 	public void configPlugin(Plugins me) {
-			this.dses = new HashSet<String>();
 			String[] dses = this.getDataSource();
 			for (String ds : dses) {
 				if (!this.getDbActiveState(ds)) {
@@ -156,10 +147,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 				me.add(drp);
 				ActiveRecordPlugin arp = this.getActiveRecordPlugin(ds, drp);
 				me.add(arp);
-				if (!this.dses.contains(ds)) {
-					configTablesMapping(ds, arp);
-					this.dses.add(ds);
-				}
 		}
 		// config others
 		configMorePlugins(me);
@@ -324,6 +311,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		String password = this.getProperty(String.format(PASSWORD_TEMPLATE, ds));
 		password = DruidEncryptPlugin.decryptedPassword(this.getProperty(String.format(PASSWORD_PKEY_TEMPLATE, ds)), password);
 		String user = this.getProperty(String.format(USER_TEMPLATE, ds));
+		
 		DruidEncryptPlugin dp = new DruidEncryptPlugin(url, user, password);
 		dp.setInitialSize(this.getPropertyToInt(String.format(INITSIZE_TEMPLATE, ds)));
 		dp.setMaxActive(this.getPropertyToInt(String.format(MAXSIZE_TEMPLATE, ds)));
@@ -340,8 +328,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 			Generator ge = new Generator(dp.getDataSource(), baseGe, modelGe);
 			MappingKitGenerator mappingKitGe = new MappingKitGenerator(this.getModelPackage(), this.getModelOutDir());
 			if (!JFinalConfigExt.DEFAULT_MAPPINGKIT_CLASS_NAME.equals(this.getMappingKitClassName())) {
-				//TODO 根据 ds 生成 mapping 文件
-				mappingKitGe.setMappingKitClassName(this.getMappingKitClassName());
+				mappingKitGe.setMappingKitClassName(ds.toUpperCase()+this.getMappingKitClassName());
 			}
 			ge.setMappingKitGenerator(mappingKitGe);
 			ge.setGenerateDataDictionary(this.getGeDictionary());
@@ -362,10 +349,9 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		arp.setShowSql(this.getPropertyToBoolean("db.showsql"));
 
 		// auto mapping
-		//TODO 确定是否自动 mapping，如果自动 mapping 需要确定不同数据源的处理问题及是否保留 configTablesMapping方法
 		if (!this.geRuned) {
 			try {
-				Class<?> clazz = Class.forName(this.getModelPackage()+"."+this.getMappingKitClassName());
+				Class<?> clazz = Class.forName(this.getModelPackage()+"."+ds.toUpperCase()+this.getMappingKitClassName());
 				Method mapping = clazz.getMethod("mapping", ActiveRecordPlugin.class);
 				mapping.invoke(clazz, arp);
 			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException

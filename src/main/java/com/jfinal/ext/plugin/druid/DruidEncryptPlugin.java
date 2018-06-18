@@ -25,6 +25,7 @@ import com.jfinal.plugin.druid.DruidPlugin;
  *  生成加密密码:
  *  java -cp druid-xx.jar com.alibaba.druid.filter.config.ConfigTools your_password
  * @author Jobsz
+ * TODO 删除？？？
  */
 public class DruidEncryptPlugin extends DruidPlugin {
 

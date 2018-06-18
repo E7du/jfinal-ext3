@@ -7,7 +7,6 @@ import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
 import com.jfinal.ext.config.JFinalConfigExt;
 import com.jfinal.ext.config.JFinalExt;
-import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.template.Engine;
 
 /**
@@ -43,11 +42,6 @@ public class TestConfig extends JFinalConfigExt {
 
 	@Override
 	public void configMorePlugins(Plugins me) {
-		
-	}
-
-	@Override
-	public void configTablesMapping(String configName, ActiveRecordPlugin arp) {
 		
 	}
 

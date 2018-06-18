@@ -23,7 +23,6 @@ import com.jfinal.config.Interceptors;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.plugin.IPlugin;
-import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.template.Engine;
 
 /**
@@ -136,10 +135,6 @@ public class StandaloneAppConfig {
 		@Override
 		public void configMorePlugins(Plugins me) {
 			
-		}
-
-		@Override
-		public void configTablesMapping(String dsName, ActiveRecordPlugin arp) {
 		}
 
 		@Override
