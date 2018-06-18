@@ -139,7 +139,7 @@ public class StandaloneAppConfig {
 		}
 
 		@Override
-		public void configTablesMapping(String configName, ActiveRecordPlugin arp) {
+		public void configTablesMapping(String dsName, ActiveRecordPlugin arp) {
 		}
 
 		@Override

@@ -76,7 +76,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	/**
 	 * Config other Tables Mapping
 	 */
-	public abstract void configTablesMapping(String configName, ActiveRecordPlugin arp);
+	public abstract void configTablesMapping(String dsName, ActiveRecordPlugin arp);
 	
 	/**
 	 * Config other more interceptor applied to all actions.
@@ -340,6 +340,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 			Generator ge = new Generator(dp.getDataSource(), baseGe, modelGe);
 			MappingKitGenerator mappingKitGe = new MappingKitGenerator(this.getModelPackage(), this.getModelOutDir());
 			if (!JFinalConfigExt.DEFAULT_MAPPINGKIT_CLASS_NAME.equals(this.getMappingKitClassName())) {
+				//TODO 根据 ds 生成 mapping 文件
 				mappingKitGe.setMappingKitClassName(this.getMappingKitClassName());
 			}
 			ge.setMappingKitGenerator(mappingKitGe);
@@ -360,7 +361,8 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(ds, dp);
 		arp.setShowSql(this.getPropertyToBoolean("db.showsql"));
 
-		// mapping
+		// auto mapping
+		//TODO 确定是否自动 mapping，如果自动 mapping 需要确定不同数据源的处理问题及是否保留 configTablesMapping方法
 		if (!this.geRuned) {
 			try {
 				Class<?> clazz = Class.forName(this.getModelPackage()+"."+this.getMappingKitClassName());
