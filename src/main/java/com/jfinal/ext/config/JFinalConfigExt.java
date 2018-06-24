@@ -323,6 +323,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		if (this.geRuned) {
 			dp.start();
 			BaseModelGenerator baseGe = new BaseModelGenerator(this.getBaseModelPackage(), this.getBaseModelOutDir());
+			baseGe.setGenerateChainSetter(true);
 			ModelGenerator modelGe = new ModelGenerator(this.getModelPackage(), this.getBaseModelPackage(), this.getModelOutDir());
 			modelGe.setGenerateDaoInModel(this.getGeDaoInModel());
 			Generator ge = new Generator(dp.getDataSource(), baseGe, modelGe);
