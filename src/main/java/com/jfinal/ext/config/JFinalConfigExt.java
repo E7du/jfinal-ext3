@@ -252,7 +252,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * 获取 AppName
 	 * @return
 	 */
-	private String getAppName() {
+	protected String getAppName() {
 		this.loadPropertyFile();
 		String appName = this.getProperty("app.name", "");
 		if (StrKit.isBlank(appName)) {
