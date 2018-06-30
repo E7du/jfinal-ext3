@@ -414,7 +414,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	public String getProperty(String key) {
 		String p = super.getProperty(key);
 		if (StrKit.isBlank(p)) {
-			new IllegalArgumentException("`"+key+"` Cannot be empty, set `"+key+"` in cfg.txt file");
+			new IllegalArgumentException("`"+key+"` Cannot be empty, set `"+key+"` in "+cfg+" file");
 		}
 		return p;
 	}
