@@ -18,8 +18,6 @@ package com.jfinal.ext.config;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.log4j.PropertyConfigurator;
-
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.wall.WallFilter;
 import com.jfinal.config.Constants;
@@ -52,7 +50,7 @@ import com.jfinal.upload.OreillyCos;
  */
 public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	
-	private final static String cfg = "conf/jf-app-cfg.conf";
+	private final static String cfg = "jf-app-cfg.conf";
 	
 	public static String APP_NAME = null;
 	protected boolean geRuned = false;
@@ -188,7 +186,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	
 	public void afterJFinalStart() {
 		super.afterJFinalStart();
-		PropertyConfigurator.configure("conf/log4j.properties");
 		this.afterJFinalStarted();
 	}
 
