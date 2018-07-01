@@ -50,7 +50,7 @@ import com.jfinal.upload.OreillyCos;
  */
 public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	
-	private final static String cfg = "jf-app-cfg.txt";
+	private final static String cfg = "conf/jf-app-cfg.conf";
 	
 	public static String APP_NAME = null;
 	protected boolean geRuned = false;
