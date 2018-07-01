@@ -43,7 +43,6 @@
    			 <groupId>org.slf4j</groupId>
    			 <artifactId>slf4j-nop</artifactId>
     		<version>1.7.25</version>
-    		<scope>test</scope>
 		</dependency>
 		<!-- jfinal core -->
 		<dependency>
@@ -85,6 +84,7 @@
 			<groupId>com.jfinal</groupId>
 			<artifactId>cos</artifactId>
 			<version>2017.5</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.jfinal</groupId>
@@ -110,6 +110,7 @@
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
 			<version>3.2.5</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>redis.clients</groupId>
