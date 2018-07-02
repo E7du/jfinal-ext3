@@ -15,14 +15,10 @@
 #---------------------------------------------------------------------------------#
 db.ds = mysql
 db.mysql.active = true
-#db.mysql.url = 192.168.52.148/jf
-#db.mysql.user = root
-#db.mysql.password.pkey = MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJbIzkTcjrlDwB3vdc6gKwJ5gAMGRazWOrOeuMCxI2Lb7n/d4DoBySUdM+7HT6Gkfbfz6BM1o/2Gp0PkhkEHAx8CAwEAAQ==
-#db.mysql.password = TVL59a5MXxM3EB7Ylzf8idFijFX97+ZRxZG+2PpkR4pPCQ5TLtZAok88IGW05CxRvC56ekO++yWhepAEL118lw==
-db.mysql.url = 192.168.31.170/jf
-db.mysql.user = root
-db.mysql.password.pkey = MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMoQL86e6K6uk1bck0cy2QesdZE1uJLRMac647hXyxqJ/cqwrANLyBNOPYx84Zp6Pd/hnktBaoL4AkWxg4D5NxMCAwEAAQ==
-db.mysql.password = EnathmJgbzQS6ZuNjjazyRsbtoud0mjZPjpdE0lD9nPTmTx3CTlkdRPqZ7w9AfF9Bc6LR5xC9q0NSkHsb4SAdg==
+db.mysql.url = localhost/zcq
+db.mysql.user = 
+db.mysql.password.pkey = MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJbIzkTcjrlDwB3vdc6gKwJ5gAMGRazWOrOeuMCxI2Lb7n/d4DoBySUdM+7HT6Gkfbfz6BM1o/2Gp0PkhkEHAx8CAwEAAQ==
+db.mysql.password = TVL59a5MXxM3EB7Ylzf8idFijFX97+ZRxZG+2PpkR4pPCQ5TLtZAok88IGW05CxRvC56ekO++yWhepAEL118lw==
 db.mysql.initsize = 10
 db.mysql.maxactive = 100
 db.showsql = true
@@ -38,21 +34,17 @@ db.showsql = true
 #---------------------------------------------------------------------------------#
 ge.dict=true
 ge.model.dao=true
-ge.mappingkit.classname=TableMappingKit
-ge.base.model.outdir=./src/test/java/com/test/api/base/model
-ge.base.model.package=com.test.api.base.model
-ge.model.outdir=./src/test/java/com/test/api/model
-ge.model.package=com.test.api.model
-
+ge.mappingkit.classname=_MappingKit
+ge.base.model.outdir=
+ge.base.model.package=
+ge.model.outdir=
+ge.model.package=
 #---------------------------------------------------------------------------------#
 ## App Config
-# 1. app.dev: true, the app is debug mode;
-# 2. app.upload.basedir: upload file save base dir;
-# 3. app.post: ture, use Http Post method;
-# 4. app.name: app's name;
+# ->. app.dev: true, the app is debug mode;
+# ->. app.post: ture, use Http Post method;
+# ->. app.name: app's name;
 #---------------------------------------------------------------------------------#
 app.dev = true
-app.uploads.basedir = /var/uploads
-app.downloads.basedir = /var/downloads
-app.post = false
-app.name = jfinal-ext3-demo
+app.post = true
+app.name = 

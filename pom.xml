@@ -80,13 +80,6 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
-		<!-- upload -->
-		<dependency>
-			<groupId>com.jfinal</groupId>
-			<artifactId>cos</artifactId>
-			<version>2017.5</version>
-			<scope>provided</scope>
-		</dependency>
 		<dependency>
 			<groupId>com.jfinal</groupId>
 			<artifactId>jetty-server</artifactId>
