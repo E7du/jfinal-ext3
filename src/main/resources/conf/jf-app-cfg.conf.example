@@ -42,12 +42,9 @@ ge.model.package=
 #---------------------------------------------------------------------------------#
 ## App Config
 # ->. app.dev: true, the app is debug mode;
-# ->. app.upload.basedir: upload file save base dir;
 # ->. app.post: ture, use Http Post method;
 # ->. app.name: app's name;
 #---------------------------------------------------------------------------------#
 app.dev = true
-app.uploads.basedir = /var/uploads
-app.downloads.basedir = /var/downloads
 app.post = true
 app.name = 

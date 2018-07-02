@@ -33,7 +33,6 @@ import com.jfinal.ext.interceptor.POST;
 import com.jfinal.ext.kit.PageViewKit;
 import com.jfinal.ext.plugin.druid.DruidEncryptPlugin;
 import com.jfinal.ext.route.AutoBindRoutes;
-import com.jfinal.ext.upload.filerenamepolicy.RandomFileRenamePolicy;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.generator.BaseModelGenerator;
@@ -43,14 +42,13 @@ import com.jfinal.plugin.activerecord.generator.ModelGenerator;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.render.ViewType;
 import com.jfinal.template.Engine;
-import com.jfinal.upload.OreillyCos;
 
 /**
  * @author Jobsz
  */
 public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	
-	private final static String cfg = "jf-app-cfg.txt";
+	private final static String cfg = "conf/jf-app-cfg.conf";
 	
 	public static String APP_NAME = null;
 	protected boolean geRuned = false;
@@ -109,14 +107,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		me.setError404View(PageViewKit.get404PageView());
 		me.setError500View(PageViewKit.get500PageView());
 		me.setError403View(PageViewKit.get403PageView());
-		//file upload dir
-		me.setBaseUploadPath(this.getUploadPath());
-		//file download dir
-		me.setBaseDownloadPath(this.getDownloadPath());
-		
 		JFinalConfigExt.APP_NAME = this.getAppName();
-		//set file rename policy is random
-		OreillyCos.setFileRenamePolicy(new RandomFileRenamePolicy());
 		// config others
 		configMoreConstants(me);
 	}
@@ -200,45 +191,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		return this.getPropertyToBoolean("app.post", false);
 	}
 
-	private String getPath(String property) {
-		if (StrKit.isBlank(property) || (!"downloads".equals(property) && !"uploads".equals(property))) {
-			throw new IllegalArgumentException("property is invalid, property just use `downloads` or `uploads`");
-		}
-		this.loadPropertyFile();
-		String app = this.getAppName();
-		String baseDir = this.getProperty(String.format("app.%s.basedir", property));
-		if (baseDir.endsWith("/")) {
-			if (!baseDir.endsWith(property+"/")) {
-				baseDir += (property+"/");	
-			}
-		}else{
-			if (!baseDir.endsWith(property)) {
-				baseDir += ("/"+property+"/");
-			}else{
-				baseDir += "/";
-			}
-		}
-		return (new StringBuilder(baseDir).append(app).toString());
-	}
-	
-	/**
-	 * 获取File Upload Directory
-	 * "/var/uploads/appname"
-	 * @return
-	 */
-	private String getUploadPath(){
-		return this.getPath("uploads");
-	}
-	
-	/**
-	 * 获取File Download Directory
-	 * "/var/downloads/appname"
-	 * @return
-	 */
-	private String getDownloadPath(){
-		return this.getPath("downloads");
-	}
-	
 	/**
 	 * 获取app的dev mode
 	 * @return
