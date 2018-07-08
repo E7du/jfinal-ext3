@@ -29,9 +29,15 @@ import com.jfinal.upload.UploadFile;
 public abstract class ControllerExt extends com.jfinal.core.Controller {
 
 	protected Log log = Log.getLog(this.getClass());
+	
+	protected abstract void onInit();
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ControllerExt() {
+		this.onInit();
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })	
+	protected void onInitService() {
 		Field[] fields = this.getClass().getDeclaredFields();
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
