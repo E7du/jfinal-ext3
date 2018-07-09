@@ -34,10 +34,11 @@ public abstract class ControllerExt extends com.jfinal.core.Controller {
 
 	public ControllerExt() {
 		this.onInit();
+		this.onInitService();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })	
-	protected void onInitService() {
+	private void onInitService() {
 		Field[] fields = this.getClass().getDeclaredFields();
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
