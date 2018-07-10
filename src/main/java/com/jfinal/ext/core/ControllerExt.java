@@ -30,10 +30,7 @@ public abstract class ControllerExt extends com.jfinal.core.Controller {
 
 	protected Log log = Log.getLog(this.getClass());
 	
-	protected abstract void onInit();
-
 	public ControllerExt() {
-		this.onInit();
 		this.onInitService();
 	}
 
