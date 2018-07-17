@@ -89,8 +89,8 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	}
 
 	/**
-	 * set cache's name
-	 * @param cacheName, if current cacheName != the old cacheName, will reset old cache and update cache use the current cacheName.
+	 * set cache's name.
+	 * if current cacheName != the old cacheName, will reset old cache and update cache use the current cacheName.
 	 */
 	public void setCacheName(String cacheName) {
 		//reset cache
