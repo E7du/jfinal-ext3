@@ -40,9 +40,9 @@
 		</dependency>
 		<!-- jfinal core -->
 		<dependency>
-			<groupId>com.jfinal</groupId>
-			<artifactId>jfinal</artifactId>
-			<version>3.4</version>
+			<groupId>cn.zhucongqi</groupId>
+			<artifactId>e7du-jfinal</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 		<!-- DB -->
 		<dependency>

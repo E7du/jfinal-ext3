@@ -26,7 +26,7 @@ public class TestExt {
         
     	
 		User u = new User();
-		u.setId(1011L);
+		u.setId(1011);
 		u.setName("zc😝q");
 		u.setAddr(HashKit.generateSalt(12));
 //		

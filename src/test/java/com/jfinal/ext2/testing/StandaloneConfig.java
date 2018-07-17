@@ -47,7 +47,7 @@ public class StandaloneConfig {
 		StandaloneAppConfig.start();
 		
 		User u = new User();
-		u.setId(0L);
+		u.setId(1);
 		u.setAddr(HashKit.generateSalt(12));
 //		
 		u.save();

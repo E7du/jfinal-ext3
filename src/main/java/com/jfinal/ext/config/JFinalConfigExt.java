@@ -276,13 +276,14 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 			dp.start();
 			BaseModelGenerator baseGe = new BaseModelGenerator(this.getBaseModelPackage(), this.getBaseModelOutDir());
 			baseGe.setGenerateChainSetter(true);
+			baseGe.setTemplate("/com/jfinal/ext/plugin/activerecord/base_model_template.jf");
 			ModelGenerator modelGe = new ModelGenerator(this.getModelPackage(), this.getBaseModelPackage(), this.getModelOutDir());
 			modelGe.setGenerateDaoInModel(this.getGeDaoInModel());
+			modelGe.setTemplate("/com/jfinal/ext/plugin/activerecord/model_template.jf");
 			Generator ge = new Generator(dp.getDataSource(), baseGe, modelGe);
 			MappingKitGenerator mappingKitGe = new MappingKitGenerator(this.getModelPackage(), this.getModelOutDir());
-			if (!JFinalConfigExt.DEFAULT_MAPPINGKIT_CLASS_NAME.equals(this.getMappingKitClassName())) {
-				mappingKitGe.setMappingKitClassName(ds.toUpperCase()+this.getMappingKitClassName());
-			}
+			mappingKitGe.setMappingKitClassName(ds.toUpperCase()+this.getMappingKitClassName());
+			mappingKitGe.setTemplate("/com/jfinal/ext/plugin/activerecord/mapping_kit_template.jf");
 			ge.setMappingKitGenerator(mappingKitGe);
 			ge.setGenerateDataDictionary(this.getGeDictionary());
 			ge.generate();
@@ -350,12 +351,11 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		return this.getProperty("ge.model.package");
 	}
 	
-	private static final String DEFAULT_MAPPINGKIT_CLASS_NAME = "_MappingKit";
 	private String mappingKitClassName = null;
 	private String getMappingKitClassName() {
 		this.loadPropertyFile();
 		if (this.mappingKitClassName == null) {
-			this.mappingKitClassName = this.getProperty("ge.mappingkit.classname", JFinalConfigExt.DEFAULT_MAPPINGKIT_CLASS_NAME);
+			this.mappingKitClassName = this.getProperty("ge.mappingkit.classname", "_MappingKit");
 		}
 		return this.mappingKitClassName;
 	}

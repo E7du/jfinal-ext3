@@ -15,7 +15,7 @@
 */
 package com.jfinal.ext.kit;
 
-import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.ext.plugin.activerecord.ModelExt;
 import com.jfinal.plugin.activerecord.SqlPara;
 
 /**
@@ -36,12 +36,11 @@ public final class SqlpKit {
 	 * @param model
 	 * @return
 	 */
-	public static SqlPara select(Model<?> model) {
+	public static SqlPara select(ModelExt<?> model) {
 		SqlPara sqlPara = new SqlPara();
 		String[] columns = model._getAttrNames();
 
-		String tableName = ModelKit.getTable(model.getClass()).getName();
-		StringBuilder sbr = new StringBuilder(String.format(SELECT_ST, tableName));
+		StringBuilder sbr = new StringBuilder(String.format(SELECT_ST, model.getTableName()));
 
 		boolean first = true;
 		for (Integer i = 0; i < columns.length; i++) {
