@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.jfinal.ext.kit.SqlpKit;
+import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Table;
+import com.jfinal.plugin.redis.Cache;
 import com.jfinal.plugin.redis.Redis;
 
 public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
@@ -15,6 +17,8 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	private static final long serialVersionUID = -6061985137398460903L;
 
 	private boolean syncToRedis = false;
+	private Cache cache = null;
+	private String cacheName = null;
 
 	/**
 	 * redis key: tablename id1 | id2 | id3...
@@ -29,7 +33,10 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		String[] primaryKeys = table.getPrimaryKey();
 		List<Object> primaryKeyValues = new ArrayList<Object>();
 		for (String primaryKey: primaryKeys) {
-			primaryKeyValues.add(m.get(primaryKey));
+			Object val = m.get(primaryKey);
+			if (null != val) {
+				primaryKeyValues.add(val);
+			}
 		}
 		//format key
 		boolean first = true;
@@ -45,7 +52,20 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	}
 	
 	private void saveToRedis(ModelExt<?> m) {
-		Redis.use().hmset(this.redisKey(m), m.getAttrsCp());
+		this.getCache().hmset(this.redisKey(m), m.getAttrsCp());
+	}
+	
+	private Cache getCache() {
+		if (null != this.cache) {
+			return this.cache;
+		}
+		
+		if (StrKit.notBlank(this.cacheName)) {
+			this.cache = Redis.use(this.cacheName);
+		} else {
+			this.cache = Redis.use();
+		}
+		return this.cache;
 	}
 	
 	/**
@@ -68,6 +88,18 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		this.syncToRedis = syncToRedis;
 	}
 
+	/**
+	 * set cache's name
+	 * @param cacheName
+	 */
+	public void setCacheName(String cacheName) {
+		//reset cache
+		if (null != cacheName && !cacheName.equals(this.cacheName)) {
+			this.cache = null;
+		}
+		this.cacheName = cacheName;
+	}
+	
 	/**
 	 * get current model's table
 	 */
@@ -121,7 +153,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	public boolean delete() {
 		boolean ret = super.delete();
 		if (this.syncToRedis && ret) {
-			Redis.use().del(this.redisKey(this));
+			this.getCache().del(this.redisKey(this));
 		}
 		return ret;
 	}
@@ -133,7 +165,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	public boolean update() {
 		boolean ret = super.update();
 		if (this.syncToRedis && ret) {
-			Redis.use().hmset(this.redisKey(this), this.getAttrsCp());
+			this.getCache().hmset(this.redisKey(this), this.getAttrsCp());
 		}
 		return ret;
 	}
@@ -161,7 +193,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		if (null == pkValue) {
 			throw new IllegalArgumentException("The PrimaryKey's value is null. Please set value to it.");
 		}
-		Map<String, Object> attrs = Redis.use().hgetAll(this.redisKey(this));
+		Map<String, Object> attrs = this.getCache().hgetAll(this.redisKey(this));
 		return this.put(attrs);
 	}
 }
