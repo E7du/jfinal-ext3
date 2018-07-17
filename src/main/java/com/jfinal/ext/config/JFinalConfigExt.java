@@ -49,6 +49,9 @@ import com.jfinal.template.Engine;
 public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	
 	private final static String cfg = "conf/jf-app-cfg.conf";
+	private final static String base_model_template = "/com/jfinal/ext/plugin/activerecord/base_model_template.jf";
+	private final static String model_template = "/com/jfinal/ext/plugin/activerecord/model_template.jf";
+	private final static String mapping_kit_template = "/com/jfinal/ext/plugin/activerecord/mapping_kit_template.jf";
 	
 	public static String APP_NAME = null;
 	protected boolean geRuned = false;
@@ -276,14 +279,14 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 			dp.start();
 			BaseModelGenerator baseGe = new BaseModelGenerator(this.getBaseModelPackage(), this.getBaseModelOutDir());
 			baseGe.setGenerateChainSetter(true);
-			baseGe.setTemplate("/com/jfinal/ext/plugin/activerecord/base_model_template.jf");
+			baseGe.setTemplate(base_model_template);
 			ModelGenerator modelGe = new ModelGenerator(this.getModelPackage(), this.getBaseModelPackage(), this.getModelOutDir());
 			modelGe.setGenerateDaoInModel(this.getGeDaoInModel());
-			modelGe.setTemplate("/com/jfinal/ext/plugin/activerecord/model_template.jf");
+			modelGe.setTemplate(model_template);
 			Generator ge = new Generator(dp.getDataSource(), baseGe, modelGe);
 			MappingKitGenerator mappingKitGe = new MappingKitGenerator(this.getModelPackage(), this.getModelOutDir());
 			mappingKitGe.setMappingKitClassName(ds.toUpperCase()+this.getMappingKitClassName());
-			mappingKitGe.setTemplate("/com/jfinal/ext/plugin/activerecord/mapping_kit_template.jf");
+			mappingKitGe.setTemplate(mapping_kit_template);
 			ge.setMappingKitGenerator(mappingKitGe);
 			ge.setGenerateDataDictionary(this.getGeDictionary());
 			ge.generate();

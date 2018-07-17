@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jfinal</groupId>
@@ -33,9 +35,9 @@
 	</properties>
 	<dependencies>
 		<dependency>
-   			 <groupId>org.slf4j</groupId>
-   			 <artifactId>slf4j-nop</artifactId>
-    		<version>1.7.25</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
+			<version>1.7.25</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- jfinal core -->
@@ -60,7 +62,7 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.11</version>
-		</dependency> 
+		</dependency>
 		<!-- json -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -106,9 +108,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-    		<groupId>org.apache.commons</groupId>
-   			<artifactId>commons-pool2</artifactId>
-    		<version>2.4.2</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<version>2.4.2</version>
 		</dependency>
 		<dependency>
 			<groupId>de.ruedigermoeller</groupId>
@@ -133,6 +135,16 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<!-- **/* 写法，可以将各级子目录下的资源文件被打包 -->
+					<include>**/*.jf</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
