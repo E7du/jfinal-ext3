@@ -46,23 +46,23 @@ public class RedisCache {
 		
 		user.setAddr("地址");
 		user.setName("姓名");
-		user.setId(1014);
+		user.setId(1015);
 		
 		//save
-		user.save();
+		//user.save();
 		// update
 		user.setAddr("新地址");
 		user.update();
 		
 		user = new User();
-		user.setSyncToRedis(true);
+		user.syncToRedis(true);
 		
 		List<User> users = user.find();
 		for (User u : users) {
 			System.out.println("user=="+JsonKit.toJson(u));
 		}
 		User u = new User();
-		u.setId(1014);
+		u.setId(1015);
 		System.out.println(JsonKit.toJson(u));
 		u = u.findByCache();
 		System.out.println(JsonKit.toJson(u));
