@@ -1,9 +1,16 @@
 # jfinal-ext3
 
-#####
-拓展jfinal3.x
-
+##### 拓展jfinal3.x
 ![maven](https://img.shields.io/maven-central/v/com.jfinal/jfinal-ext3.svg)
 
+####Maven dependency
 
-### 测试
+```java
+<dependency>
+    <groupId>com.jfinal</groupId>
+    <artifactId>jfinal-ext3</artifactId>
+    <version>3.0.6</version>
+</dependency>
+```
+
+[文档docs](https://e7du.github.io/jfinal-ext3/)

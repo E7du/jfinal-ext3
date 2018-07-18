@@ -18,8 +18,6 @@ package com.jfinal.ext.config;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.alibaba.druid.filter.stat.StatFilter;
-import com.alibaba.druid.wall.WallFilter;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
@@ -30,7 +28,6 @@ import com.jfinal.ext.handler.ActionExtentionHandler;
 import com.jfinal.ext.interceptor.NotFoundActionInterceptor;
 import com.jfinal.ext.interceptor.OnExceptionInterceptorExt;
 import com.jfinal.ext.interceptor.POST;
-import com.jfinal.ext.kit.DruidEncryptKit;
 import com.jfinal.ext.kit.PageViewKit;
 import com.jfinal.ext.plugin.redis.ModelRedisPlugin;
 import com.jfinal.ext.route.AutoBindRoutes;
@@ -332,16 +329,14 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		}
 		
 		String password = this.getProperty(String.format(PASSWORD_TEMPLATE, ds));
-		password = DruidEncryptKit.decryptedPassword(this.getProperty(String.format(PASSWORD_PKEY_TEMPLATE, ds)), password);
+		String pkey = this.getProperty(String.format(PASSWORD_PKEY_TEMPLATE, ds));
 		String user = this.getProperty(String.format(USER_TEMPLATE, ds));
 		
 		DruidPlugin dp = new DruidPlugin(url, user, password);
+		dp.setPublicKey(pkey);
+		dp.setFilters("config,stat,wall");
 		dp.setInitialSize(this.getPropertyToInt(String.format(INITSIZE_TEMPLATE, ds)));
 		dp.setMaxActive(this.getPropertyToInt(String.format(MAXSIZE_TEMPLATE, ds)));
-		dp.addFilter(new StatFilter());
-		WallFilter wall = new WallFilter();
-		wall.setDbType(ds);
-		dp.addFilter(wall);
 		
 		if (this.geRuned) {
 			dp.start();
