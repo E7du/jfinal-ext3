@@ -30,8 +30,8 @@ import com.jfinal.ext.handler.ActionExtentionHandler;
 import com.jfinal.ext.interceptor.NotFoundActionInterceptor;
 import com.jfinal.ext.interceptor.OnExceptionInterceptorExt;
 import com.jfinal.ext.interceptor.POST;
+import com.jfinal.ext.kit.DruidEncryptKit;
 import com.jfinal.ext.kit.PageViewKit;
-import com.jfinal.ext.plugin.druid.DruidEncryptPlugin;
 import com.jfinal.ext.plugin.redis.ModelRedisPlugin;
 import com.jfinal.ext.route.AutoBindRoutes;
 import com.jfinal.kit.StrKit;
@@ -139,7 +139,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 			if (!this.getDbActiveState(ds)) {
 				continue;
 			}
-			DruidEncryptPlugin drp = this.getDruidPlugin(ds);
+			DruidPlugin drp = this.getDruidPlugin(ds);
 			me.add(drp);
 			ActiveRecordPlugin arp = this.getActiveRecordPlugin(ds, drp);
 			me.add(arp);
@@ -322,7 +322,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * @param prop ： property
 	 * @return
 	 */
-	private DruidEncryptPlugin getDruidPlugin(String ds) {
+	private DruidPlugin getDruidPlugin(String ds) {
 		this.loadPropertyFile();
 		String url = this.getProperty(String.format("db.%s.url", ds));
 		url = String.format(URL_TEMPLATE, ds, url);
@@ -332,10 +332,10 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		}
 		
 		String password = this.getProperty(String.format(PASSWORD_TEMPLATE, ds));
-		password = DruidEncryptPlugin.decryptedPassword(this.getProperty(String.format(PASSWORD_PKEY_TEMPLATE, ds)), password);
+		password = DruidEncryptKit.decryptedPassword(this.getProperty(String.format(PASSWORD_PKEY_TEMPLATE, ds)), password);
 		String user = this.getProperty(String.format(USER_TEMPLATE, ds));
 		
-		DruidEncryptPlugin dp = new DruidEncryptPlugin(url, user, password);
+		DruidPlugin dp = new DruidPlugin(url, user, password);
 		dp.setInitialSize(this.getPropertyToInt(String.format(INITSIZE_TEMPLATE, ds)));
 		dp.setMaxActive(this.getPropertyToInt(String.format(MAXSIZE_TEMPLATE, ds)));
 		dp.addFilter(new StatFilter());

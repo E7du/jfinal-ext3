@@ -28,7 +28,7 @@ class ModelRedisPluginTest {
 		}
 		
 		User u = new User();
-		u.setId(1126);
+		u.setId(11926);
 		u.setName("zcq");
 		u.setAddr("addr");
 		u.syncToRedis(true);
