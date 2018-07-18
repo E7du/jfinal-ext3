@@ -54,7 +54,7 @@ jfinal-ext3，源自jfinal-ext，jfinal-ext2，基于jfinal3.x，扩展了很多
 		- 使用syncToRedis来将db操作同步到redis；
 		- save，delete，update，find操作，透明同步到redis；
 		- 结合ModelRedisPlugin和jf-app-cfg.conf，把redis.*.tables的数据库表与对应的redis实例透明映射；
-		- 使用者可以在使用中修改使用setCacheName来修改redis实例；注意：一旦手动设置shotCacheName，那么syncToRedis将自动开启；
+		- 使用者可以在使用中修改使用shotCacheName来修改redis实例；注意：一旦手动设置shotCacheName，那么syncToRedis将自动开启；
 		- 具体使用可查看[Test](https://github.com/E7du/jfinal-ext3/blob/master/src/test/java/cn/zhucongqi/redis/RedisCache.java)。
 
 ### Ge的使用
