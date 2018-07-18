@@ -44,7 +44,7 @@ public class RedisCache {
 		redis.start();
 		
 		StandaloneAppConfig.start();
-		id = 1028;
+		id = 1029;
 		name = "姓名"+id;
 	}
 
@@ -112,5 +112,4 @@ public class RedisCache {
 		user.setCacheName("b");
 		user.update();
 	}
-
 }

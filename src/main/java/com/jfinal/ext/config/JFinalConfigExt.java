@@ -32,6 +32,7 @@ import com.jfinal.ext.interceptor.OnExceptionInterceptorExt;
 import com.jfinal.ext.interceptor.POST;
 import com.jfinal.ext.kit.PageViewKit;
 import com.jfinal.ext.plugin.druid.DruidEncryptPlugin;
+import com.jfinal.ext.plugin.redis.ModelRedisPlugin;
 import com.jfinal.ext.route.AutoBindRoutes;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
@@ -40,6 +41,7 @@ import com.jfinal.plugin.activerecord.generator.Generator;
 import com.jfinal.plugin.activerecord.generator.MappingKitGenerator;
 import com.jfinal.plugin.activerecord.generator.ModelGenerator;
 import com.jfinal.plugin.druid.DruidPlugin;
+import com.jfinal.plugin.redis.RedisPlugin;
 import com.jfinal.render.ViewType;
 import com.jfinal.template.Engine;
 
@@ -132,15 +134,34 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * Config plugin
 	 */
 	public void configPlugin(Plugins me) {
-			String[] dses = this.getDataSource();
-			for (String ds : dses) {
-				if (!this.getDbActiveState(ds)) {
-					continue;
-				}
-				DruidEncryptPlugin drp = this.getDruidPlugin(ds);
-				me.add(drp);
-				ActiveRecordPlugin arp = this.getActiveRecordPlugin(ds, drp);
-				me.add(arp);
+		String[] dses = this.getDataSource();
+		for (String ds : dses) {
+			if (!this.getDbActiveState(ds)) {
+				continue;
+			}
+			DruidEncryptPlugin drp = this.getDruidPlugin(ds);
+			me.add(drp);
+			ActiveRecordPlugin arp = this.getActiveRecordPlugin(ds, drp);
+			me.add(arp);
+		}
+		// config ModelRedisPlugin
+		String[] caches = this.getRedisCaches();
+		for (String cache : caches) {
+			if (!this.getRedisActiveState(cache)) {
+				continue;
+			}
+			// conf redis plguin
+			RedisPlugin rp = null;
+			String redisPassword = this.getRedisPassword(cache);
+			if (StrKit.isBlank(redisPassword)) {
+				rp = new RedisPlugin(cache, this.getRedisHost(cache), this.getRedisPort(cache));
+			} else {
+				rp = new RedisPlugin(cache, this.getRedisHost(cache), this.getRedisPort(cache), this.getRedisPassword(cache));
+			}
+			me.add(rp);
+			// conf redis model plugin
+			ModelRedisPlugin mrp = new ModelRedisPlugin(cache, this.getRedisCacheTables(cache));
+			me.add(mrp);
 		}
 		// config others
 		configMorePlugins(me);
@@ -214,6 +235,53 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 			throw new IllegalArgumentException("Please Set Your App Name in Your cfg file");
 		}
 		return appName;
+	}
+	
+	private static final String REDIS_ACTIVE_TEMPLATE = "redis.%s.active";
+	private static final String REDIS_HOST_TEMPLATE = "redis.%s.host";
+	private static final String REDIS_PORT_TEMPLATE = "redis.%s.port";
+	private static final String REDIS_PASSWORD_TEMPLATE = "redis.%s.password";
+	private static final String REDIS_TABLES_TEMPLATE = "redis.%s.tables";
+	
+	private boolean getRedisActiveState(String cache){
+		this.loadPropertyFile();
+		return this.getPropertyToBoolean(String.format(REDIS_ACTIVE_TEMPLATE, cache), false);
+	}
+	
+	private String getRedisHost(String cache) {
+		this.loadPropertyFile();
+		return this.getProperty(String.format(REDIS_HOST_TEMPLATE, cache), "localhost");
+	}
+	
+	private int getRedisPort(String cache) {
+		this.loadPropertyFile();
+		return this.getPropertyToInt(String.format(REDIS_PORT_TEMPLATE, cache), 6379);
+	}
+	
+	private String getRedisPassword(String cache) {
+		this.loadPropertyFile();
+		return this.getProperty(String.format(REDIS_PASSWORD_TEMPLATE, cache), "");
+	}
+	
+	private String[] getRedisCaches() {
+		this.loadPropertyFile();
+		String cs = this.getProperty("redis.cs", "");
+		if (cs.contains("，")) {
+			new IllegalArgumentException("Cannot use ，in cs");
+		}
+		return cs.split(",");
+	}
+	
+	private String getRedisCacheTables(String cache) {
+		this.loadPropertyFile();
+		String cts = this.getProperty(String.format(REDIS_TABLES_TEMPLATE, cache), "");
+		if (StrKit.isBlank(cts)) {
+			return "";
+		}
+		if (cts.contains("，")) {
+			new IllegalArgumentException("Cannot use ，in reids.*.tables");
+		}
+		return cts;
 	}
 	
 	private static final String ACTIVE_TEMPLATE = "db.%s.active";
