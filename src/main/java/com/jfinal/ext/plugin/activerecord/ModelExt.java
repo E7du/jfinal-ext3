@@ -20,9 +20,8 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	private String cacheName = null;
 
 	/**
-	 * redis key: tablename id1 | id2 | id3...
-	 * eg: the user has three primarykeys id1=1,id2=2,id3=3, so the redisKey is 'user1|2|3'.
-	 * @param m
+	 * redis key: records:tablename: id1 | id2 | id3...
+	 * eg: the user has three primarykeys id1=1,id2=2,id3=3, so the redisKey is 'records:user:1|2|3'.
 	 * @return redis key
 	 */
 	private String redisKey(ModelExt<?> m) {
@@ -91,7 +90,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 
 	/**
 	 * set cache's name.
-	 * if current cacheName != the old cacheName, will reset old cache and update cache use the current cacheName.
+	 * if current cacheName != the old cacheName, will reset old cache, update cache use the current cacheName and open syncToRedis.
 	 */
 	public void setCacheName(String cacheName) {
 		//reset cache
