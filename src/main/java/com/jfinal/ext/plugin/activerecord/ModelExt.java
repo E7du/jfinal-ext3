@@ -1,6 +1,5 @@
 package com.jfinal.ext.plugin.activerecord;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,26 +26,25 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 * @return redis key
 	 */
 	private String redisKey(ModelExt<?> m) {
-		Table table = m._getTable();
-		StringBuilder key = new StringBuilder(table.getName());
+		Table table = m.getTable();
+		StringBuilder key = new StringBuilder();
+		key.append("records:");
+		key.append(table.getName());
+		key.append(":");
 		//fetch primary keys' values
 		String[] primaryKeys = table.getPrimaryKey();
-		List<Object> primaryKeyValues = new ArrayList<Object>();
-		for (String primaryKey: primaryKeys) {
-			Object val = m.get(primaryKey);
-			if (null != val) {
-				primaryKeyValues.add(val);
-			}
-		}
 		//format key
 		boolean first = true;
-		for (Object primaryKeyValue : primaryKeyValues) {
-			if (first) {
-				first = false;
-			} else {
-				key.append("|");
+		for (int idx = 0; idx < primaryKeys.length; idx++) {
+			Object primaryKeyVal = m.get(primaryKeys[idx]);
+			if (null != primaryKeyVal) {
+				if (first) {
+					first = false;
+				} else {
+					key.append("|");
+				}
+				key.append(primaryKeyVal);
 			}
-			key.append(primaryKeyValue);
 		}
 		return key.toString();
 	}
@@ -64,6 +62,9 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			this.cache = Redis.use(this.cacheName);
 		} else {
 			this.cache = Redis.use();
+		}
+		if (null == this.cache) {
+			throw new IllegalArgumentException(String.format("The Cache with the name '%s' was Not Found.", this.cacheName));	
 		}
 		return this.cache;
 	}
@@ -94,10 +95,12 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 */
 	public void setCacheName(String cacheName) {
 		//reset cache
-		if (null != cacheName && !cacheName.equals(this.cacheName)) {
+		if (StrKit.notBlank(cacheName) && !cacheName.equals(this.cacheName)) {
 			this.cache = null;
 		}
 		this.cacheName = cacheName;
+		//auto open sync to redis
+		this.syncToRedis = true;
 	}
 	
 	/**
