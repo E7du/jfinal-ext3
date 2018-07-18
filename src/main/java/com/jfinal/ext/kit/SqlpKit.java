@@ -40,7 +40,7 @@ public final class SqlpKit {
 		SqlPara sqlPara = new SqlPara();
 		String[] columns = model._getAttrNames();
 
-		StringBuilder sbr = new StringBuilder(String.format(SELECT_ST, model.getTableName()));
+		StringBuilder sbr = new StringBuilder(String.format(SELECT_ST, model.tableName()));
 
 		boolean first = true;
 		for (Integer i = 0; i < columns.length; i++) {

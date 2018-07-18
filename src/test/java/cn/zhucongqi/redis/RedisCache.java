@@ -100,7 +100,7 @@ public class RedisCache {
 		redis1.start();
 		
 		User user = new User();
-		user.setCacheName("a");
+		user.shotCacheName("a");
 		user.setAddr("地址");
 		user.setName(name);
 		user.setId(id);
@@ -109,7 +109,7 @@ public class RedisCache {
 		user.save();
 		// update
 		user.setAddr("新地址");
-		user.setCacheName("b");
+		user.shotCacheName("b");
 		user.update();
 	}
 }

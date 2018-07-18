@@ -41,7 +41,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 * @return redis key
 	 */
 	private String redisKey(ModelExt<?> m) {
-		Table table = m.getTable();
+		Table table = m.table();
 		StringBuilder key = new StringBuilder();
 		key.append("records:");
 		key.append(table.getName());
@@ -65,16 +65,16 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	}
 	
 	private void saveToRedis(ModelExt<?> m) {
-		this.getCache().hmset(this.redisKey(m), m.getAttrsCp());
+		this.cache().hmset(this.redisKey(m), m.attrsCp());
 	}
 	
-	private Cache getCache() {
+	private Cache cache() {
 		if (null != this.cache) {
 			return this.cache;
 		}
 		
 		if (StrKit.isBlank(this.cacheName)) {
-			this.cacheName = ModelRedisMapping.me().getCacheName(this.getTableName());
+			this.cacheName = ModelRedisMapping.me().getCacheName(this.tableName());
 		}
 		
 		if (StrKit.notBlank(this.cacheName)) {
@@ -91,7 +91,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	/**
 	 * Model attr copy version , the model just use default "DbKit.brokenConfig"
 	 */
-	public Map<Object, Object> getAttrsCp() {
+	public Map<Object, Object> attrsCp() {
 		Map<Object, Object> attrs = new HashMap<Object, Object>();
 		String[] attrNames = this._getAttrNames();
 		for (String attr : attrNames) {
@@ -109,10 +109,10 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	}
 
 	/**
-	 * set cache's name.
+	 * shot cache's name.
 	 * if current cacheName != the old cacheName, will reset old cache, update cache use the current cacheName and open syncToRedis.
 	 */
-	public void setCacheName(String cacheName) {
+	public void shotCacheName(String cacheName) {
 		//reset cache
 		if (StrKit.notBlank(cacheName) && !cacheName.equals(this.cacheName)) {
 			this.cache = null;
@@ -121,29 +121,29 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		//auto open sync to redis
 		this.syncToRedis = true;
 		//update model redis mapping
-		ModelRedisMapping.me().put(this.getTableName(), this.cacheName);
+		ModelRedisMapping.me().put(this.tableName(), this.cacheName);
 	}
 	
 	/**
 	 * get current model's table
 	 */
-	public Table getTable() {
+	public Table table() {
 		return this._getTable();
 	}
 
 	/**
 	 * get current model's tablename
 	 */
-	public String getTableName() {
-		return this.getTable().getName();
+	public String tableName() {
+		return this.table().getName();
 	}
 
 	/**
 	 * get primary key.
 	 * if there is not found the primary key will throw the IllegalArgumentException.
 	 */
-	public String getPrimaryKey() {
-		String[] primaryKeys = this.getTable().getPrimaryKey();
+	public String primaryKey() {
+		String[] primaryKeys = this.table().getPrimaryKey();
 		if (primaryKeys.length >= 1) {
 			return primaryKeys[0];
 		}
@@ -154,8 +154,8 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 * get primary key value
 	 * if there is not found the primary key will throw the IllegalArgumentException.
 	 */
-	public Object getPrimaryKeyValue() {
-		return this.get(this.getPrimaryKey());
+	public Object primaryKeyValue() {
+		return this.get(this.primaryKey());
 	}
 
 	/**
@@ -177,7 +177,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	public boolean delete() {
 		boolean ret = super.delete();
 		if (this.syncToRedis && ret) {
-			this.getCache().del(this.redisKey(this));
+			this.cache().del(this.redisKey(this));
 		}
 		return ret;
 	}
@@ -189,7 +189,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	public boolean update() {
 		boolean ret = super.update();
 		if (this.syncToRedis && ret) {
-			this.getCache().hmset(this.redisKey(this), this.getAttrsCp());
+			this.cache().hmset(this.redisKey(this), this.attrsCp());
 		}
 		return ret;
 	}
@@ -213,11 +213,11 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 */
 	@SuppressWarnings("unchecked")
 	public M findByCache() {
-		Object pkValue = this.getPrimaryKeyValue();
+		Object pkValue = this.primaryKeyValue();
 		if (null == pkValue) {
 			throw new IllegalArgumentException("The PrimaryKey's value is null. Please set value to it.");
 		}
-		Map<String, Object> attrs = this.getCache().hgetAll(this.redisKey(this));
+		Map<String, Object> attrs = this.cache().hgetAll(this.redisKey(this));
 		return this.put(attrs);
 	}
 }
