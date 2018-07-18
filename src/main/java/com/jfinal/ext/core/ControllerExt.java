@@ -48,6 +48,7 @@ public abstract class ControllerExt extends com.jfinal.core.Controller {
 					
 					field.set(this,Service.getInstance(clazz, this));
 				} catch (IllegalAccessException e) {
+					this.onExceptionError(e);
 					throw new RuntimeException();
 				}
 			}
