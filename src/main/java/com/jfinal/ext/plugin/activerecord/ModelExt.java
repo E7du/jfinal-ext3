@@ -161,7 +161,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	}
 
 	/**
-	 * update from db, if `syncToRedis` is true , this model will update from redis in the same time.
+	 * update db, if `syncToRedis` is true , this model will update redis in the same time.
 	 */
 	@Override
 	public boolean update() {
