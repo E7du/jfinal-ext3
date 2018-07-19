@@ -15,79 +15,30 @@
 */
 package com.jfinal.ext.interceptor;
 
-import java.util.Map;
 
-import com.google.common.collect.Maps;
 import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
-import com.jfinal.ext.render.exception.ExceptionRender;
-import com.jfinal.render.RenderFactory;
+import com.jfinal.ext.core.ControllerExt;
+import com.jfinal.log.Log;
 
-//TODO 留下？
+/**
+ * ExceptionInterceptor
+ * @author Jobsz
+ */
 public class ExceptionInterceptor implements Interceptor {
 	
-    private ExceptionRender defaultRender;
-    private Map<Class<? extends Exception>, ExceptionRender> exceptionMapping = Maps.newHashMap();
+	private Log LOG = Log.getLog(ExceptionInterceptor.class);
 
-    public ExceptionInterceptor setDefault(String defaultView) {
-        this.defaultRender = new DefaultExceptionRender(defaultView);
-        return this;
-    }
-
-    public ExceptionInterceptor setDefault(ExceptionRender defaultRender) {
-        this.defaultRender = defaultRender;
-        return this;
-    }
-
-    public ExceptionInterceptor addMapping(Class<? extends Exception> cause, String view) {
-        exceptionMapping.put(cause, new DefaultExceptionRender(view));
-        return this;
-    }
-
-    public ExceptionInterceptor addMapping(Class<? extends Exception> cause, ExceptionRender view) {
-        exceptionMapping.put(cause, view);
-        return this;
-    }
-
-    @Override
-    public void intercept(Invocation ai) {
-        try {
-            ai.invoke();
-        } catch (Exception e) {
-            ExceptionRender exceptionRender = matchRender(e);
-            if (exceptionRender == null) {
-                exceptionRender = defaultRender;
-            }
-            if (exceptionRender != null) {
-                ai.getController().render(exceptionRender.setException(e));
-            }
-        }
-    }
-
-    private ExceptionRender matchRender(Exception e) {
-        Class<?> clazz = e.getClass();
-        Class<?> superclass = clazz.getSuperclass();
-        ExceptionRender exceptionRender = null;
-        while (superclass != null) {
-            superclass = clazz.getSuperclass();
-            exceptionRender = exceptionMapping.get(clazz);
-            if (exceptionRender != null) {
-                break;
-            }
-            clazz = superclass;
-        }
-        return exceptionRender;
-    }
-
-    private class DefaultExceptionRender extends ExceptionRender {
-
-        public DefaultExceptionRender(String view) {
-            this.view = view;
-        }
-
-        @Override
-        public void render() {
-            new RenderFactory().getRender(view).setContext(request, response).render();
-        }
-    }
+	@Override
+	public void intercept(Invocation inv) {
+		try {
+			inv.invoke();
+		} catch (Exception e) {
+			if (inv.getTarget() instanceof ControllerExt) {
+				((ControllerExt)inv.getTarget()).onExceptionError(e);
+			}
+			LOG.error(e.getLocalizedMessage());
+			throw e;
+		}
+	}
 }
