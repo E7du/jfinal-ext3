@@ -213,10 +213,18 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 */
 	@SuppressWarnings("unchecked")
 	public M findByCache() {
-		Object pkValue = this.primaryKeyValue();
-		if (null == pkValue) {
-			throw new IllegalArgumentException("The PrimaryKey's value is null. Please set value to it.");
+		String[] primaryKeys = this.table().getPrimaryKey();
+		if (null == primaryKeys || primaryKeys.length == 0) {
+			throw new IllegalArgumentException("The PrimaryKey[ALL]'s value is null. Please set value to it.");
 		}
+		
+		for (String pk : primaryKeys) {
+			Object val = this.get(pk);
+			if (null == val) {
+				throw new IllegalArgumentException(String.format("The PrimaryKey[%s]'s value is null. Please set value to it.", pk));
+			}
+		}
+		
 		Map<String, Object> attrs = this.cache().hgetAll(this.redisKey(this));
 		return this.put(attrs);
 	}
