@@ -15,15 +15,19 @@
 */
 package com.jfinal.ext.interceptor;
 
+
 import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 import com.jfinal.ext.core.ControllerExt;
+import com.jfinal.log.Log;
 
 /**
- * OnExceptionInterceptorExt
+ * ExceptionInterceptor
  * @author Jobsz
  */
-public class OnExceptionInterceptorExt implements Interceptor {
+public class ExceptionInterceptor implements Interceptor {
+	
+	private Log LOG = Log.getLog(ExceptionInterceptor.class);
 
 	@Override
 	public void intercept(Invocation inv) {
@@ -33,6 +37,7 @@ public class OnExceptionInterceptorExt implements Interceptor {
 			if (inv.getTarget() instanceof ControllerExt) {
 				((ControllerExt)inv.getTarget()).onExceptionError(e);
 			}
+			LOG.error(e.getLocalizedMessage());
 			throw e;
 		}
 	}

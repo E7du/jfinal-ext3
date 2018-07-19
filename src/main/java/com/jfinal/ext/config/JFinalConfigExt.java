@@ -25,8 +25,7 @@ import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.core.Const;
 import com.jfinal.ext.handler.ActionExtentionHandler;
-import com.jfinal.ext.interceptor.NotFoundActionInterceptor;
-import com.jfinal.ext.interceptor.OnExceptionInterceptorExt;
+import com.jfinal.ext.interceptor.ExceptionInterceptor;
 import com.jfinal.ext.interceptor.POST;
 import com.jfinal.ext.kit.PageViewKit;
 import com.jfinal.ext.plugin.redis.ModelRedisPlugin;
@@ -168,10 +167,8 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * Config interceptor applied to all actions.
 	 */
 	public void configInterceptor(Interceptors me) {
-		// when action not found fire 404 error
-		me.add(new NotFoundActionInterceptor());
 		// add excetion interceptor
-		me.add(new OnExceptionInterceptorExt());
+		me.add(new ExceptionInterceptor());
 		if (this.getHttpPostMethod()) {
 			me.add(new POST());
 		}
