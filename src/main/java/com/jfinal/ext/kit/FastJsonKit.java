@@ -16,13 +16,12 @@
 package com.jfinal.ext.kit;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jfinal.log.Log;
+import com.jfinal.json.FastJson;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 
@@ -30,10 +29,8 @@ import com.jfinal.plugin.activerecord.Record;
  * @author Jobsz
  *
  */
-final public class JsonExtKit {
+final public class FastJsonKit {
 
-	private static Log log = Log.getLog(JsonExtKit.class);
-	
 	/**
 	 * json string to JSONObject
 	 * @param json
@@ -59,7 +56,7 @@ final public class JsonExtKit {
 	 * @return
 	 */
 	public static Object[] jsonToObjArray(String json) {
-		return JsonExtKit.jsonToJSONArray(json).toArray();
+		return FastJsonKit.parse(json, Object[].class);
 	}
 	
 	/**
@@ -69,37 +66,16 @@ final public class JsonExtKit {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <K,V> Map<K,V> jsonToMap(String json){
-		JSONObject obj = jsonToObject(json);
-		Map<K, V> map = new HashMap<K, V>();
-		Iterator<String> keyIterator = obj.keySet().iterator();
-		while (keyIterator.hasNext()) {
-			Object key = keyIterator.next();
-			Object value = obj.get(key);
-			if (value instanceof JSONObject) {
-				value = jsonToMap(((JSONObject) value).toJSONString());
-			}
-			map.put((K)key, (V)value);
-		}	
-		return map;
+		return FastJsonKit.parse(json, HashMap.class);
 	}
 	
 	/**
 	 * json String to Model<T extends Model<T>>
 	 * @param json
 	 * @param clazz
-	 * @return
 	 */
-	public static <T extends Model<T>> Model<T> jsonToModel(String json, Class<T> clazz){
-		Model<T> model = null;
-		try {
-			model = clazz.newInstance();
-		} catch (InstantiationException e) {
-			JsonExtKit.log.error(e.getLocalizedMessage());
-		} catch (IllegalAccessException e) {
-			JsonExtKit.log.error(e.getLocalizedMessage());
-		}
-		Map<String, Object> attrs = jsonToMap(json);
-		return model._setAttrs(attrs);
+	public static <M extends Model<M>> Model<M> jsonToModel(String json, Class<M> clazz){
+		return FastJsonKit.parse(json, clazz);
 	}
 
 	/**
@@ -110,5 +86,13 @@ final public class JsonExtKit {
 	public static Record jsonToRecord(String json){
 		Map<String,Object> map = jsonToMap(json);
 		return new Record().setColumns(map);
+	}
+
+	public static String toJson(Object object) {
+		return (FastJson.getJson().toJson(object));
+	}
+
+	public static <T> T parse(String jsonString, Class<T> type) {
+		return JSON.parseObject(jsonString, type);
 	}
 }
