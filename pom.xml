@@ -127,6 +127,73 @@
 			<artifactId>guava</artifactId>
 			<version>18.0</version>
 		</dependency>
+		<!-- merge ext -->
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.21</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.2.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.10.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.10.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>2.11.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>it.sauronsoftware.cron4j</groupId>
+			<artifactId>cron4j</artifactId>
+			<version>2.2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-core</artifactId>
+			<version>5.7.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.jms</groupId>
+			<artifactId>jms-api</artifactId>
+			<version>1.1-rev-1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jxls</groupId>
+			<artifactId>jxls-core</artifactId>
+			<version>0.9.9</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-all</artifactId>
+			<version>1.2.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.crazycake</groupId>
+			<artifactId>shiro-redis</artifactId>
+			<version>1.0.0-RELEASE</version>
+			<scope>provided</scope>
+		</dependency>
 		<!-- test -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -140,7 +207,6 @@
 			<resource>
 				<directory>src/main/java</directory>
 				<includes>
-					<!-- **/* 写法，可以将各级子目录下的资源文件被打包 -->
 					<include>**/*.jf</include>
 				</includes>
 				<filtering>false</filtering>

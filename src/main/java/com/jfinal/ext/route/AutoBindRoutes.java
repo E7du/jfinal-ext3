@@ -35,7 +35,7 @@ public class AutoBindRoutes extends Routes {
 
     private List<String> includeJars = Lists.newArrayList();
 
-    protected final Log logger = Log.getLog(getClass());
+    protected final Log LOG = Log.getLog(getClass());
 
     private String suffix = "Controller";
 
@@ -84,13 +84,13 @@ public class AutoBindRoutes extends Routes {
                     continue;
                 }
                 this.add(controllerKey(controller), controller);
-                logger.debug("routes.add(" + controllerKey(controller) + ", " + controller.getName() + ")");
+                LOG.debug("routes.add(" + controllerKey(controller) + ", " + controller.getName() + ")");
             } else if (StrKit.isBlank(controllerBind.viewPath())) {
                 this.add(controllerBind.controllerKey(), controller);
-                logger.debug("routes.add(" + controllerBind.controllerKey() + ", " + controller.getName() + ")");
+                LOG.debug("routes.add(" + controllerBind.controllerKey() + ", " + controller.getName() + ")");
             } else {
                 this.add(controllerBind.controllerKey(), controller, controllerBind.viewPath());
-                logger.debug("routes.add(" + controllerBind.controllerKey() + ", " + controller + ","
+                LOG.debug("routes.add(" + controllerBind.controllerKey() + ", " + controller + ","
                         + controllerBind.viewPath() + ")");
             }
         }
