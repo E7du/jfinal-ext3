@@ -27,7 +27,6 @@ import org.apache.poi.ss.usermodel.*;
 import java.io.File;
 import java.util.List;
 
-
 public class PoiImporter {
 
     public static List<List<List<String>>> readExcel(File file, Rule rule) {
@@ -106,9 +105,7 @@ public class PoiImporter {
         return readExcel(file, Rule).get(0);
     }
 
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public static List<Model<?>> processSheet(File file, Rule Rule, Class clazz) {
+    public static List<Model<?>> processSheet(File file, Rule Rule, Class<?> clazz) {
         List<List<String>> srcList = readSheet(file, Rule);
         List<Model<?>> results = Lists.newArrayList();
         for (int i = 0; i < srcList.size(); i++) {
@@ -119,8 +116,8 @@ public class PoiImporter {
         return results;
     }
 
-
-    public static Model<?> fillModel(Class<?> clazz, List<String> list, Rule rule) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Model<?> fillModel(Class<?> clazz, List<String> list, Rule rule) {
         Model<?> model = Reflect.on(clazz).create().get();
         String[] values = list.toArray(new String[]{});
         String message = "";

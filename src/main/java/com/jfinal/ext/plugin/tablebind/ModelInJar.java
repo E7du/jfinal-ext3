@@ -17,10 +17,8 @@ package com.jfinal.ext.plugin.tablebind;
 
 import com.jfinal.plugin.activerecord.Model;
 
-/**
- * Created by kid on 15-1-30.
- */
 //TODO NO Code
+public class ModelInJar<M extends ModelInJar<M>> extends Model<M>{
 
-public class ModelInJar extends Model {
+	private static final long serialVersionUID = -3609273023143579172L;
 }

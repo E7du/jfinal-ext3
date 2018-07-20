@@ -23,11 +23,9 @@ import com.jfinal.log.Log;
 
 import redis.clients.jedis.Tuple;
 
-
 public class TopicConsumer {
 	
-    protected final Log LOG = Log.getLog(TopicConsumer.class);
-
+	private final Log LOG = Log.getLog(TopicConsumer.class);
     private TopicNest topic;
     private TopicNest subscriber;
     private String id;

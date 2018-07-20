@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -32,6 +31,7 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.authz.annotation.RequiresUser;
 
 import com.jfinal.config.Routes;
+import com.jfinal.config.Routes.Route;
 import com.jfinal.core.ActionKey;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.IPlugin;
@@ -82,12 +82,9 @@ public class ShiroPlugin implements IPlugin {
 		ConcurrentMap<String, AuthzHandler> authzMaps = new ConcurrentHashMap<String, AuthzHandler>();
 		//逐个访问所有注册的Controller，解析Controller及action上的所有Shiro注解。
 		//并依据这些注解，actionKey提前构建好权限检查处理器。
-		for (Entry<String, Class<? extends Controller>> entry : routes
-				.getEntrySet()) {
-			Class<? extends Controller> controllerClass = entry.getValue();
-
-			String controllerKey = entry.getKey();
-
+		for (Route route: routes.getRouteItemList()) {
+			Class<? extends Controller> controllerClass = route.getControllerClass();
+			String controllerKey = route.getControllerKey();
 			// 获取Controller的所有Shiro注解。
 			List<Annotation> controllerAnnotations = getAuthzAnnotations(controllerClass);
 			// 逐个遍历方法。

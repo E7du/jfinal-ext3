@@ -27,12 +27,9 @@ import com.jfinal.render.RenderException;
 
 import freemarker.template.Template;
 
-
-@SuppressWarnings("serial")
 /**
  *  <http://my.oschina.net/alvinte/blog/69030>
  * @author alvinte
- *
  */
 public class FreeMarkerXMLRender extends FreeMarkerRender {
 	

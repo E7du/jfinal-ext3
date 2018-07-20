@@ -19,8 +19,6 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.Map.Entry;
 
-import org.apache.log4j.LOG;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
@@ -30,10 +28,11 @@ import redis.clients.util.SafeEncoder;
 
 import com.google.common.collect.Lists;
 import com.jfinal.ext.kit.SerializableKit;
-
+import com.jfinal.log.Log;
 
 public class JedisKit {
-    private static LOG LOG = LOG.getLOG(JedisKit.class);
+	
+    private static Log LOG = Log.getLog(JedisKit.class);
     private static JedisPool pool;
 
     public static void init(JedisPool pool) {

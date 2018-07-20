@@ -165,7 +165,7 @@ public class PoiExporter {
     private static void processAsModel(String[] columns, Row row, Object obj) {
         Cell cell;
         Model<?> model = (Model<?>) obj;
-        Set<Entry<String, Object>> entries = model.getAttrsEntrySet();
+        Set<Entry<String, Object>> entries = model._getAttrsEntrySet();
         if (columns.length == 0) { // show all if column not specified
             int columnIndex = 0;
             for (Entry<String, Object> entry : entries) {

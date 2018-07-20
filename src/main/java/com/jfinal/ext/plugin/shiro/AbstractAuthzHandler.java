@@ -21,7 +21,6 @@ import org.apache.shiro.subject.Subject;
 /**
  * 访问控制抽象基类
  */
-
 abstract class AbstractAuthzHandler implements AuthzHandler {
 
 	/**

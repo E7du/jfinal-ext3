@@ -32,10 +32,9 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
-
 public class MongoKit {
 
-    protected static Log LOG = Log.getLOG(MongoKit.class);
+    protected static Log LOG = Log.getLog(MongoKit.class);
 
     private static MongoClient client;
     private static DB defaultDb;

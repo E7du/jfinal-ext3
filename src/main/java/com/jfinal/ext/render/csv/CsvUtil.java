@@ -109,7 +109,7 @@ public class CsvUtil {
             } else if (obj instanceof Model) {
                 Model objmodel = (Model) obj;
                 if (null == columns || columns.isEmpty()) { // 如果没有限制，默认全部显示
-                    Set<Entry<String, Object>> entries = objmodel.getAttrsEntrySet();
+                    Set<Entry<String, Object>> entries = objmodel._getAttrsEntrySet();
                     for (Entry entry : entries) {
                         createCol(strOut, entry.getValue());
                         strOut.append(",");

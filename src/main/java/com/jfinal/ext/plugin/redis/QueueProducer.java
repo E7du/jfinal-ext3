@@ -17,14 +17,8 @@ package com.jfinal.ext.plugin.redis;
 
 import java.io.Serializable;
 
-import com.jfinal.log.Log;
-
-
 public class QueueProducer {
 	
-   //TODO un used?
-	protected final Log LOG = Log.getLog(QueueProducer.class);
-    
     String queueName;
 
     private QueueProducer(String queueName) {

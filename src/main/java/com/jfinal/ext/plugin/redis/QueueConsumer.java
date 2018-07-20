@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.collect.Maps;
 import com.jfinal.log.Log;
 
-
 public class QueueConsumer {
 	
     final Log log = Log.getLog(QueueConsumer.class);

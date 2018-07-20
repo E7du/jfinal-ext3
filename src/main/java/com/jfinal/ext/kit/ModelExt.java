@@ -28,6 +28,8 @@ import java.util.List;
 //TODO merge to com.jfinal.ext.plugin.activerecord.ModelExt ?
 public class ModelExt<M extends ModelExt<M>> extends Model<M> {
 
+	private static final long serialVersionUID = 908334494484593904L;
+
 	private String deleteColumnLabel = "deleteflag";
 
     private static List<CallbackListener> callbackListeners = Lists.newArrayList();

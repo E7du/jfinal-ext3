@@ -28,12 +28,10 @@ import javax.jms.Session;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.jfinal.log.Log;
-import com.jfinal.log.LOG;
-
 
 public class TopicPublisher {
 
-    protected final Log LOG = Log.getLog(this.getClass());
+	private final Log LOG = Log.getLog(this.getClass());
 
     protected String serverUrl;
     protected String username;

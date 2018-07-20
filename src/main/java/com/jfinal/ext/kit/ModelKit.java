@@ -23,7 +23,6 @@ import java.util.Set;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.jfinal.log.Log;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.DbKit;
 import com.jfinal.plugin.activerecord.Model;
@@ -70,7 +69,6 @@ public class ModelKit {
         try {
             model = clazz.newInstance();
         } catch (Exception e) {
-        	LOG.error(e.getMessage(), e);
             return model;
         }
         //TODO bean to model

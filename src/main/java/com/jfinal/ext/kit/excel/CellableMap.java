@@ -18,8 +18,9 @@ package com.jfinal.ext.kit.excel;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-
 public class CellableMap extends LinkedHashMap<String, Object> implements Cellable {
+	
+	private static final long serialVersionUID = 5256520140236102824L;
 
 	public String[] getHeaderCellValue() {
 		return keySet().toArray(new String[] {});

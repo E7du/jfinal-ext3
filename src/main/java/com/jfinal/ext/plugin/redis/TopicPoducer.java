@@ -25,7 +25,6 @@ import com.jfinal.log.Log;
 import redis.clients.jedis.Transaction;
 import redis.clients.jedis.Tuple;
 
-
 public class TopicPoducer {
 	
     protected final Log LOG = Log.getLog(TopicPoducer.class);

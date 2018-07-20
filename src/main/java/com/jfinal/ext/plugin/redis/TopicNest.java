@@ -15,7 +15,6 @@
 */
 package com.jfinal.ext.plugin.redis;
 
-
 public class TopicNest {
 	
     private static final String COLON = ":";

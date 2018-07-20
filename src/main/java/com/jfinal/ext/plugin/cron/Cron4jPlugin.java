@@ -21,12 +21,13 @@ import java.util.Set;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
 import com.jfinal.ext.kit.Reflect;
 import com.jfinal.ext.kit.ResourceKit;
 import com.jfinal.kit.StrKit;
 import com.jfinal.log.Log;
 import com.jfinal.plugin.IPlugin;
+
+import it.sauronsoftware.cron4j.Scheduler;
 
 
 public class Cron4jPlugin implements IPlugin {

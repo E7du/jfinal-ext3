@@ -25,6 +25,7 @@ import com.google.common.collect.Maps;
 
 public class KeyLabel implements Comparable<KeyLabel>, Serializable {
 	
+	private static final long serialVersionUID = -4404934250210131838L;
 	private String key;
     private String label;
 

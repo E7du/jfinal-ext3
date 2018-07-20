@@ -12,7 +12,7 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
  * License for the specific language governing permissions and limitations under
  * the License.
-*/
+ */
 package com.jfinal.ext.kit;
 
 import java.lang.reflect.ParameterizedType;
@@ -21,6 +21,8 @@ import java.security.MessageDigest;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+
+import org.apache.commons.codec.binary.Hex;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -36,118 +38,120 @@ import com.jfinal.plugin.activerecord.TableMapping;
 
 public abstract class ModelFingerprint<M extends ModelFingerprint<M>> extends ModelExt<M> {
 
-   private final Log LOG = Log.getLog(ModelFingerprint.class);
+	private static final long serialVersionUID = -7194805564653163970L;
 
-    private String fingerprintColumnLabel = "fingerprint";
+	private final Log LOG = Log.getLog(ModelFingerprint.class);
 
-    private ConcurrentMap<String, Integer> map = null;
+	private String fingerprintColumnLabel = "fingerprint";
 
-    private Set<Integer> deleting = null;
+	private ConcurrentMap<String, Integer> map = null;
 
-    private Set<String> CACHE = Sets.newHashSet();
+	private Set<Integer> deleting = null;
 
-    private String fingerprint;
+	private Set<String> CACHE = Sets.newHashSet();
 
-    private Class<? extends ModelExt<M>> clazz;
+	private String fingerprint;
 
-    @SuppressWarnings("unchecked")
-    public ModelFingerprint() {
-        Type genericSuperclass = getClass().getGenericSuperclass();
-        clazz = (Class<? extends ModelExt<M>>) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
-    }
+	private Class<? extends ModelExt<M>> clazz;
 
-    public String tableName() {
-        return TableMapping.me().getTable(this.getClass()).getName();
-    }
+	@SuppressWarnings("unchecked")
+	public ModelFingerprint() {
+		Type genericSuperclass = getClass().getGenericSuperclass();
+		clazz = (Class<? extends ModelExt<M>>) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
+	}
 
-    public void init() {
-        map = Maps.newConcurrentMap();
-        Table tableInfo = TableMapping.me().getTable(clazz);
-        if (!tableInfo.hasColumnLabel(fingerprintColumnLabel)) {
-            throw new ActiveRecordException("fingerprintColumnLabel (" + fingerprintColumnLabel + ") is not exist");
-        }
-        LOG.info("begin load " + tableName() + " fingerprints");
-        List<Record> records = Db.find("SELECT id, " + fingerprintColumnLabel + " FROM " + tableName());
-        for (Record record : records) {
-            map.put(record.getStr(fingerprintColumnLabel), record.getInt("id"));
-        }
-        LOG.info("end load " + tableName() + " fingerprints");
-        deleting = Sets.newHashSet(map.values());
-        LOG.info("loaded " + deleting.size() + " data");
-    }
+	public String tableName() {
+		return TableMapping.me().getTable(this.getClass()).getName();
+	}
 
-    public abstract List<String> fingerprintColumns();
+	public void init() {
+		map = Maps.newConcurrentMap();
+		Table tableInfo = TableMapping.me().getTable(clazz);
+		if (!tableInfo.hasColumnLabel(fingerprintColumnLabel)) {
+			throw new ActiveRecordException("fingerprintColumnLabel (" + fingerprintColumnLabel + ") is not exist");
+		}
+		LOG.info("begin load " + tableName() + " fingerprints");
+		List<Record> records = Db.find("SELECT id, " + fingerprintColumnLabel + " FROM " + tableName());
+		for (Record record : records) {
+			map.put(record.getStr(fingerprintColumnLabel), record.getInt("id"));
+		}
+		LOG.info("end load " + tableName() + " fingerprints");
+		deleting = Sets.newHashSet(map.values());
+		LOG.info("loaded " + deleting.size() + " data");
+	}
 
-    public abstract ModelFingerprint<?> fingerprinter();
+	public abstract List<String> fingerprintColumns();
 
-    public String calcFingerprint() {
-        if (fingerprint == null) {
-            StringBuilder sb = new StringBuilder();
-            for (String col : fingerprintColumns()) {
-                sb.append(get(col));
-                sb.append("|");
-            }
-            sb.deleteCharAt(sb.length() - 1);
-            try {
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                fingerprint = Hex.encodeHexString(md.digest(sb.toString().getBytes()));
-            } catch (Exception e) {
-                fingerprint = "" + hashCode();
-            }
-        }
-        return fingerprint;
-    }
+	public abstract ModelFingerprint<?> fingerprinter();
 
-    public void compare(ModelFingerprint modelFingerprint) {
-        if (map == null) {
-            throw new IllegalStateException("modelFingerprint have not been initialized");
-        }
-        Integer id = map.get(modelFingerprint.calcFingerprint());
-        if (id != null) {
-            deleting.remove(id);
-            modelFingerprint.set("id", id);
-        } else if (CACHE.contains(modelFingerprint.getStr(fingerprintColumnLabel))) {
-            modelFingerprint.set("id", -1);
-        } else {
-            CACHE.add(modelFingerprint.getStr(fingerprintColumnLabel));
-        }
-    }
+	public String calcFingerprint() {
+		if (fingerprint == null) {
+			StringBuilder sb = new StringBuilder();
+			for (String col : fingerprintColumns()) {
+				sb.append(getStr(col));
+				sb.append("|");
+			}
+			sb.deleteCharAt(sb.length() - 1);
+			try {
+				MessageDigest md = MessageDigest.getInstance("MD5");
+				fingerprint = Hex.encodeHexString(md.digest(sb.toString().getBytes()));
+			} catch (Exception e) {
+				fingerprint = "" + hashCode();
+			}
+		}
+		return fingerprint;
+	}
 
-    public ModelFingerprint addFingerprint() {
-        set("fingerprint", calcFingerprint());
-        return this;
-    }
+	public void compare(ModelFingerprint<?> modelFingerprint) {
+		if (map == null) {
+			throw new IllegalStateException("modelFingerprint have not been initialized");
+		}
+		Integer id = map.get(modelFingerprint.calcFingerprint());
+		if (id != null) {
+			deleting.remove(id);
+			modelFingerprint.set("id", id);
+		} else if (CACHE.contains(modelFingerprint.getStr(fingerprintColumnLabel))) {
+			modelFingerprint.set("id", -1);
+		} else {
+			CACHE.add(modelFingerprint.getStr(fingerprintColumnLabel));
+		}
+	}
 
-    public void saveWithFingerprint() {
-        addFingerprint();
-        fingerprinter().compare(this);
-        if (get("id") == null) {
-            save();
-        }
-    }
+	public ModelFingerprint<?> addFingerprint() {
+		set("fingerprint", calcFingerprint());
+		return this;
+	}
 
-    public void removeExpired() {
-        int size = deleting.size();
-        LOG.info("delete " + size+ "records");
-        if (size != 0) {
-            List<Integer> ids = Lists.newArrayList(deleting);
-            int idSize = ids.size();
-            int batchSize = 1000;
-            int length = idSize / batchSize;
-            if (idSize % batchSize != 0) {
-                length++;
-            }
-            for (int i = 0; i < length; i++) {
-                if (i == length - 1) {
-                    String sql = "DELETE FROM " + tableName() + " WHERE id IN ("
-                            + Joiner.on(", ").join(ids.subList(i * batchSize, ids.size()), ", ") + ")";
-                    Db.update(sql);
-                } else {
-                    String sql = "DELETE FROM " + tableName() + " WHERE id IN ("
-                            + Joiner.on(", ").join(ids.subList(i * batchSize, i * batchSize + batchSize), ", ") + ")";
-                    Db.update(sql);
-                }
-            }
-        }
-    }
+	public void saveWithFingerprint() {
+		addFingerprint();
+		fingerprinter().compare(this);
+		if (get("id") == null) {
+			save();
+		}
+	}
+
+	public void removeExpired() {
+		int size = deleting.size();
+		LOG.info("delete " + size+ "records");
+		if (size != 0) {
+			List<Integer> ids = Lists.newArrayList(deleting);
+			int idSize = ids.size();
+			int batchSize = 1000;
+			int length = idSize / batchSize;
+			if (idSize % batchSize != 0) {
+				length++;
+			}
+			for (int i = 0; i < length; i++) {
+				if (i == length - 1) {
+					String sql = "DELETE FROM " + tableName() + " WHERE id IN ("
+							+ Joiner.on(", ").join(ids.subList(i * batchSize, ids.size()), ", ") + ")";
+					Db.update(sql);
+				} else {
+					String sql = "DELETE FROM " + tableName() + " WHERE id IN ("
+							+ Joiner.on(", ").join(ids.subList(i * batchSize, i * batchSize + batchSize), ", ") + ")";
+					Db.update(sql);
+				}
+			}
+		}
+	}
 }
