@@ -17,7 +17,6 @@ package com.jfinal.ext.plugin.redis;
 
 import java.io.Serializable;
 
-
 public interface JedisMessage<T extends Serializable> {
     public void onMessage(T message);
 }

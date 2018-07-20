@@ -1,3 +1,0 @@
-name=test
-zw=中文内容
-中=xxx

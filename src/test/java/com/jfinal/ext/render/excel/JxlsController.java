@@ -8,8 +8,8 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jfinal.core.Controller;
-import com.jfinal.ext.plugin.tablebind.Blog;
 import com.jfinal.plugin.activerecord.Record;
+import com.test.api.model.User;
 
 public class JxlsController extends Controller {
 
@@ -29,19 +29,19 @@ public class JxlsController extends Controller {
     }
 
     public void model() {
-        Blog model = new Blog();
-        model.set("title", "Derek");
-        model.set("content", "35");
-        Blog model2 = new Blog();
-        model2.set("title", "Oleg");
-        model2.set("content", "31");
-        List<Blog> blogs  = Lists.newArrayList();
-        blogs.add(model);
-        blogs.add(model2);
+        User user1 = new User();
+        user1.setId(1);
+        user1.setName("name1");
+        User user2 = new User();
+        user2.setId(2);
+        user2.setName("name2");
+        List<User> users  = Lists.newArrayList();
+        users.add(user1);
+        users.add(user2);
         Map<String, Object> beans = Maps.newHashMap();
-        beans.put("employee", blogs);
-        String templateFileName = "/home/kid/git/jfinal-ext/resource/employees.xls";
-        String filename = "test.xls";
+        beans.put("user", users);
+        String templateFileName = "src/test/resource/users.xls";
+        String filename = "users.xls";
         render(JxlsRender.me(templateFileName).filename(filename).beans(beans));
     }
 
@@ -54,30 +54,24 @@ public class JxlsController extends Controller {
         staff.add(new Employee("Maria", 34, 1700, 0.15));
         staff.add(new Employee("John", 35, 2800, 0.20));
         setAttr("employee", staff);
-        String templateFileName = "/home/kid/git/jfinal-ext/resource/employees.xls";
-        // String filename = "test.xls";
+        String templateFileName = "src/test/resource/employees.xls";
         render(JxlsRender.me(templateFileName));
     }
-    
 
     public void record() {
         Record record = new Record();
         record.set("name", "Derek");
-        record.set("age", 35);
-        record.set("payment", 3000);
-        record.set("bonus", 0.30);
+        record.set("id", 35);
         Record record2 = new Record();
         record2.set("name", "Oleg");
-        record2.set("age", 32);
-        record2.set("payment", 2300);
-        record2.set("bonus", 0.25);
+        record2.set("id", 32);
         List<Record> records  = new ArrayList<Record>();
         records.add(record);
         records.add(record2);
         Map<String, Object> beans = new HashMap<String, Object>();
-        beans.put("employee", records);
-        String templateFileName = "/home/kid/git/jfinal-ext/resource/employees.xls";
-        String filename = "test.xls";
+        beans.put("users", records);
+        String templateFileName = "src/test/resource/users.xls";
+        String filename = "users.xls";
         render(JxlsRender.me(templateFileName).filename(filename).beans(beans));
     }
 

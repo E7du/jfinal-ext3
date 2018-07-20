@@ -4,13 +4,16 @@
 
 package com.jfinal.ext.kit;
 
-import com.jfinal.plugin.activerecord.Model;
-
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+import com.jfinal.plugin.activerecord.Model;
 
 @SuppressWarnings("rawtypes")
 public class TestClassSearch {
-//    @Test
+	
+    @Test
 	public void findInClasspathAndJars() {
 
         List<Class<? extends Model>> models2 = ClassSearcher.of(Model.class).search();
@@ -19,7 +22,7 @@ public class TestClassSearch {
         }
     }
 
-    //@Test
+    @Test
     public void testFindInClasspath() {
         List<Class<? extends Model>> models = ClassSearcher.of(Model.class).inJars("modelInJar.jar").search();
         for (Class<? extends Model> model : models) {

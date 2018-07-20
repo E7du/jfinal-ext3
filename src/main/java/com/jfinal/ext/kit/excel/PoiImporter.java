@@ -55,8 +55,6 @@ public class PoiImporter {
                 Row row = sheet.getRow(rowIndex);
                 List<String> columns = Lists.newArrayList();
                 int cellNum = row.getLastCellNum();
-                System.out.println(row.getLastCellNum());
-                System.out.println(row.getPhysicalNumberOfCells());
                 for (int cellIndex = row.getFirstCellNum(); cellIndex < cellNum; cellIndex++) {
                     Cell cell = row.getCell(cellIndex);
                     int cellType = cell.getCellType();

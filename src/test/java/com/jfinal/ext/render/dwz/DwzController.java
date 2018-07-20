@@ -4,12 +4,13 @@ import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import com.jfinal.ext.kit.JFinalKit;
 import com.jfinal.i18n.I18nInterceptor;
+import com.test.api.model.User;
 
 public class DwzController extends Controller {
     public void add() {
         User user = new User();
-        user.set("name", "11");
-        user.set("new3", "1");
+        user.setName("11");
+        user.setId(11);
         user.save();
     }
 

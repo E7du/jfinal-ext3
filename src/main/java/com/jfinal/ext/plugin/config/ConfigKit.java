@@ -30,17 +30,10 @@ import com.jfinal.log.Log;
 public class ConfigKit {
 
     private static Log LOG = Log.getLog(ConfigKit.class);
-
-    private static List<String> includeResources;
-
-    private static List<String> excludeResources;
-
+    private static List<String> includeResources = null;
+    private static List<String> excludeResources = null;
     private static Map<String, String> map = Maps.newHashMap();
-
-    private static Map<String, String> testMap = Maps.newHashMap();
-
     private static Map<String, Long> lastmodifies = Maps.newHashMap();
-
     private static boolean reload = true;
 
     /**
@@ -54,20 +47,17 @@ public class ConfigKit {
         ConfigKit.reload = reload;
         for (final String resource : includeResources) {
         LOG.debug("include :" + resource);
-            File[] propertiesFiles = null;
-            propertiesFiles = new File(PathKit.getRootClassPath()).listFiles(new FileFilter() {
+            File[] propertiesFiles = new File(PathKit.getRootClassPath()).listFiles(new FileFilter() {
 
                 @Override
                 public boolean accept(File pathname) {
                     return Pattern.compile(resource).matcher(pathname.getName()).matches();
                 }
+                
             });
             for (File file : propertiesFiles) {
                 String fileName = file.getName();
                 LOG.debug("fileName:" + fileName);
-                if (fileName.endsWith("-test." + ConfigPlugin.suffix)) {
-                    continue;
-                }
                 boolean excluded = false;
                 for (String exclude : excludeResources) {
                     if (Pattern.compile(exclude).matcher(file.getName()).matches()) {
@@ -79,33 +69,20 @@ public class ConfigKit {
                 }
                 lastmodifies.put(fileName, new File(fileName).lastModified());
                 map.putAll(ResourceKit.readProperties(fileName));
-                try {
-                    testMap.putAll(ResourceKit.readProperties(testFileName(fileName)));
-                } catch (IllegalArgumentException e) {
-                	LOG.info(e.getMessage());
-                }
             }
         }
         LOG.debug("map" + map);
-        LOG.debug("testMap" + testMap);
         LOG.info("config init success!");
     }
 
-    private static String testFileName(String fileName) {
-        return fileName.substring(0, fileName.indexOf("." + ConfigPlugin.suffix)) + "-test." + ConfigPlugin.suffix;
-    }
-
     public static String getStr(String key, String defaultVal) {
-        if (testMap == null || map == null) {
+        if (map == null) {
             throw new RuntimeException(" please start ConfigPlugin first~");
         }
         if (reload) {
             checkFileModify();
         }
-        String val = testMap.get(key);
-        if (val == null || "".equals(val.trim())) {
-            val = map.get(key);
-        }
+        String val = map.get(key);
         return val == null ? defaultVal : val + "";
 
     }
@@ -148,10 +125,4 @@ public class ConfigKit {
     public static int getInt(String key) {
         return getInt(key, 0);
     }
-
-    public static void set(String key, String val) {
-        // TODO
-        throw new RuntimeException("I do not know how to do it now..");
-    }
-
 }

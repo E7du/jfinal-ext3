@@ -22,7 +22,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.jfinal.log.Log;
+import org.bson.Document;
+
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.mongodb.BasicDBObject;
@@ -31,30 +32,29 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
-public class MongoKit {
-
-    protected static Log LOG = Log.getLog(MongoKit.class);
+public class Mongodb {
 
     private static MongoClient client;
-    private static DB defaultDb;
+    private static MongoDatabase db = null;
 
     public static void init(MongoClient client, String database) {
-        MongoKit.client = client;
-        MongoKit.defaultDb = client.getDB(database);
-
+        Mongodb.client = client;
+        Mongodb.db = client.getDatabase(database);
     }
 
     public static void updateFirst(String collectionName, Map<String, Object> q, Map<String, Object> o) {
-        MongoKit.getCollection(collectionName).findAndModify(toDBObject(q), toDBObject(o));
+        Mongodb.getCollection(collectionName).findAndModify(toDBObject(q), toDBObject(o));
     }
 
     public static int removeAll(String collectionName) {
-        return MongoKit.getCollection(collectionName).remove(new BasicDBObject()).getN();
+        return Mongodb.getCollection(collectionName).remove(new BasicDBObject()).getN();
     }
 
     public static int remove(String collectionName, Map<String, Object> filter) {
-        return MongoKit.getCollection(collectionName).remove(toDBObject(filter)).getN();
+        return Mongodb.getCollection(collectionName).remove(toDBObject(filter)).getN();
     }
 
     public static int save(String collectionName, List<Record> records) {
@@ -62,16 +62,15 @@ public class MongoKit {
         for (Record record : records) {
             objs.add(toDbObject(record));
         }
-        return MongoKit.getCollection(collectionName).insert(objs).getN();
-
+        return Mongodb.getCollection(collectionName).insert(objs).getN();
     }
 
     public static int save(String collectionName, Record record) {
-        return MongoKit.getCollection(collectionName).save(toDbObject(record)).getN();
+        return Mongodb.getCollection(collectionName).save(toDbObject(record)).getN();
     }
 
     public static Record findFirst(String collectionName) {
-        return toRecord(MongoKit.getCollection(collectionName).findOne());
+        return toRecord(Mongodb.getCollection(collectionName).findOne());
     }
 
     public static Page<Record> paginate(String collection, int pageNumber, int pageSize) {
@@ -89,7 +88,7 @@ public class MongoKit {
 
     public static Page<Record> paginate(String collection, int pageNumber, int pageSize, Map<String, Object> filter,
             Map<String, Object> like, Map<String, Object> sort) {
-        DBCollection logs = MongoKit.getCollection(collection);
+    	MongoCollection<Document> logs = Mongodb.getCollection(collection);
         BasicDBObject conditons = new BasicDBObject();
         buildFilter(filter, conditons);
         buildLike(like, conditons);
@@ -135,7 +134,7 @@ public class MongoKit {
             for (Entry<String, Object> entry : entrySet) {
                 String key = entry.getKey();
                 Object val = entry.getValue();
-                conditons.put(key, MongoKit.getLikeStr(val));
+                conditons.put(key, Mongodb.getLikeStr(val));
             }
         }
     }
@@ -148,7 +147,6 @@ public class MongoKit {
                 Object val = entry.getValue();
                 conditons.put(key, val);
             }
-
         }
     }
 
@@ -164,28 +162,28 @@ public class MongoKit {
         return new BasicDBObject("$regex", pattern);
     }
 
-    public static DB getDB() {
-        return defaultDb;
+    public static MongoDatabase getDB() {
+        return Mongodb.db;
     }
 
-    public static DB getDB(String dbName) {
-        return client.getDB(dbName);
+    public static MongoDatabase getDB(String dbName) {
+        return client.getDatabase(dbName);
     }
 
-    public static DBCollection getCollection(String name) {
-        return defaultDb.getCollection(name);
+    public static MongoCollection<Document> getCollection(String name) {
+        return Mongodb.db.getCollection(name);
     }
 
-    public static DBCollection getDBCollection(String dbName, String collectionName) {
+    public static MongoCollection<Document> getDBCollection(String dbName, String collectionName) {
         return getDB(dbName).getCollection(collectionName);
     }
 
     public static MongoClient getClient() {
-        return client;
+        return Mongodb.client;
     }
 
     public static void setMongoClient(MongoClient client) {
-        MongoKit.client = client;
+        Mongodb.client = client;
     }
 
     private static BasicDBObject toDBObject(Map<String, Object> map) {

@@ -5,6 +5,7 @@ import com.jfinal.ext.plugin.config.ConfigPlugin;
 
 import java.util.concurrent.TimeUnit;
 
+//TODO untest
 public class TestJms {
     //@Test
     public void sendQueue() throws InterruptedException {
