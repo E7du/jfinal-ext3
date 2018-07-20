@@ -15,35 +15,89 @@
 */
 package com.jfinal.ext.plugin.monogodb;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.IPlugin;
-import com.mongodb.MongoClient;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 
 public class MongodbPlugin implements IPlugin {
     
-    private static final String DEFAULT_HOST = "127.0.0.1";
-    private static final int DEFAUL_PORT = 27017;
-
     private MongoClient client;
-    private String host;
-    private int port;
-    private String db;
+    private String username;
+    private String password;
+    private String database;
+    private boolean sslEnabled = false;
+    private Map<String, ServerAddress> servers = new HashMap<String, ServerAddress>();
 
-    public MongodbPlugin(String db) {
-        this.host = DEFAULT_HOST;
-        this.port = DEFAUL_PORT;
-        this.db = db;
+    public MongodbPlugin(String database) {
+    	this.setDefaultDatabase(database);
     }
 
-    public MongodbPlugin(String host, int port, String database) {
-        this.host = host;
-        this.port = port;
-        this.db = database;
+    public MongodbPlugin(String host, int port) {
+    	this.addServer(new ServerAddress(host, port));
+    }
+    
+    public MongodbPlugin(String host, int port, String username, String password) {
+        this.addServer(new ServerAddress(host, port));
+    	this.username = username;
+        this.password = password;
+    }
+    
+    public MongodbPlugin(ServerAddress server, String username, String password) {
+        this.addServer(server);
+    	this.username = username;
+        this.password = password;
+    }
+    
+    public void addServer(ServerAddress server) {
+    	String host = server.getHost();
+    	 if (!this.servers.containsKey(host)) {
+ 			this.servers.put(host, server);
+ 		}
+    }
+    
+    public void addServer(ServerAddress server, String database) {
+    	this.addServer(server);
+    	this.setDefaultDatabase(database);
+    }
+    
+    public void setDefaultDatabase(String database) {
+    	this.database = database;
+    }
+    
+    public void sslEnabled(boolean sslEnabled) {
+    	this.sslEnabled = sslEnabled;
+    }
+    
+    public MongodbPlugin(ServerAddress srv) {
+    	
     }
 
     @Override
     public boolean start() {
-    	this.client = new MongoClient(this.host, this.port);
-        Mongodb.init(this.client, this.db);
+    	if (StrKit.notBlank(this.username) && StrKit.notBlank(this.password)) {
+        	List<ServerAddress> srvs = new ArrayList<ServerAddress>();
+        	srvs.addAll(this.servers.values());
+            MongoCredential credential = MongoCredential.createScramSha1Credential(this.username, this.database, this.password.toCharArray());  
+            MongoClientSettings settings = MongoClientSettings.builder()
+                    .credential(credential)
+                    .applyToSslSettings(builder -> builder.enabled(this.sslEnabled))
+                    .applyToClusterSettings(builder -> 
+                        builder.hosts(srvs))
+                    .build();
+            this.client = MongoClients.create(settings);
+		} else {
+	    	this.client = MongoClients.create();
+		}
+        Mongodb.init(this.client, this.database);
         return true;
     }
 
