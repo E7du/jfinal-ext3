@@ -25,13 +25,13 @@ public class SqlInXmlPlugin implements IPlugin {
 
     @Override
     public boolean start() {
-        SqlKit.init();
+        SqlInXmlKit.init();
         return true;
     }
 
     @Override
     public boolean stop() {
-        SqlKit.clearSqlMap();
+        SqlInXmlKit.clearSqlMap();
         return true;
     }
 }

@@ -35,12 +35,11 @@ import com.jfinal.kit.StrKit;
 import com.jfinal.log.Log;
 import com.jfinal.plugin.IPlugin;
 
-//merge form jfinal-ext
 public class QuartzPlugin implements IPlugin {
 	
     public static final String VERSION_1 = "1";
     private static final String JOB = "job";
-    private final Log LOG = Log.getLog(getClass());
+    private final Log LOG = Log.getLog(QuartzPlugin.class);
     private Map<Job, String> jobs = Maps.newLinkedHashMap();
     private String version;
     private SchedulerFactory sf;

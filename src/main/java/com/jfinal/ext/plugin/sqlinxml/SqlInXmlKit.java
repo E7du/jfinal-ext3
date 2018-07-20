@@ -24,12 +24,9 @@ import com.jfinal.ext.kit.JaxbKit;
 import com.jfinal.kit.PathKit;
 import com.jfinal.log.Log;
 
+public class SqlInXmlKit {
 
-
-//TODO merge to jfinal-ext3?
-public class SqlKit {
-
-    protected static final Log LOG = Log.getLog(SqlKit.class);
+    protected static final Log LOG = Log.getLog(SqlInXmlKit.class);
 
     private static Map<String, String> sqlMap;
 

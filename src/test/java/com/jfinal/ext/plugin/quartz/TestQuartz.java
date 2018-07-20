@@ -3,9 +3,12 @@ package com.jfinal.ext.plugin.quartz;
 
 import java.util.concurrent.TimeUnit;
 
+import org.junit.jupiter.api.Test;
+
+//TODO testing error
 public class TestQuartz {
 
-//    @Test
+    @Test
     public void test() throws InterruptedException {
         QuartzPlugin quartzPlugin = new QuartzPlugin("quartzjob.properties","quartz.properties");
         quartzPlugin.add("0 * * * * *",new JobB());

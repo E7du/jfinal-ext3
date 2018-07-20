@@ -5,9 +5,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.Test;
 
 //TODO not fire
 public class TestConfig {
+	
     @BeforeClass
     public static void init() {
         //Log.init();
@@ -15,7 +17,7 @@ public class TestConfig {
         configPlugin.start();
     }
 
-    //@Test
+    @Test
     public void testGetStr() throws InterruptedException {
         assertEquals("test", ConfigKit.getStr("name"));
         assertEquals(1, ConfigKit.getInt("age"));
@@ -23,7 +25,7 @@ public class TestConfig {
         assertEquals(1, ConfigKit.getInt("age"));
     }
 
-    //@Test
+    @Test
     public void testZw() throws InterruptedException {
         assertEquals("中文内容", ConfigKit.getStr("zw"));
         assertEquals("xxx", ConfigKit.getStr("中"));
