@@ -14,6 +14,8 @@
  * the License.
 */
 package cn.zhucongqi.configtest;
+import java.util.Properties;
+
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
@@ -78,6 +80,11 @@ public class TestConfig extends JFinalConfigExt {
 	@Override
 	public void configEngineMore(Engine me) {
 		me.setBaseTemplatePath("sql.txt");
+	}
+
+	@Override
+	public Properties getLazyProp() {
+		return null;
 	}
 
 }

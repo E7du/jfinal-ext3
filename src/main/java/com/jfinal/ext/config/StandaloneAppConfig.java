@@ -16,6 +16,7 @@
 package com.jfinal.ext.config;
 
 import java.util.List;
+import java.util.Properties;
 
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
@@ -157,6 +158,11 @@ public class StandaloneAppConfig {
 		@Override
 		public void configEngineMore(Engine e) {
 			
+		}
+
+		@Override
+		public Properties getLazyProp() {
+			return null;
 		}
 	}
 	
