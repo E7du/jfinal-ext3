@@ -4,6 +4,46 @@ jfinal-ext3，源自jfinal-ext，jfinal-ext2，基于jfinal3.x，扩展了很多
 ### 新特性
 - v3.0.8: 无需conf/jf-app-cfg.conf，使用code级配置。参考getLazyProp。
 
+```java
+/**
+	 * Lazy Config Prop
+	 * 
+	 * <pre>
+	 * Properties prop = new Properties();
+	 * !// config db
+	 * prop.setProperty("db.ds","mysql");
+	 * prop.setProperty("db.mysql.active","true");
+	 * prop.setProperty("db.mysql.url","localhost/zcq");
+	 * prop.setProperty("db.mysql.user","root");
+	 * prop.setProperty("db.mysql.password.pkey","MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJbIzkTcjrlDwB3vdc6gKwJ5gAMGRazWOrOeuMCxI2Lb7n/d4DoBySUdM+7HT6Gkfbfz6BM1o/2Gp0PkhkEHAx8CAwEAAQ==");
+	 * prop.setProperty("db.mysql.password","TVL59a5MXxM3EB7Ylzf8idFijFX97+ZRxZG+2PpkR4pPCQ5TLtZAok88IGW05CxRvC56ekO++yWhepAEL118lw==");
+	 * prop.setProperty("db.mysql.initsize","10");
+	 * prop.setProperty("db.mysql.maxactive","100");
+	 * prop.setProperty("db.showsql","true");
+	 * !// config redis
+	 * prop.setProperty("redis.cs","mainCache");
+	 * prop.setProperty("redis.mainCache.active","true");
+	 * prop.setProperty("redis.mainCache.host","localhost");
+	 * prop.setProperty("redis.mainCache.port","6379");
+	 * prop.setProperty("redis.mainCache.password","");
+	 * prop.setProperty("redis.mainCache.tables","user,hello");
+	 * !// config generator
+	 * prop.setProperty("ge.dict","true");
+	 * prop.setProperty("ge.model.dao","true");
+	 * prop.setProperty("ge.mappingkit.classname","TableMappingKit");
+	 * prop.setProperty("ge.base.model.outdir","./src/main/java/cn/zhucongqi/api/base/model");
+	 * prop.setProperty("ge.base.model.package","cn.zhucongqi.api.base.model");
+	 * prop.setProperty("ge.model.outdir","./src/main/java/cn/zhucongqi/api/model");
+	 * prop.setProperty("ge.model.package","cn.zhucongqi.api.model");
+	 * !// config app
+	 * prop.setProperty("app.dev","true");
+	 * prop.setProperty("app.post","true");
+	 * prop.setProperty("app.name","jf-app");
+	 * </pre>
+	 */
+	public abstract Properties getLazyProp();
+```
+
 ### 使用
 
 ```java
