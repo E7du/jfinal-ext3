@@ -17,6 +17,7 @@ package com.jfinal.ext.config;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Properties;
 
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
@@ -28,6 +29,7 @@ import com.jfinal.ext.handler.ActionExtentionHandler;
 import com.jfinal.ext.interceptor.ExceptionInterceptor;
 import com.jfinal.ext.interceptor.POST;
 import com.jfinal.ext.kit.PageViewKit;
+import com.jfinal.ext.kit.Prop;
 import com.jfinal.ext.plugin.redis.ModelRedisPlugin;
 import com.jfinal.ext.route.AutoBindRoutes;
 import com.jfinal.kit.StrKit;
@@ -53,6 +55,44 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	
 	public static String APP_NAME = null;
 	protected boolean geRuned = false;
+	
+	/**
+	 * Lazy Config Prop
+	 * 
+	 * <pre>
+	 * Properties prop = new Properties();
+	 * !// config db
+	 * prop.setProperty("db.ds","mysql");
+	 * prop.setProperty("db.mysql.active","true");
+	 * prop.setProperty("db.mysql.url","localhost/zcq");
+	 * prop.setProperty("db.mysql.user","root");
+	 * prop.setProperty("db.mysql.password.pkey","MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJbIzkTcjrlDwB3vdc6gKwJ5gAMGRazWOrOeuMCxI2Lb7n/d4DoBySUdM+7HT6Gkfbfz6BM1o/2Gp0PkhkEHAx8CAwEAAQ==");
+	 * prop.setProperty("db.mysql.password","TVL59a5MXxM3EB7Ylzf8idFijFX97+ZRxZG+2PpkR4pPCQ5TLtZAok88IGW05CxRvC56ekO++yWhepAEL118lw==");
+	 * prop.setProperty("db.mysql.initsize","10");
+	 * prop.setProperty("db.mysql.maxactive","100");
+	 * prop.setProperty("db.showsql","true");
+	 * !// config redis
+	 * prop.setProperty("redis.cs","mainCache");
+	 * prop.setProperty("redis.mainCache.active","true");
+	 * prop.setProperty("redis.mainCache.host","localhost");
+	 * prop.setProperty("redis.mainCache.port","6379");
+	 * prop.setProperty("redis.mainCache.password","");
+	 * prop.setProperty("redis.mainCache.tables","user,hello");
+	 * !// config generator
+	 * prop.setProperty("ge.dict","true");
+	 * prop.setProperty("ge.model.dao","true");
+	 * prop.setProperty("ge.mappingkit.classname","TableMappingKit");
+	 * prop.setProperty("ge.base.model.outdir","./src/main/java/cn/zhucongqi/api/base/model");
+	 * prop.setProperty("ge.base.model.package","cn.zhucongqi.api.base.model");
+	 * prop.setProperty("ge.model.outdir","./src/main/java/cn/zhucongqi/api/model");
+	 * prop.setProperty("ge.model.package","cn.zhucongqi.api.model");
+	 * !// config app
+	 * prop.setProperty("app.dev","true");
+	 * prop.setProperty("app.post","true");
+	 * prop.setProperty("app.name","jf-app");
+	 * </pre>
+	 */
+	public abstract Properties getLazyProp();
 	
 	/**
 	 * Config other More constant
@@ -198,7 +238,13 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 		this.afterJFinalStarted();
 	}
 
-	private void loadPropertyFile() {
+	public void loadPropertyFile() {
+		//read from memory
+		Properties prop = this.getLazyProp();
+		if (this.prop == null && prop != null) {
+			this.prop = new Prop(prop);
+		}
+		//read from file
 		if (this.prop == null) {
 			this.loadPropertyFile(cfg);
 		}
