@@ -142,6 +142,8 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * UploadedFileSaveDirectory : cfg basedir + appName <br/>
 	 */
 	public void configConstant(Constants me) {
+		//load properties
+		this.loadPropertyFile();
 		me.setViewType(ViewType.JSP);
 		me.setDevMode(this.getAppDevMode());
 		me.setEncoding(Const.DEFAULT_ENCODING);
@@ -254,7 +256,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	}
 	
 	private boolean getHttpPostMethod() {
-		this.loadPropertyFile();
 		return this.getPropertyToBoolean("app.post", false);
 	}
 
@@ -263,7 +264,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * @return
 	 */
 	private boolean getAppDevMode(){
-		this.loadPropertyFile();
 		return this.getPropertyToBoolean("app.dev", true);
 	}
 
@@ -272,7 +272,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * @return
 	 */
 	protected String getAppName() {
-		this.loadPropertyFile();
 		String appName = this.getProperty("app.name", "");
 		if (StrKit.isBlank(appName)) {
 			throw new IllegalArgumentException("Please Set Your App Name in Your cfg file");
@@ -287,27 +286,22 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	private static final String REDIS_TABLES_TEMPLATE = "redis.%s.tables";
 	
 	private boolean getRedisActiveState(String cache){
-		this.loadPropertyFile();
 		return this.getPropertyToBoolean(String.format(REDIS_ACTIVE_TEMPLATE, cache), false);
 	}
 	
 	private String getRedisHost(String cache) {
-		this.loadPropertyFile();
 		return this.getProperty(String.format(REDIS_HOST_TEMPLATE, cache), "localhost");
 	}
 	
 	private int getRedisPort(String cache) {
-		this.loadPropertyFile();
 		return this.getPropertyToInt(String.format(REDIS_PORT_TEMPLATE, cache), 6379);
 	}
 	
 	private String getRedisPassword(String cache) {
-		this.loadPropertyFile();
 		return this.getProperty(String.format(REDIS_PASSWORD_TEMPLATE, cache), "");
 	}
 	
 	private String[] getRedisCaches() {
-		this.loadPropertyFile();
 		String cs = this.getProperty("redis.cs", "");
 		if (cs.contains("，")) {
 			new IllegalArgumentException("Cannot use ，in cs");
@@ -316,7 +310,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	}
 	
 	private String getRedisCacheTables(String cache) {
-		this.loadPropertyFile();
 		String cts = this.getProperty(String.format(REDIS_TABLES_TEMPLATE, cache), "");
 		if (StrKit.isBlank(cts)) {
 			return "";
@@ -340,7 +333,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * @return
 	 */
 	private boolean getDbActiveState(String ds){
-		this.loadPropertyFile();
 		return this.getPropertyToBoolean(String.format(ACTIVE_TEMPLATE, ds), false);
 	}
 	
@@ -349,7 +341,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * @return
 	 */
 	private String[] getDataSource() {
-		this.loadPropertyFile();
 		String ds = this.getProperty("db.ds", "");
 		if (StrKit.isBlank(ds)) {
 			return (new String[0]);
@@ -366,7 +357,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * @return
 	 */
 	private DruidPlugin getDruidPlugin(String ds) {
-		this.loadPropertyFile();
 		String url = this.getProperty(String.format("db.%s.url", ds));
 		url = String.format(URL_TEMPLATE, ds, url);
 		String endsWith = "?characterEncoding=UTF8&zeroDateTimeBehavior=CONVERT_TO_NULL";
@@ -410,7 +400,6 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	 * @return
 	 */
 	private ActiveRecordPlugin getActiveRecordPlugin(String ds, DruidPlugin dp){
-		this.loadPropertyFile();
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(ds, dp);
 		arp.setShowSql(this.getPropertyToBoolean("db.showsql"));
 
@@ -431,22 +420,18 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	private Boolean geDaoInModel = null;
 	
 	private boolean getGeDictionary() {
-		this.loadPropertyFile();
 		return this.getPropertyToBoolean("ge.dict", false);
 	}
 	
 	private String getBaseModelOutDir() {
-		this.loadPropertyFile();
 		return this.getProperty("ge.base.model.outdir");
 	}
 	
 	private String getBaseModelPackage() {
-		this.loadPropertyFile();
 		return this.getProperty("ge.base.model.package");
 	}
 	
 	private boolean getGeDaoInModel() {
-		this.loadPropertyFile();
 		if (this.geDaoInModel == null) {
 			this.geDaoInModel = this.getPropertyToBoolean("ge.model.dao", Boolean.TRUE);
 		}
@@ -454,18 +439,15 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	}
 	
 	private String getModelOutDir() {
-		this.loadPropertyFile();
 		return this.getProperty("ge.model.outdir");
 	}
 	
 	private String getModelPackage() {
-		this.loadPropertyFile();
 		return this.getProperty("ge.model.package");
 	}
 	
 	private String mappingKitClassName = null;
 	private String getMappingKitClassName() {
-		this.loadPropertyFile();
 		if (this.mappingKitClassName == null) {
 			this.mappingKitClassName = this.getProperty("ge.mappingkit.classname", "_MappingKit");
 		}
