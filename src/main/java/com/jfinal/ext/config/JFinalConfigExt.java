@@ -239,6 +239,9 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	}
 
 	public void loadPropertyFile() {
+		if (this.prop != null) {
+			return;
+		}
 		//read from memory
 		Properties prop = this.getLazyProp();
 		if (this.prop == null && prop != null) {
