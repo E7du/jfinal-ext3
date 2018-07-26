@@ -1,6 +1,9 @@
 ### 介绍
 jfinal-ext3，源自jfinal-ext，jfinal-ext2，基于jfinal3.x，扩展了很多特性。
 
+### 新特性
+- v3.0.8: 无需conf/jf-app-cfg.conf，使用code级配置。参考getLazyProp。
+
 ### 使用
 
 ```java
