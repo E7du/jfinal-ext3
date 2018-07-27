@@ -74,6 +74,8 @@ public class StandaloneAppConfig {
 		
 		public JFinalAppConfig(boolean geRuned) {
 			this.geRuned = geRuned;
+			//load properties
+			this.loadPropertyFile();
 			this.configPlugin(plugins);
 			
 			JFinalConfigExt.APP_NAME = this.getAppName();

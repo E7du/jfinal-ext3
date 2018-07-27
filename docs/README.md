@@ -43,6 +43,7 @@ jfinal-ext3，源自jfinal-ext，jfinal-ext2，基于jfinal3.x，扩展了很多
 	 */
 	public abstract Properties getLazyProp();
 ```
+- v3.0.9 优化 loadPropertyFile
 
 ### 使用
 

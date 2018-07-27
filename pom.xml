@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jfinal</groupId>
 	<artifactId>jfinal-ext3</artifactId>
-	<version>3.0.9-SNAPSHOT</version>
+	<version>3.0.9</version>
 	<packaging>jar</packaging>
 	<name>jfinal-ext3</name>
 	<description>jfinal-ext3</description>
