@@ -195,6 +195,12 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		return ret;
 	}
 	
+	//TODO find all from redis, save id to Redis Set, select cnt(*) , if the cnt = Redis Set size, data from redis
+	public List<M> findAll() {
+		List<M> ret = this.find(SqlpKit.select(this));
+		return ret;
+	}
+	
 	/**
 	 * <b>Advanced Function</b>. 
 	 * you can find Models: use any column value can do this. the data from DB.
