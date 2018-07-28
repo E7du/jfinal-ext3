@@ -31,7 +31,8 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 
 	private static final long serialVersionUID = -6061985137398460903L;
 
-	private boolean syncToRedis = false;
+	//default sync to redis
+	private boolean syncToRedis = true;
 	private Cache cache = null;
 	private String cacheName = null;
 
@@ -101,7 +102,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	}
 
 	/**
-	 * auto sync to the redis: true-sync,false-cancel
+	 * auto sync to the redis: true-sync,false-cancel, default true
 	 * @param syncToRedis
 	 */
 	public void syncToRedis(boolean syncToRedis) {
@@ -196,7 +197,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	
 	/**
 	 * <b>Advanced Function</b>. 
-	 * you can find Models: use any column value can do this.
+	 * you can find Models: use any column value can do this. the data from DB.
 	 */
 	public List<M> find() {
 		List<M> ret = this.find(SqlpKit.select(this));
@@ -210,16 +211,14 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	
 	/**
 	 * <b>Advanced Function</b>. 
-	 * you can find FirstOne Model: use any column value can do this.
+	 * you can find FirstOne Model: use any column value can do this.the data from DB.
 	 */
-	public List<M> findOne() {
-		List<M> ret = this.find(SqlpKit.selectOne(this));
-		if (this.syncToRedis && null != ret) {
-			for (M model : ret) {
-				this.saveToRedis(model);
-			}
+	public M findOne() {
+		M m = this.findFirst(SqlpKit.selectOne(this));
+		if (this.syncToRedis && null != m) {
+			this.saveToRedis(m);
 		}
-		return ret;
+		return m;
 	}
 	
 	/**
