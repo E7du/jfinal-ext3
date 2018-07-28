@@ -209,6 +209,20 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	}
 	
 	/**
+	 * <b>Advanced Function</b>. 
+	 * you can find FirstOne Model: use any column value can do this.
+	 */
+	public List<M> findOne() {
+		List<M> ret = this.find(SqlpKit.selectOne(this));
+		if (this.syncToRedis && null != ret) {
+			for (M model : ret) {
+				this.saveToRedis(model);
+			}
+		}
+		return ret;
+	}
+	
+	/**
 	 * Use the redis key find the Model from cache.
 	 */
 	@SuppressWarnings("unchecked")
