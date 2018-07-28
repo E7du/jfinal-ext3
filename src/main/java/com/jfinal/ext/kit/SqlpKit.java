@@ -31,12 +31,12 @@ public final class SqlpKit {
 	
 	private static final String SELECT_ST = "SELECT * FROM `%s` ";
 	
-	/**
-	 * make SqlPara use the model with attr datas.
-	 * @param model
-	 * @return
-	 */
-	public static SqlPara select(ModelExt<?> model) {
+	private enum FLAG {
+		ALL,
+		ONE
+	}
+	
+	private static SqlPara select(ModelExt<?> model, FLAG flag) {
 		SqlPara sqlPara = new SqlPara();
 		String[] columns = model._getAttrNames();
 
@@ -64,8 +64,27 @@ public final class SqlpKit {
 			sqlPara.addPara(model.get(columns[i]));
 		}
 
+		if (flag == FLAG.ONE) {
+			sbr.append(SqlpKit.space);
+			sbr.append("LIMIT 1");
+		}
 		sqlPara.setSql(sbr.toString());
 		return sqlPara;
 	}
 	
+	/**
+	 * make SqlPara use the model with attr datas.
+	 * @param model
+	 */
+	public static SqlPara select(ModelExt<?> model) {
+		return SqlpKit.select(model, FLAG.ALL);
+	}
+	
+	/**
+	 * make SqlPara use the model with attr datas.
+	 * @param model
+	 */
+	public static SqlPara selectOne(ModelExt<?> model) {
+		return SqlpKit.select(model, FLAG.ONE);
+	}
 }
