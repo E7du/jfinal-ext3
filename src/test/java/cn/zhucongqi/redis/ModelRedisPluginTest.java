@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Jobsz
+ * Copyright 2018 Jobsz (zcq@zhucongqi.cn)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -51,20 +51,23 @@ class ModelRedisPluginTest {
 //		u.save();
 		System.out.println("id==="+u.getId());
 		
-		List<User> us = u.findPrimaryKeysOnly();
+		List<User> uu = u.fetch("addr");
+		System.out.println("uu"+JsonKit.toJson(uu));
+		
+		List<User> us = u.fetchPrimaryKeysOnly();
 		for (User user : us) {
 			System.out.println(JsonKit.toJson(user));
 		}
 		Long cnt = u.dataCount();
 		System.out.println("cnt"+cnt);
 		
-		us = u.find();
+		us = u.fetch();
 		System.out.println("find\n");
 		for (User user : us) {
 			System.out.println(JsonKit.toJson(user));
 		}
 		
-		u = u.findOne();
+		u = u.fetchOne();
 		System.out.println(JsonKit.toJson(u));
 	}
 

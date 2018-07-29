@@ -71,7 +71,7 @@ public class RedisCache {
 		user = new User();
 		user.syncToRedis(true);
 		
-		List<User> users = user.find();
+		List<User> users = user.fetch();
 		for (User u : users) {
 			System.out.println("user=="+JsonKit.toJson(u));
 		}
@@ -79,7 +79,7 @@ public class RedisCache {
 		u.setId(id);
 		u.setName(name);
 		System.out.println(JsonKit.toJson(u));
-		u = u.findByRedis();
+		u = u.fetchByRedis();
 		System.out.println(JsonKit.toJson(u));
 		
 		Hello hl = new Hello();

@@ -37,7 +37,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 
 	private static final String RECORDS = "records:";
 	//default sync to redis
-	private boolean syncToRedis = true;
+	private boolean syncToRedis = GlobalSyncRedis.syncState();
 	private Cache redis = null;
 	private String cacheName = null;
 
@@ -103,12 +103,12 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	private List<M> fetchDatasFromRedis(String[] columns) {
 		// use columns fetch primary keys from db.
 		List<M> fetchDatas = this.find(SqlpKit.select(this, columns));
-		if (null == fetchDatas) {
+		if (null == fetchDatas || fetchDatas.size() == 0) {
 			return fetchDatas;
 		}
 		for (M m : fetchDatas) {
 			// fetch data from redis
-			if (null == m) {
+			if (null == m || m.isNull()) {
 				continue;
 			}
 			Map<String, Object> attrs = this.redis().hgetAll(this.redisKey(m));
@@ -121,12 +121,19 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	private M fetchOneFromRedis(String[] columns) {
 		// use columns fetch primary keys from db.
 		M m = this.findFirst(SqlpKit.selectOne(this, columns));
-		if (null == m) {
+		if (null == m || m.isNull()) {
 			return m;
 		}
 		// use primay key fetch from redis
 		Map<String, Object> attrs = this.redis().hgetAll(this.redisKey(m));
 		return m.put(attrs);
+	}
+
+	/**
+	 * current instance is Null or not.
+	 */
+	public boolean isNull() {
+		return this._getAttrs().isEmpty();
 	}
 	
 	/**
@@ -178,13 +185,20 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	public String tableName() {
 		return this.table().getName();
 	}
+	
+	/**
+	 * All primary keys
+	 */
+	public String[] primaryKeys() {
+		return this.table().getPrimaryKey();
+	}
 
 	/**
 	 * get numeric primary key.
 	 * if there is not found the primary key will throw the IllegalArgumentException.
 	 */
 	public String primaryKey() {
-		String[] primaryKeys = this.table().getPrimaryKey();
+		String[] primaryKeys = this.primaryKeys();
 		if (primaryKeys.length >= 1) {
 			return primaryKeys[0];
 		}
@@ -237,17 +251,17 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 
 	/**
 	 * <b>Advanced Function</b>. 
-	 * you can find Models: will fetch all columns, use any column value can do this.
+	 * you can fetch Models: will fetch all columns, use any column value can do this.
 	 * if `syncToRedis` is true, the data from redis , else from DB.
 	 */
-	public List<M> find() {
+	public List<M> fetch() {
 		//from db
 		if (!this.syncToRedis) {
 			return this.find(SqlpKit.select(this));
 		}
 		//from redis
 		// fetch primary keys
-		return this.fetchDatasFromRedis(this.table().getPrimaryKey());
+		return this.fetchDatasFromRedis(this.primaryKeys());
 	}
 
 	/**
@@ -255,57 +269,57 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 * List All data just contains columns, use any column value can do this. the data from DB.
 	 * @param columns: will fetch columns
 	 */
-	public List<M> find(String... columns) {
+	public List<M> fetch(String... columns) {
 		//from db
 		if (!this.syncToRedis) {
 			return this.find(SqlpKit.select(this, columns));
 		}
 		//from redis
 		//union the fetch columns , make the column contains primary keys.
-		String[] fetchColoumns = ArrayKit.union(this.table().getPrimaryKey(), columns);
+		String[] fetchColoumns = ArrayKit.union(this.primaryKeys(), columns);
 		return this.fetchDatasFromRedis(fetchColoumns);
 	}
 	
 	/**
 	 * <b>Advanced Function</b>. 
-	 * you can find FirstOne Model: use any column value can do this.the data from DB.
+	 * you can fetch FirstOne Model: use any column value can do this.the data from DB.
 	 */
-	public M findOne() {
+	public M fetchOne() {
 		//from db
 		if (!this.syncToRedis) {
 			return this.findFirst(SqlpKit.selectOne(this));
 		}
 		//from redis
-		return this.fetchOneFromRedis(this.table().getPrimaryKey());
+		return this.fetchOneFromRedis(this.primaryKeys());
 	}
 	
 	/**
 	 * <b>Advanced Function</b>. 
-	 * you can find FirstOne Model:just contains columns, use any column value can do this.the data from DB.
+	 * you can fetch FirstOne Model:just contains columns, use any column value can do this.the data from DB.
 	 */
-	public M findOne(String... columns) {
+	public M fetchOne(String... columns) {
 		//from db
 		if (!this.syncToRedis) {
 			return this.findFirst(SqlpKit.selectOne(this, columns));
 		}
 		//from redis
-		String[] fetchColoumns = ArrayKit.union(this.table().getPrimaryKey(), columns);
+		String[] fetchColoumns = ArrayKit.union(this.primaryKeys(), columns);
 		return this.fetchOneFromRedis(fetchColoumns);
 	}
 	
 	/**
-	 * List All data just contains the primarykeys.
+	 * List All data just contains the primary keys.
 	 */
-	public List<M> findPrimaryKeysOnly() {
-		return this.find(SqlpKit.select(this, this.primaryKey()));
+	public List<M> fetchPrimaryKeysOnly() {
+		return this.find(SqlpKit.select(this, this.primaryKeys()));
 	}
 	
 	/**
-	 * Use the redis key:based on primarykey find the Model from redis.
+	 * Use the redis key:based on primary key fetch the Model from redis.
 	 */
 	@SuppressWarnings("unchecked")
-	public M findByRedis() {
-		String[] primaryKeys = this.table().getPrimaryKey();
+	public M fetchByRedis() {
+		String[] primaryKeys = this.primaryKeys();
 		if (null == primaryKeys || primaryKeys.length == 0) {
 			throw new IllegalArgumentException("The PrimaryKey[ALL]'s value is null. Please set value to it.");
 		}
