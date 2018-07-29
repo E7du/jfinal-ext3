@@ -103,8 +103,14 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	private List<M> fetchDatasFromRedis(String[] columns) {
 		// use columns fetch primary keys from db.
 		List<M> fetchDatas = this.find(SqlpKit.select(this, columns));
+		if (null == fetchDatas) {
+			return fetchDatas;
+		}
 		for (M m : fetchDatas) {
 			// fetch data from redis
+			if (null == m) {
+				continue;
+			}
 			Map<String, Object> attrs = this.redis().hgetAll(this.redisKey(m));
 			m.put(attrs);
 		}
