@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Jobsz (zcq@zhucongqi.cn)
+ * Copyright 2018 Jobsz
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -23,5 +23,4 @@ import com.test.api.base.model.BaseUser;
 @SuppressWarnings("serial")
 public class User extends BaseUser<User> {
 	public static final User dao = new User().dao();
-	public static final String table = "user";
 }

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2018 Jobsz
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+*/
 package cn.zhucongqi.redis;
 
 import java.util.List;
@@ -6,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import com.jfinal.ext.config.StandaloneAppConfig;
 import com.jfinal.ext.plugin.redis.ModelRedisMapping;
+import com.jfinal.kit.JsonKit;
 import com.test.api.model.User;
 
 class ModelRedisPluginTest {
@@ -28,12 +44,28 @@ class ModelRedisPluginTest {
 		}
 		
 		User u = new User();
-		u.setId(10926);
+//		u.setId(10926);
 		u.setName("zcq");
-		u.setAddr("addr");
+		//u.setAddr("addr");
 		u.syncToRedis(true);
-		u.save();
+//		u.save();
+		System.out.println("id==="+u.getId());
 		
+		List<User> us = u.findPrimaryKeysOnly();
+		for (User user : us) {
+			System.out.println(JsonKit.toJson(user));
+		}
+		Long cnt = u.dataCount();
+		System.out.println("cnt"+cnt);
+		
+		us = u.find();
+		System.out.println("find\n");
+		for (User user : us) {
+			System.out.println(JsonKit.toJson(user));
+		}
+		
+		u = u.findOne();
+		System.out.println(JsonKit.toJson(u));
 	}
 
 }

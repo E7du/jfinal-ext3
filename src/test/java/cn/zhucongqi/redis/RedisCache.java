@@ -79,7 +79,7 @@ public class RedisCache {
 		u.setId(id);
 		u.setName(name);
 		System.out.println(JsonKit.toJson(u));
-		u = u.findByCache();
+		u = u.findByRedis();
 		System.out.println(JsonKit.toJson(u));
 		
 		Hello hl = new Hello();
