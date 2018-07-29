@@ -118,7 +118,7 @@ public final class SqlpKit {
 	 * @param model
 	 */
 	public static SqlPara selectOne(ModelExt<?> model) {
-		return SqlpKit.select(model, FLAG.ONE);
+		return SqlpKit.select(model, FLAG.ONE, "*");
 	}
 	
 	/**

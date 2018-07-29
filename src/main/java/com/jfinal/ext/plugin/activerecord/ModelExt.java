@@ -115,6 +115,9 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	private M fetchOneFromRedis(String[] columns) {
 		// use columns fetch primary keys from db.
 		M m = this.findFirst(SqlpKit.selectOne(this, columns));
+		if (null == m) {
+			return m;
+		}
 		// use primay key fetch from redis
 		Map<String, Object> attrs = this.redis().hgetAll(this.redisKey(m));
 		return m.put(attrs);
