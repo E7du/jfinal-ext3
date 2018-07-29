@@ -2,6 +2,8 @@
 jfinal-ext3，源自jfinal-ext，jfinal-ext2，基于jfinal3.x，扩展了很多特性。
 
 ### 新特性
+- v3.1.0 优化ModelExt,find(),findOne()从数据库和redis取数逻辑：syncToRedis 为 true 时，先用数据库获取包含 primarykey的数据结合，在用这个数据去 redis 中获取全量。【注意：syncToRedis的取值，不能在 save 或 find 见取值不一致，也就是syncToRedis不可以中间修改取值。以避免 redis 或数据库数据不一致的情况出现。】新加入dataCount()，用于获取数据数量。新加入findPrimarykeyOnly()，用于获取 primarykeys。
+- v3.0.9 优化 loadPropertyFile
 - v3.0.8: 无需conf/jf-app-cfg.conf，使用code级配置。参考getLazyProp。
 
 ```java
@@ -43,8 +45,6 @@ jfinal-ext3，源自jfinal-ext，jfinal-ext2，基于jfinal3.x，扩展了很多
 	 */
 	public abstract Properties getLazyProp();
 ```
-- v3.0.9 优化 loadPropertyFile
-- v3.1.0 优化ModelExt,find(),findOne()从数据库和redis取数逻辑：syncToRedis 为 true 时，先用数据库获取包含 primarykey的数据结合，在用这个数据去 redis 中获取全量。【注意：syncToRedis的取值，不能在 save 或 find 见取值不一致，也就是syncToRedis不可以中间修改取值。以避免 redis 或数据库数据不一致的情况出现。】新加入dataCount()，用于获取数据数量。新加入findPrimarykeyOnly()，用于获取 primarykeys。
 
 ### 使用
 
