@@ -13,26 +13,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package cn.zcq.model;
+package com.jfinal.ext.plugin.activerecord;
 
-import com.jfinal.plugin.activerecord.Model;
-
-/**
- * 
- * test extend model
- * 
- * @author yadong
- * 
- * @version
- */
-@SuppressWarnings("rawtypes")
-public class TestExtModel<M> extends Model<Model> {
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 8675321530619575798L;
-
-    protected static final String TABLE_KEY        = "Test";
-
+public final class GlobalSyncRedis {
+	
+	private static boolean sync = true;
+	
+	public static void openSync() {
+		GlobalSyncRedis.sync = true;
+	}
+	
+	public static void closeSync() {
+		GlobalSyncRedis.sync = false;
+	}
+	
+	public static boolean syncState() {
+		return GlobalSyncRedis.sync;
+	}
 }
