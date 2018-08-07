@@ -17,7 +17,6 @@ package com.jfinal.ext.plugin.sqlinxml;
 
 import com.jfinal.plugin.IPlugin;
 
-
 public class SqlInXmlPlugin implements IPlugin {
 
     public SqlInXmlPlugin() {
