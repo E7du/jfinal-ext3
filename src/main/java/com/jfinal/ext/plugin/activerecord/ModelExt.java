@@ -108,7 +108,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		}
 		for (M m : fetchDatas) {
 			// fetch data from redis
-			if (null == m || m.isNull()) {
+			if (null == m || m._isNull()) {
 				continue;
 			}
 			Map<String, Object> attrs = this.redis().hgetAll(this.redisKey(m));
@@ -121,7 +121,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	private M fetchOneFromRedis(String[] columns) {
 		// use columns fetch primary keys from db.
 		M m = this.findFirst(SqlpKit.selectOne(this, columns));
-		if (null == m || m.isNull()) {
+		if (null == m || m._isNull()) {
 			return m;
 		}
 		// use primay key fetch from redis
@@ -132,7 +132,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	/**
 	 * current instance is Null or not.
 	 */
-	public boolean isNull() {
+	public boolean _isNull() {
 		return this._getAttrs().isEmpty();
 	}
 	
