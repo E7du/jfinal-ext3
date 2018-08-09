@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import com.jfinal.ext.config.StandaloneAppConfig;
 import com.jfinal.ext.plugin.redis.ModelRedisMapping;
+import com.jfinal.kit.JsonKit;
 import com.test.api.model.User;
 
 class ModelRedisPluginTest {
@@ -43,12 +44,31 @@ class ModelRedisPluginTest {
 		}
 		
 		User u = new User();
-		u.setId(10926);
+//		u.setId(10926);
 		u.setName("zcq");
-		u.setAddr("addr");
+		//u.setAddr("addr");
 		u.syncToRedis(true);
-		u.save();
+//		u.save();
+		System.out.println("id==="+u.getId());
 		
+		List<User> uu = u.fetch("addr");
+		System.out.println("uu"+JsonKit.toJson(uu));
+		
+		List<User> us = u.fetchPrimaryKeysOnly();
+		for (User user : us) {
+			System.out.println(JsonKit.toJson(user));
+		}
+		Long cnt = u.dataCount();
+		System.out.println("cnt"+cnt);
+		
+		us = u.fetch();
+		System.out.println("find\n");
+		for (User user : us) {
+			System.out.println(JsonKit.toJson(user));
+		}
+		
+		u = u.fetchOne();
+		System.out.println(JsonKit.toJson(u));
 	}
 
 }

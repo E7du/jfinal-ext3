@@ -23,5 +23,4 @@ import com.test.api.base.model.BaseUser;
 @SuppressWarnings("serial")
 public class User extends BaseUser<User> {
 	public static final User dao = new User().dao();
-	public static final String table = "user";
 }

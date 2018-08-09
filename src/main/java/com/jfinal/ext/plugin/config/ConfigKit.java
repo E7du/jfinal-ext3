@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.Maps;
-import com.jfinal.ext.kit.ResourceKit;
+import com.jfinal.kit.Prop;
 import com.jfinal.kit.PathKit;
 import com.jfinal.log.Log;
 
@@ -68,7 +68,8 @@ public class ConfigKit {
                     continue;
                 }
                 lastmodifies.put(fileName, new File(fileName).lastModified());
-                map.putAll(ResourceKit.readProperties(fileName));
+                Map<String, String> mapData = Maps.fromProperties(new Prop(fileName).getProperties());
+                map.putAll(mapData);
             }
         }
         LOG.debug("map" + map);

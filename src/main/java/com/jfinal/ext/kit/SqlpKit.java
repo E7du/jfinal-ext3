@@ -29,18 +29,42 @@ public final class SqlpKit {
 	private static final String and = "AND";
 	private static final String space = " ";
 	
-	private static final String SELECT_ST = "SELECT * FROM `%s` ";
+	private static final String SELECT_ST = "SELECT %s FROM `%s` ";
 	
-	/**
-	 * make SqlPara use the model with attr datas.
-	 * @param model
-	 * @return
-	 */
-	public static SqlPara select(ModelExt<?> model) {
+	private enum FLAG {
+		ALL,
+		ONE
+	}
+	
+	private static SqlPara select(ModelExt<?> model, FLAG flag, String... fetchColumns) {
 		SqlPara sqlPara = new SqlPara();
 		String[] columns = model._getAttrNames();
-
-		StringBuilder sbr = new StringBuilder(String.format(SELECT_ST, model.tableName()));
+		
+		StringBuilder fetchList = new StringBuilder();
+		if (null != fetchColumns) {
+			if (fetchColumns.length == 1) {
+				String col = fetchColumns[0];
+				if (col.contains("count(*)") || col.contains("*")) {
+					fetchList.append(col);
+				} else {
+					fetchList.append("`").append(col).append("`");
+				}
+			} else {
+				boolean first = true;
+				for (String col : fetchColumns) {
+					if (first) {
+						first = false;
+					} else {
+						fetchList.append(",");
+					}
+					fetchList.append("`");
+					fetchList.append(col);
+					fetchList.append("`");
+				}
+			}
+		}
+		
+		StringBuilder sbr = new StringBuilder(String.format(SELECT_ST, fetchList.toString(), model.tableName()));
 
 		boolean first = true;
 		for (Integer i = 0; i < columns.length; i++) {
@@ -64,8 +88,45 @@ public final class SqlpKit {
 			sqlPara.addPara(model.get(columns[i]));
 		}
 
+		if (flag == FLAG.ONE) {
+			sbr.append(SqlpKit.space);
+			sbr.append("LIMIT 1");
+		}
 		sqlPara.setSql(sbr.toString());
 		return sqlPara;
 	}
 	
+	/**
+	 * make SqlPara use the model with attr datas.
+	 * @param model
+	 */
+	public static SqlPara select(ModelExt<?> model) {
+		return SqlpKit.select(model, FLAG.ALL, "*");
+	}
+	
+	/**
+	 * make SqlPara use the model with attr datas.
+	 * @param model
+	 * @columns fetch columns 
+	 */
+	public static SqlPara select(ModelExt<?> model, String... columns) {
+		return SqlpKit.select(model, FLAG.ALL, columns);
+	}
+	
+	/**
+	 * make SqlPara use the model with attr datas.
+	 * @param model
+	 */
+	public static SqlPara selectOne(ModelExt<?> model) {
+		return SqlpKit.select(model, FLAG.ONE, "*");
+	}
+	
+	/**
+	 * make SqlPara use the model with attr datas.
+	 * @param model
+	 * @columns fetch columns 
+	 */
+	public static SqlPara selectOne(ModelExt<?> model, String... columns) {
+		return SqlpKit.select(model, FLAG.ONE, columns);
+	}
 }

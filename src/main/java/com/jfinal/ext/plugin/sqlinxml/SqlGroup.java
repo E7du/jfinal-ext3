@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.google.common.collect.Lists;
 
-
 @XmlRootElement
 class SqlGroup {
 	

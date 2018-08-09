@@ -1,6 +1,52 @@
 ### 介绍
 jfinal-ext3，源自jfinal-ext，jfinal-ext2，基于jfinal3.x，扩展了很多特性。
 
+### 新特性
+- v3.1.1final,v3的最后一个版本。优化、修复 bug。
+- v3.1.0 优化ModelExt,find(),findOne()从数据库和redis取数逻辑：syncToRedis 为 true 时，先用数据库获取包含 primarykey的数据结合，在用这个数据去 redis 中获取全量。【注意：syncToRedis的取值，不能在 save 或 find 见取值不一致，也就是syncToRedis不可以中间修改取值。以避免 redis 或数据库数据不一致的情况出现。】新加入dataCount()，用于获取数据数量。新加入findPrimarykeyOnly()，用于获取 primarykeys。
+- v3.0.9 优化 loadPropertyFile
+- v3.0.8: 无需conf/jf-app-cfg.conf，使用code级配置。参考getLazyProp。
+
+```java
+/**
+	 * Lazy Config Prop
+	 * 
+	 * <pre>
+	 * Properties prop = new Properties();
+	 * !// config db
+	 * prop.setProperty("db.ds","mysql");
+	 * prop.setProperty("db.mysql.active","true");
+	 * prop.setProperty("db.mysql.url","localhost/zcq");
+	 * prop.setProperty("db.mysql.user","root");
+	 * prop.setProperty("db.mysql.password.pkey","MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJbIzkTcjrlDwB3vdc6gKwJ5gAMGRazWOrOeuMCxI2Lb7n/d4DoBySUdM+7HT6Gkfbfz6BM1o/2Gp0PkhkEHAx8CAwEAAQ==");
+	 * prop.setProperty("db.mysql.password","TVL59a5MXxM3EB7Ylzf8idFijFX97+ZRxZG+2PpkR4pPCQ5TLtZAok88IGW05CxRvC56ekO++yWhepAEL118lw==");
+	 * prop.setProperty("db.mysql.initsize","10");
+	 * prop.setProperty("db.mysql.maxactive","100");
+	 * prop.setProperty("db.showsql","true");
+	 * !// config redis
+	 * prop.setProperty("redis.cs","mainCache");
+	 * prop.setProperty("redis.mainCache.active","true");
+	 * prop.setProperty("redis.mainCache.host","localhost");
+	 * prop.setProperty("redis.mainCache.port","6379");
+	 * prop.setProperty("redis.mainCache.password","");
+	 * prop.setProperty("redis.mainCache.tables","user,hello");
+	 * !// config generator
+	 * prop.setProperty("ge.dict","true");
+	 * prop.setProperty("ge.model.dao","true");
+	 * prop.setProperty("ge.mappingkit.classname","TableMappingKit");
+	 * prop.setProperty("ge.base.model.outdir","./src/main/java/cn/zhucongqi/api/base/model");
+	 * prop.setProperty("ge.base.model.package","cn.zhucongqi.api.base.model");
+	 * prop.setProperty("ge.model.outdir","./src/main/java/cn/zhucongqi/api/model");
+	 * prop.setProperty("ge.model.package","cn.zhucongqi.api.model");
+	 * !// config app
+	 * prop.setProperty("app.dev","true");
+	 * prop.setProperty("app.post","true");
+	 * prop.setProperty("app.name","jf-app");
+	 * </pre>
+	 */
+	public abstract Properties getLazyProp();
+```
+
 ### 使用
 
 ```java

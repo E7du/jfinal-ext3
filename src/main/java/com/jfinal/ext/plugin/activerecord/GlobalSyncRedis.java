@@ -13,24 +13,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.plugin.sqlinxml;
+package com.jfinal.ext.plugin.activerecord;
 
-import com.jfinal.plugin.IPlugin;
-
-public class SqlInXmlPlugin implements IPlugin {
-
-    public SqlInXmlPlugin() {
-    }
-
-    @Override
-    public boolean start() {
-        SqlInXmlKit.init();
-        return true;
-    }
-
-    @Override
-    public boolean stop() {
-        SqlInXmlKit.clearSqlMap();
-        return true;
-    }
+public final class GlobalSyncRedis {
+	
+	private static boolean sync = true;
+	
+	public static void openSync() {
+		GlobalSyncRedis.sync = true;
+	}
+	
+	public static void closeSync() {
+		GlobalSyncRedis.sync = false;
+	}
+	
+	public static boolean syncState() {
+		return GlobalSyncRedis.sync;
+	}
 }
