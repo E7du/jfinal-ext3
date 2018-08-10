@@ -31,7 +31,6 @@ import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.jfinal.plugin.activerecord.Table;
-import com.jfinal.plugin.activerecord.TableMapping;
 import com.jfinal.plugin.redis.Cache;
 import com.jfinal.plugin.redis.Redis;
 
@@ -434,7 +433,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
             return false;
         
         Model<?> other = (Model<?>) obj;
-        Table tableinfo = this._getTable();
+        Table tableinfo = this.table();
         Set<Entry<String, Object>> attrsEntrySet = this._getAttrsEntrySet();
         for (Entry<String, Object> entry : attrsEntrySet) {
             String key = entry.getKey();
@@ -460,12 +459,12 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	public int hcode() {
 		final int prime = 31;
 		int result = 1;
-		Table tableinfo = TableMapping.me().getTable(this._getUsefulClass());
+		Table table = this.table();
 		Set<Entry<String, Object>> attrsEntrySet = this._getAttrsEntrySet();
 		for (Entry<String, Object> entry : attrsEntrySet) {
 			String key = entry.getKey();
 			Object value = entry.getValue();
-			Class<?> clazz = tableinfo.getColumnType(key);
+			Class<?> clazz = table.getColumnType(key);
 			if (clazz == Integer.class) {
 				result = prime * result + (Integer) value;
 			} else if (clazz == Short.class) {
