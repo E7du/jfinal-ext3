@@ -24,7 +24,7 @@ public class TestJxlsKit {
         beans.put("employee", staff);
         XLSTransformer transformer = new XLSTransformer();
         String templateFileName = "src/test/resources/employees.xls";
-        String destFileName = "/Users/congqizhu/Desktop/employees-desc.xls";
+        String destFileName = "src/test/resources/employees-desc.xls";
         transformer.transformXLS(templateFileName, beans, destFileName);
     }
 }

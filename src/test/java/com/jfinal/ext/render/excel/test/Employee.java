@@ -5,12 +5,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.jfinal.plugin.activerecord.Model;
+
 /**
  * Sample Employee bean to demostrate simple export features author: Leonid Vysochyn
  */
-public class Employee {
+public class Employee extends Model<Employee>{
 
-    static long current = System.currentTimeMillis();
+	private static final long serialVersionUID = 4883434179711165154L;
+	static long current = System.currentTimeMillis();
     static Random random = new Random(System.currentTimeMillis());
     public static List<Employee> generate(int num) {
         List<Employee> result = new ArrayList<Employee>();

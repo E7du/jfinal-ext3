@@ -128,8 +128,8 @@ public class Rule {
         return this;
     }
 
-    public Rule addCell(int index, String attribute) {
-        cells.add(Cell.create(index, attribute));
+    public Rule addCell(int index, String attrName) {
+        cells.add(Cell.create(index, attrName));
         return this;
     }
 
@@ -143,21 +143,21 @@ public class Rule {
 
         protected int index;
 
-        protected String attribute;
+        protected String attr;
 
         protected CellConvert convert;
 
         protected CellValidate validate;
 
-        public static Cell create(int index, String attribute) {
+        public static Cell create(int index, String attr) {
             Cell cell = new Cell();
             cell.setIndex(index);
-            cell.setAttribute(attribute);
+            cell.setAttr(attr);
             return cell;
         }
 
-        public static Cell create(int index, String attribute, CellConvert convert, CellValidate validate) {
-            Cell cell = create(index, attribute);
+        public static Cell create(int index, String attr, CellConvert convert, CellValidate validate) {
+            Cell cell = create(index, attr);
             cell.setConvert(convert);
             cell.setValidate(validate);
             return cell;
@@ -171,12 +171,12 @@ public class Rule {
             this.index = value;
         }
 
-        public String getAttribute() {
-            return attribute;
+        public String getAttr() {
+            return attr;
         }
 
-        public void setAttribute(String value) {
-            this.attribute = value;
+        public void setAttr(String attr) {
+            this.attr = attr;
         }
 
         public CellConvert getConvert() {
@@ -197,7 +197,7 @@ public class Rule {
 
         @Override
 		public String toString() {
-			return "Cell [index=" + index + ", attribute=" + attribute + ", convert=" + convert + ", validate="
+			return "Cell [index=" + index + ", attr=" + attr + ", convert=" + convert + ", validate="
 					+ validate + "]";
 		}
     }

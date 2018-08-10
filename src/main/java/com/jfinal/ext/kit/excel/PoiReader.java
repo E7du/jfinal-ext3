@@ -16,8 +16,12 @@
 package com.jfinal.ext.kit.excel;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -32,7 +36,7 @@ import com.jfinal.plugin.activerecord.Model;
 
 public class PoiReader {
 
-    public static List<List<List<String>>> readExcel(File file, Rule rule) {
+	public static List<List<List<String>>> readExcel(File file, Rule rule) {
         int start = rule.getStart();
         int end = rule.getEnd();
         List<List<List<String>>> result = Lists.newArrayList();
@@ -67,7 +71,14 @@ public class PoiReader {
                     CellType cellType = cell.getCellTypeEnum();
                     String column = "";
                     if (CellType.NUMERIC.equals(cellType)) {
-                    	column = String.valueOf(cell.getDateCellValue());
+                    	//https://blog.csdn.net/ole_triangle_java/article/details/70254751
+                    	if (HSSFDateUtil.isCellDateFormatted(cell)) {
+                    		Date date = cell.getDateCellValue();
+                    		column = DateFormatUtils.format(date, "yyyy-MM-dd");
+						} else {
+							DecimalFormat df = new DecimalFormat("0");
+							column = df.format(cell.getNumericCellValue());
+						}
 					} else if (CellType.STRING.equals(cellType)) {
                         column = cell.getStringCellValue();
 					} else if (CellType.BOOLEAN.equals(cellType)) {
@@ -96,8 +107,8 @@ public class PoiReader {
         return result;
     }
 
-    public static List<List<String>> readSheet(File file, Rule Rule) {
-        return readExcel(file, Rule).get(0);
+    public static List<List<String>> readSheet(File file, Rule rule) {
+        return readExcel(file, rule).get(0);
     }
 
     public static List<Model<?>> processSheet(File file, Rule rule) {
@@ -112,13 +123,16 @@ public class PoiReader {
     }
 
 	public static Model<?> fillModel(Class<?> clazz, List<String> list, Rule rule) {
-        Model<?> model = Reflect.on(clazz).create().get();
+		Model<?> model = Reflect.on(clazz).create().get();
         String[] values = list.toArray(new String[]{});
         String message = "";
         for (int i = 0; i < values.length; i++) {
             String value = values[i];
             Rule.Cell cell = matchCell(rule, i);
-            String name = cell.getAttribute();
+            if (null == cell) {
+				continue;
+			}
+            String name = cell.getAttr();
             CellValidate cellValidate = cell.getValidate();
             boolean valid = true;
             if (null != cellValidate) {
@@ -146,7 +160,7 @@ public class PoiReader {
         List<Rule.Cell> cells = rule.getCells();
         for (int i = 0; i < cells.size(); i++) {
             Rule.Cell cell = cells.get(i);
-            if (index + 1 == cell.getIndex()) return cell;
+            if (index+1 == cell.getIndex()) return cell;
         }
         return null;
     }
