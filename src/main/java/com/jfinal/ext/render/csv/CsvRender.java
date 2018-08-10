@@ -26,7 +26,7 @@ public class CsvRender extends Render {
 	
     private List<String> clomuns;
     private List<?> data;
-    private String encodeType = "gbk";
+    private String encodeType = "GBK";
     private String fileName = "default.csv";
     private List<String> headers;
 

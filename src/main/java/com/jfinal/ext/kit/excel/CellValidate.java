@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.kit.excel.validate;
+package com.jfinal.ext.kit.excel;
 
 /**
  * 单元格值合法性验证

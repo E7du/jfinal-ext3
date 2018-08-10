@@ -25,7 +25,7 @@ import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.plugin.IPlugin;
 
-public class JFinalKit {
+final public class JFinalKit {
 
     static {
         init();

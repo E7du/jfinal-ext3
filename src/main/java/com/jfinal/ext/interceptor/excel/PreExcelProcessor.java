@@ -15,9 +15,11 @@
 */
 package com.jfinal.ext.interceptor.excel;
 
+import com.jfinal.plugin.activerecord.Model;
+
 /**
  *  excel解析前置处理器，在每一个元素 保存之前调用
  */
-public interface PreExcelProcessor<T> {
-	void process(T obj);
+public interface PreExcelProcessor {
+	void process(Model<?> m);
 }

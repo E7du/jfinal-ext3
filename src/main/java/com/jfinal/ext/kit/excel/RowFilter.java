@@ -15,7 +15,8 @@
 */
 package com.jfinal.ext.kit.excel;
 
-public interface Cellable {
-		
-	String[] getCellValues();
+import java.util.List;
+
+public interface RowFilter {
+    boolean doFilter(int rowNum, List<String> list);
 }

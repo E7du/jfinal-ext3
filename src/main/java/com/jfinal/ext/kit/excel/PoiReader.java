@@ -15,19 +15,22 @@
 */
 package com.jfinal.ext.kit.excel;
 
-import com.google.common.collect.Lists;
-import com.jfinal.ext.kit.Reflect;
-import com.jfinal.ext.kit.excel.convert.CellConvert;
-import com.jfinal.ext.kit.excel.filter.RowFilter;
-import com.jfinal.ext.kit.excel.validate.CellValidate;
-import com.jfinal.kit.StrKit;
-import com.jfinal.plugin.activerecord.Model;
-import org.apache.poi.ss.usermodel.*;
-
 import java.io.File;
 import java.util.List;
 
-public class PoiImporter {
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import com.google.common.collect.Lists;
+import com.jfinal.ext.kit.Reflect;
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Model;
+
+public class PoiReader {
 
     public static List<List<List<String>>> readExcel(File file, Rule rule) {
         int start = rule.getStart();
@@ -37,8 +40,9 @@ public class PoiImporter {
         try {
             wb = WorkbookFactory.create(file);
         } catch (Exception e) {
-            throw new ExcelException(e);
+            throw new PoiException(e);
         }
+        
         for (int i = 0; i < wb.getNumberOfSheets(); i++) {
             Sheet sheet = wb.getSheetAt(i);
             List<List<String>> sheetList = Lists.newArrayList();
@@ -57,30 +61,23 @@ public class PoiImporter {
                 int cellNum = row.getLastCellNum();
                 for (int cellIndex = row.getFirstCellNum(); cellIndex < cellNum; cellIndex++) {
                     Cell cell = row.getCell(cellIndex);
-                    int cellType = cell.getCellType();
+                    if (null == cell) {
+						continue;
+					}
+                    CellType cellType = cell.getCellTypeEnum();
                     String column = "";
-                    switch (cellType) {
-                        case Cell.CELL_TYPE_NUMERIC:
-//                            DecimalFormat format = new DecimalFormat();
-//                            format.setGroupingUsed(false);
-                            column = String.valueOf(cell.getDateCellValue());
-                            break;
-                        case Cell.CELL_TYPE_STRING:
-                            column = cell.getStringCellValue();
-                            break;
-                        case Cell.CELL_TYPE_BOOLEAN:
-                            column = cell.getBooleanCellValue() + "";
-                            break;
-                        case Cell.CELL_TYPE_FORMULA:
-                            column = cell.getCellFormula();
-                            break;
-                        case Cell.CELL_TYPE_ERROR:
-
-                        case Cell.CELL_TYPE_BLANK:
-                            column = " ";
-                            break;
-                        default:
-                    }
+                    if (CellType.NUMERIC.equals(cellType)) {
+                    	column = String.valueOf(cell.getDateCellValue());
+					} else if (CellType.STRING.equals(cellType)) {
+                        column = cell.getStringCellValue();
+					} else if (CellType.BOOLEAN.equals(cellType)) {
+                        column = cell.getBooleanCellValue() + "";
+					} else if (CellType.FORMULA.equals(cellType)) {
+                        column = cell.getCellFormula();
+					} else if (CellType.ERROR.equals(cellType)
+							|| CellType.BLANK.equals(cellType)) {
+						column = "";
+					}
                     columns.add(column.trim());
                 }
 
@@ -103,18 +100,17 @@ public class PoiImporter {
         return readExcel(file, Rule).get(0);
     }
 
-    public static List<Model<?>> processSheet(File file, Rule Rule, Class<?> clazz) {
-        List<List<String>> srcList = readSheet(file, Rule);
+    public static List<Model<?>> processSheet(File file, Rule rule) {
+        List<List<String>> srcList = readSheet(file, rule);
         List<Model<?>> results = Lists.newArrayList();
         for (int i = 0; i < srcList.size(); i++) {
             List<String> list = srcList.get(i);
-            Model<?> model = fillModel(clazz, list, Rule);
+            Model<?> model = fillModel(rule.getClazz(), list, rule);
             results.add(model);
         }
         return results;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Model<?> fillModel(Class<?> clazz, List<String> list, Rule rule) {
         Model<?> model = Reflect.on(clazz).create().get();
         String[] values = list.toArray(new String[]{});
@@ -123,10 +119,9 @@ public class PoiImporter {
             String value = values[i];
             Rule.Cell cell = matchCell(rule, i);
             String name = cell.getAttribute();
-            String validateClassName = cell.getValidate();
+            CellValidate cellValidate = cell.getValidate();
             boolean valid = true;
-            if (StrKit.notBlank(validateClassName)) {
-                CellValidate cellValidate = Reflect.on(validateClassName).create().get();
+            if (null != cellValidate) {
                 valid = cellValidate.validate(value);
                 if (!valid) {
                     message = message + "value(" + value + ") is invalid in column " + cell.getIndex() + "</br>";
@@ -134,16 +129,15 @@ public class PoiImporter {
             }
             if (valid) {
                 Object convertedValue = value;
-                String convertClassName = cell.getConvert();
-                if (StrKit.notBlank(convertClassName)) {
-                    CellConvert cellConvert = Reflect.on(convertClassName).get();
+                CellConvert cellConvert = cell.getConvert();
+                if (null != cellConvert) {
                     convertedValue = cellConvert.convert(value, model);
                 }
                 model.set(name, convertedValue);
             }
         }
         if (StrKit.notBlank(message)) {
-            throw new ExcelException(message);
+            throw new PoiException(message);
         }
         return model;
     }

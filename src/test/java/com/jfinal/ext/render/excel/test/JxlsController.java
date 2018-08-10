@@ -1,4 +1,4 @@
-package com.jfinal.ext.render.excel;
+package com.jfinal.ext.render.excel.test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +8,7 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jfinal.core.Controller;
+import com.jfinal.ext.render.excel.JxlsRender;
 import com.jfinal.plugin.activerecord.Record;
 import com.test.api.model.User;
 
@@ -23,8 +24,9 @@ public class JxlsController extends Controller {
         staff.add(new Employee("John", 35, 2800, 0.20));
         Map<String, Object> beans = new HashMap<String, Object>();
         beans.put("employee", staff);
-        String templateFileName = "src/test/resource/employees.xls";
+        String templateFileName = "src/test/resources/employees.xls";
         String filename = "test.xls";
+        //renderText("ss");
         render(JxlsRender.me(templateFileName).filename(filename).beans(beans));
     }
 
@@ -40,7 +42,7 @@ public class JxlsController extends Controller {
         users.add(user2);
         Map<String, Object> beans = Maps.newHashMap();
         beans.put("user", users);
-        String templateFileName = "src/test/resource/users.xls";
+        String templateFileName = "src/test/resources/users.xls";
         String filename = "users.xls";
         render(JxlsRender.me(templateFileName).filename(filename).beans(beans));
     }
@@ -55,7 +57,7 @@ public class JxlsController extends Controller {
         staff.add(new Employee("Maria", 34, 1700, 0.15));
         staff.add(new Employee("John", 35, 2800, 0.20));
         setAttr("employee", staff);
-        String templateFileName = "src/test/resource/employees.xls";
+        String templateFileName = "src/test/resources/employees.xls";
         System.out.println(".......");
         render(JxlsRender.me(templateFileName));
     }
@@ -72,7 +74,7 @@ public class JxlsController extends Controller {
         records.add(record2);
         Map<String, Object> beans = new HashMap<String, Object>();
         beans.put("users", records);
-        String templateFileName = "src/test/resource/users.xls";
+        String templateFileName = "src/test/resources/users.xls";
         String filename = "users.xls";
         render(JxlsRender.me(templateFileName).filename(filename).beans(beans));
     }

@@ -19,7 +19,7 @@ import com.jfinal.log.Log;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 
-public class RecordKit {
+final public class RecordKit {
 
     private static Log LOG = Log.getLog(RecordKit.class);
 

@@ -1,4 +1,4 @@
-package com.jfinal.ext.render.excel;
+package com.jfinal.ext.render.excel.test;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +31,10 @@ public class Employee {
     private Double payment;
 
     private Employee superior;
+    
+    public Employee() {
+    	
+    }
 
     public Employee(String name, int age, double payment, double bonus) {
         this.name = name;

@@ -17,6 +17,7 @@ package com.jfinal.ext.render.excel;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
@@ -27,11 +28,14 @@ import net.sf.jxls.transformer.XLSTransformer;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.google.common.collect.Maps;
+import com.jfinal.log.Log;
 import com.jfinal.render.Render;
 import com.jfinal.render.RenderException;
 
 public class JxlsRender extends Render {
-	
+
+    private final Log LOG = Log.getLog(getClass());
+    
     private static final String CONTENT_TYPE = "application/vnd.ms-excel;charset=" + getEncoding();
     public static JxlsRender me(String templetFile) {
         return new JxlsRender(templetFile);
@@ -57,7 +61,6 @@ public class JxlsRender extends Render {
             Object value = request.getAttribute(key);
             beans.put(key, value);
         }
-
     }
 
     public JxlsRender filename(String filename) {
@@ -72,16 +75,32 @@ public class JxlsRender extends Render {
         }
         response.setContentType(CONTENT_TYPE);
         response.setHeader("Content-Disposition", "attachment;Filename=" + filename);
+        OutputStream os = null;
+        InputStream is = null;
         try {
-            OutputStream out = response.getOutputStream();
-            InputStream is = new BufferedInputStream(new FileInputStream(templetFile));
+        	os = response.getOutputStream();
+            is = new BufferedInputStream(new FileInputStream(templetFile));
             XLSTransformer transformer = new XLSTransformer();
             Workbook workBook = transformer.transformXLS(is, beans);
-            workBook.write(out);
+            workBook.write(os);
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new RenderException(e);
-        }
+        } finally {
+            try {
+                if (os != null) {
+                    os.flush();
+                    os.close();
+                }
+                if (is != null) {
+                	is.close();
+                }
+            } catch (IOException e) {
+            	e.printStackTrace();
+                LOG.error(e.getMessage(), e);
+            }
 
+        }
     }
 
     public JxlsRender templetFile(String templetFile) {

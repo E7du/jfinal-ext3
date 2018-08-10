@@ -15,8 +15,6 @@
 */
 package com.jfinal.ext.interceptor.excel;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -24,15 +22,12 @@ import com.jfinal.aop.Invocation;
 import com.jfinal.aop.PrototypeInterceptor;
 import com.jfinal.core.Controller;
 import com.jfinal.ext.kit.Reflect;
-import com.jfinal.ext.kit.excel.PoiImporter;
+import com.jfinal.ext.kit.excel.PoiReader;
+import com.jfinal.ext.kit.excel.RowFilter;
 import com.jfinal.ext.kit.excel.Rule;
-import com.jfinal.ext.kit.excel.filter.RowFilter;
-import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Model;
 
 public abstract class ExcelUploadInterceptor<M extends Model<?>> extends PrototypeInterceptor {
-
-    private Class<?> clazz;
 
     private Rule rule;
 
@@ -40,16 +35,10 @@ public abstract class ExcelUploadInterceptor<M extends Model<?>> extends Prototy
 
     public abstract void callback(Model<?> model);
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	public ExcelUploadInterceptor() {
-        Type genericSuperclass = getClass().getGenericSuperclass();
-        clazz = (Class<? extends ExcelUploadInterceptor>) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
-    }
-
     public void doIntercept(Invocation ai) {
         rule = configRule();
         Controller controller = ai.getController();
-        List<Model<?>> list = PoiImporter.processSheet(controller.getFile().getFile(), rule, clazz);
+        List<Model<?>> list = PoiReader.processSheet(controller.getFile().getFile(), rule);
         execPreListProcessor(list);
         for (Model<?> model : list) {
             execPreExcelProcessor(model);
@@ -60,39 +49,31 @@ public abstract class ExcelUploadInterceptor<M extends Model<?>> extends Prototy
         ai.invoke();
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void execPreListProcessor(List<?> list) {
-        String preListProcessorClassName = rule.getPreListProcessor();
-        if (StrKit.notBlank(preListProcessorClassName)) {
-            PreListProcessor preListProcessor = Reflect.on(preListProcessorClassName).create().get();
-            preListProcessor.process(list);
+    private void execPreListProcessor(List<Model<?>> list) {
+        PreListProcessor preListProcessor = rule.getPreListProcessor();
+        if (null != preListProcessor) {
+        	preListProcessor.process(list);
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void execPostListProcessor(List<?> list) {
-        String postListProcessorClassName = rule.getPostListProcessor();
-        if (StrKit.notBlank(postListProcessorClassName)) {
-            PostListProcessor postListProcessor = Reflect.on(postListProcessorClassName).create().get();
-            postListProcessor.process(list);
+    private void execPostListProcessor(List<Model<?>> list) {
+    	PostListProcessor postListProcessor = rule.getPostListProcessor();
+        if (null != postListProcessor) {
+        	postListProcessor.process(list);
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void execPreExcelProcessor(Object obj) {
-        String preExcelProcessorClassName = rule.getPreExcelProcessor();
-        if (StrKit.notBlank(preExcelProcessorClassName)) {
-            PreExcelProcessor preExcelProcessor = Reflect.on(preExcelProcessorClassName).create().get();
-            preExcelProcessor.process(obj);
+    private void execPreExcelProcessor(Model<?> model) {
+    	PreExcelProcessor preExcelProcessor = rule.getPreExcelProcessor();
+        if (null != preExcelProcessor) {
+            preExcelProcessor.process(model);
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void execPostExcelProcessor(Object obj) {
-        String postExcelProcessorClassName = rule.getPostExcelProcessor();
-        if (StrKit.notBlank(postExcelProcessorClassName)) {
-            PostExcelProcessor postExcelProcessor = Reflect.on(postExcelProcessorClassName).create().get();
-            postExcelProcessor.process(obj);
+    private void execPostExcelProcessor(Model<?> model) {
+    	PostExcelProcessor postExcelProcessor = rule.getPostExcelProcessor();
+        if (null != postExcelProcessor) {
+            postExcelProcessor.process(model);
         }
     }
     

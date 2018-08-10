@@ -15,42 +15,39 @@
 */
 package com.jfinal.ext.kit.excel;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.jfinal.plugin.activerecord.Model;
-import com.jfinal.plugin.activerecord.Record;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
-public class PoiExporter {
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Record;
 
-    public static final String VERSION_2003 = "2003";
+public class PoiWriter {
+
     private static final int HEADER_ROW = 1;
     private static final int MAX_ROWS = 65535;
-    private String version;
-    private String[] sheetNames = new String[]{"sheet"};
+    private String[] sheetNames = new String[]{"Sheet"};
     private int cellWidth = 8000;
     private int headerRow;
     private String[][] headers;
     private String[][] columns;
     private List<?>[] data;
 
-    public PoiExporter(List<?>... data) {
+    public PoiWriter(List<?>... data) {
         this.data = data;
     }
 
-    public static PoiExporter data(List<?>... data) {
-        return new PoiExporter(data);
+    public static PoiWriter data(List<?>... data) {
+        return new PoiWriter(data);
     }
 
     public static List<List<?>> dice(List<?> num, int chunkSize) {
@@ -63,7 +60,7 @@ public class PoiExporter {
         return result;
     }
 
-    public Workbook export() {
+    public Workbook write() {
         Preconditions.checkNotNull(data, "data can not be null");
         Preconditions.checkNotNull(headers, "headers can not be null");
         Preconditions.checkNotNull(columns, "columns can not be null");
@@ -71,38 +68,36 @@ public class PoiExporter {
                 && headers.length == columns.length, "data,sheetNames,headers and columns'length should be the same." +
                 "(data:" + data.length + ",sheetNames:" + sheetNames.length + ",headers:" + headers.length + ",columns:" + columns.length + ")");
         Preconditions.checkArgument(cellWidth >= 0, "cellWidth can not be less than 0");
-        Workbook wb;
-        if (VERSION_2003.equals(version)) {
-            wb = new HSSFWorkbook();
-            if (data.length > 1) {
-                for (int i = 0; i < data.length; i++) {
-                    List<?> item = data[i];
-                    Preconditions.checkArgument(item.size() < MAX_ROWS, "Data [" + i + "] is invalid:invalid data size (" + item.size() + ") outside allowable range (0..65535)");
-                }
-            } else if (data.length == 1 && data[0].size() > MAX_ROWS) {
-                data = dice(data[0], MAX_ROWS).toArray(new List<?>[]{});
-                String sheetName = sheetNames[0];
-                sheetNames = new String[data.length];
-                for (int i = 0; i < data.length; i++) {
-                    sheetNames[i] = sheetName + (i == 0 ? "" : (i + 1));
-                }
-                String[] header = headers[0];
-                headers = new String[data.length][];
-                for (int i = 0; i < data.length; i++) {
-                    headers[i] = header;
-                }
-                String[] column = columns[0];
-                columns = new String[data.length][];
-                for (int i = 0; i < data.length; i++) {
-                    columns[i] = column;
-                }
+        
+        Workbook wb = new HSSFWorkbook();
+        if (data.length > 1) {
+            for (int i = 0; i < data.length; i++) {
+                List<?> item = data[i];
+                Preconditions.checkArgument(item.size() < MAX_ROWS, "Data [" + i + "] is invalid:invalid data size (" + item.size() + ") outside allowable range (0..65535)");
             }
-        } else {
-            wb = new XSSFWorkbook();
+        } else if (data.length == 1 && data[0].size() > MAX_ROWS) {
+            data = dice(data[0], MAX_ROWS).toArray(new List<?>[]{});
+            String sheetName = sheetNames[0];
+            sheetNames = new String[data.length];
+            for (int i = 0; i < data.length; i++) {
+                sheetNames[i] = sheetName + (i == 0 ? "" : (i + 1));
+            }
+            String[] header = headers[0];
+            headers = new String[data.length][];
+            for (int i = 0; i < data.length; i++) {
+                headers[i] = header;
+            }
+            String[] column = columns[0];
+            columns = new String[data.length][];
+            for (int i = 0; i < data.length; i++) {
+                columns[i] = column;
+            }
         }
+        
         if (data.length == 0) {
             return wb;
         }
+        
         for (int i = 0; i < data.length; i++) {
             Sheet sheet = wb.createSheet(sheetNames[i]);
             Row row;
@@ -144,7 +139,7 @@ public class PoiExporter {
 
     @SuppressWarnings("unchecked")
     private static void processAsMap(String[] columns, Row row, Object obj) {
-        Cell cell;
+        Cell cell = null;
         Map<String, Object> map = (Map<String, Object>) obj;
         if (columns.length == 0) { // show all if column not specified
             Set<String> keys = map.keySet();
@@ -163,7 +158,7 @@ public class PoiExporter {
     }
 
     private static void processAsModel(String[] columns, Row row, Object obj) {
-        Cell cell;
+        Cell cell = null;
         Model<?> model = (Model<?>) obj;
         Set<Entry<String, Object>> entries = model._getAttrsEntrySet();
         if (columns.length == 0) { // show all if column not specified
@@ -182,7 +177,7 @@ public class PoiExporter {
     }
 
     private static void processAsRecord(String[] columns, Row row, Object obj) {
-        Cell cell;
+        Cell cell = null;
         Record record = (Record) obj;
         Map<String, Object> map = record.getColumns();
         if (columns.length == 0) { // show all if column not specified
@@ -202,47 +197,42 @@ public class PoiExporter {
         }
     }
 
-    public PoiExporter version(String version) {
-        this.version = version;
-        return this;
-    }
-
-    public PoiExporter sheetName(String sheetName) {
+    public PoiWriter sheetName(String sheetName) {
         this.sheetNames = new String[]{sheetName};
         return this;
     }
 
-    public PoiExporter sheetNames(String... sheetName) {
+    public PoiWriter sheetNames(String... sheetName) {
         this.sheetNames = sheetName;
         return this;
     }
 
-    public PoiExporter cellWidth(int cellWidth) {
+    public PoiWriter cellWidth(int cellWidth) {
         this.cellWidth = cellWidth;
         return this;
     }
 
-    public PoiExporter headerRow(int headerRow) {
+    public PoiWriter headerRow(int headerRow) {
         this.headerRow = headerRow;
         return this;
     }
 
-    public PoiExporter header(String... header) {
+    public PoiWriter header(String... header) {
         this.headers = new String[][]{header};
         return this;
     }
 
-    public PoiExporter headers(String[]... headers) {
+    public PoiWriter headers(String[]... headers) {
         this.headers = headers;
         return this;
     }
 
-    public PoiExporter column(String... column) {
+    public PoiWriter column(String... column) {
         this.columns = new String[][]{column};
         return this;
     }
 
-    public PoiExporter columns(String[]... columns) {
+    public PoiWriter columns(String[]... columns) {
         this.columns = columns;
         return this;
     }

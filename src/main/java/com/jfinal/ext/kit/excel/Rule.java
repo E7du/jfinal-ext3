@@ -15,49 +15,47 @@
 */
 package com.jfinal.ext.kit.excel;
 
-import com.google.common.collect.Lists;
-
-import javax.xml.bind.annotation.*;
 import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import com.google.common.collect.Lists;
+import com.jfinal.ext.interceptor.excel.PostExcelProcessor;
+import com.jfinal.ext.interceptor.excel.PostListProcessor;
+import com.jfinal.ext.interceptor.excel.PreExcelProcessor;
+import com.jfinal.ext.interceptor.excel.PreListProcessor;
 
 @XmlRootElement
 public class Rule {
+	
+	/**
+	 * Data From
+	 */
+	private int start;
 
-    protected String name;
+	/**
+	 * Data End
+	 */
+	private int end;
 
-    protected int sheetNo;
+	private PreExcelProcessor preExcelProcessor;
 
-    protected int start;
+	private PostExcelProcessor postExcelProcessor;
 
-    protected int end;
+	private PreListProcessor preListProcessor;
 
-    protected String rowFilter;
+	private PostListProcessor postListProcessor;
+    
+	/**
+	 * Data Convert Model's Class
+	 */
+    private Class<?> clazz;
 
-    protected String preExcelProcessor;
-
-    protected String postExcelProcessor;
-
-    protected String preListProcessor;
-
-    protected String postListProcessor;
-
-    protected List<Cell> cells = Lists.newArrayList();
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String value) {
-        this.name = value;
-    }
-
-    public int getSheetNo() {
-        return sheetNo;
-    }
-
-    public void setSheetNo(int value) {
-        this.sheetNo = value;
-    }
+    private List<Cell> cells = Lists.newArrayList();
 
     public int getStart() {
         return start;
@@ -75,47 +73,47 @@ public class Rule {
         this.end = value;
     }
 
-    public String getRowFilter() {
-        return rowFilter;
-    }
-
-    public void setRowFilter(String value) {
-        this.rowFilter = value;
-    }
-
-    public String getPreExcelProcessor() {
+    public PreExcelProcessor getPreExcelProcessor() {
         return preExcelProcessor;
     }
 
-    public void setPreExcelProcessor(String value) {
+    public void setPreExcelProcessor(PreExcelProcessor value) {
         this.preExcelProcessor = value;
     }
 
-    public String getPostExcelProcessor() {
+    public PostExcelProcessor getPostExcelProcessor() {
         return postExcelProcessor;
     }
 
-    public void setPostExcelProcessor(String value) {
+    public void setPostExcelProcessor(PostExcelProcessor value) {
         this.postExcelProcessor = value;
     }
 
-    public String getPreListProcessor() {
+    public PreListProcessor getPreListProcessor() {
         return preListProcessor;
     }
 
-    public void setPreListProcessor(String value) {
+    public void setPreListProcessor(PreListProcessor value) {
         this.preListProcessor = value;
     }
 
-    public String getPostListProcessor() {
+    public PostListProcessor getPostListProcessor() {
         return postListProcessor;
     }
 
-    public void setPostListProcessor(String value) {
+    public void setPostListProcessor(PostListProcessor value) {
         this.postListProcessor = value;
     }
+    
+    public Class<?> getClazz() {
+		return clazz;
+	}
 
-    @XmlElementWrapper(name = "cells")
+	public void setClazz(Class<?> clazz) {
+		this.clazz = clazz;
+	}
+
+	@XmlElementWrapper(name = "cells")
     @XmlElement(name = "cell")
     public List<Cell> getCells() {
         return cells;
@@ -135,7 +133,7 @@ public class Rule {
         return this;
     }
 
-    public Rule addCell(int index, String attribute, String convert, String validate) {
+    public Rule addCell(int index, String attribute, CellConvert convert, CellValidate validate) {
         cells.add(Cell.create(index, attribute, convert, validate));
         return this;
     }
@@ -147,9 +145,9 @@ public class Rule {
 
         protected String attribute;
 
-        protected String convert;
+        protected CellConvert convert;
 
-        protected String validate;
+        protected CellValidate validate;
 
         public static Cell create(int index, String attribute) {
             Cell cell = new Cell();
@@ -158,7 +156,7 @@ public class Rule {
             return cell;
         }
 
-        public static Cell create(int index, String attribute, String convert, String validate) {
+        public static Cell create(int index, String attribute, CellConvert convert, CellValidate validate) {
             Cell cell = create(index, attribute);
             cell.setConvert(convert);
             cell.setValidate(validate);
@@ -181,46 +179,34 @@ public class Rule {
             this.attribute = value;
         }
 
-        public String getConvert() {
+        public CellConvert getConvert() {
             return convert;
         }
 
-        public void setConvert(String value) {
+        public void setConvert(CellConvert value) {
             this.convert = value;
         }
 
-        public String getValidate() {
+        public CellValidate getValidate() {
             return validate;
         }
 
-        public void setValidate(String value) {
+        public void setValidate(CellValidate value) {
             this.validate = value;
         }
 
         @Override
-        public String toString() {
-            return "Cell{" +
-                    "index=" + index +
-                    ", attribute='" + attribute + '\'' +
-                    ", convert='" + convert + '\'' +
-                    ", validate='" + validate + '\'' +
-                    '}';
-        }
+		public String toString() {
+			return "Cell [index=" + index + ", attribute=" + attribute + ", convert=" + convert + ", validate="
+					+ validate + "]";
+		}
     }
 
-    @Override
-    public String toString() {
-        return "Rule{" +
-                "name='" + name + '\'' +
-                ", sheetNo=" + sheetNo +
-                ", start=" + start +
-                ", end=" + end +
-                ", rowFilter='" + rowFilter + '\'' +
-                ", preExcelProcessor='" + preExcelProcessor + '\'' +
-                ", postExcelProcessor='" + postExcelProcessor + '\'' +
-                ", preListProcessor='" + preListProcessor + '\'' +
-                ", postListProcessor='" + postListProcessor + '\'' +
-                ", cells=" + cells +
-                '}';
-    }
+//    @Override
+//	public String toString() {
+//		return "Rule [name=" + name + ", sheetNo=" + sheetNo + ", start=" + start + ", end=" + end + ", rowFilter="
+//				+ rowFilter + ", preExcelProcessor=" + preExcelProcessor + ", postExcelProcessor=" + postExcelProcessor
+//				+ ", preListProcessor=" + preListProcessor + ", postListProcessor=" + postListProcessor + ", clazz="
+//				+ clazz + ", cells=" + cells + "]";
+//	}
 }

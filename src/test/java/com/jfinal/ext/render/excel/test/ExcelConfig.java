@@ -1,4 +1,4 @@
-package com.jfinal.ext.render.csv;
+package com.jfinal.ext.render.excel.test;
 
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
@@ -7,19 +7,19 @@ import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
-import com.jfinal.log.Log4jLogFactory;
 import com.jfinal.template.Engine;
 
-public class CsvConfig extends JFinalConfig {
+public class ExcelConfig extends JFinalConfig {
 
     public static void main(String[] args) {
-        JFinal.start("WebRoot", 8080, "/", 5);
+        JFinal.start("src/main/webapp", 8080, "/", 3);
     }
 
     @Override
     public void configConstant(Constants me) {
+        me.setEncoding("utf-8");
         me.setDevMode(true);
-        me.setLogFactory(new Log4jLogFactory());
+        //loadPropertyFile("classes/config.txt");
     }
 
     @Override
@@ -33,11 +33,17 @@ public class CsvConfig extends JFinalConfig {
 
     @Override
     public void configPlugin(Plugins me) {
-
+//        DruidPlugin db = new DruidPlugin(getProperty("url"), "root", "root");
+//        ActiveRecordPlugin arp = new ActiveRecordPlugin(db);
+//        arp.addMapping("blog", Blog.class);
+//        me.add(db);
+//        me.add(arp);
     }
 
     @Override
     public void configRoute(Routes me) {
+        me.add("/poi", PoiController.class);
+        me.add("/jxls", JxlsController.class);
         me.add("/csv", CSVController.class);
     }
 

@@ -13,10 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.kit.excel.filter;
+package com.jfinal.ext.kit.excel;
 
-import java.util.List;
+public class PoiException extends RuntimeException {
 
-public interface RowFilter {
-    boolean doFilter(int rowNum, List<String> list);
+	private static final long serialVersionUID = -3631194189331161688L;
+
+	public PoiException(String message) {
+		super(message);
+	}
+
+    public PoiException(Throwable cause) {
+        super(cause);
+    }
+    
 }
