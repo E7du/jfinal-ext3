@@ -19,8 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.jfinal.kit.StrKit;
 
-
-public class ServletKit {
+final public class ServletKit {
 	
     public static String getIp(HttpServletRequest request) {
         String remoteAddr = request.getHeader("X-Real-IP");

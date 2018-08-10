@@ -18,7 +18,10 @@ package com.jfinal.ext.plugin.activerecord;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import com.google.common.collect.Lists;
 import com.jfinal.ext.kit.ArrayKit;
 import com.jfinal.ext.kit.SqlpKit;
 import com.jfinal.ext.plugin.redis.ModelRedisMapping;
@@ -28,6 +31,7 @@ import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.jfinal.plugin.activerecord.Table;
+import com.jfinal.plugin.activerecord.TableMapping;
 import com.jfinal.plugin.redis.Cache;
 import com.jfinal.plugin.redis.Redis;
 
@@ -40,6 +44,16 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	private boolean syncToRedis = GlobalSyncRedis.syncState();
 	private Cache redis = null;
 	private String cacheName = null;
+	//call back
+    private List<CallbackListener> callbackListeners = Lists.newArrayList();
+    
+    /**
+     * add Call back listener
+     * @param callbackListener
+     */
+    public void addCallbackListener(CallbackListener callbackListener) {
+        this.callbackListeners.add(callbackListener);
+    }
 
 	/**
 	 * redis key: records:tablename: id1 | id2 | id3...
@@ -147,6 +161,13 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		}
 		return attrs;
 	}
+	
+	/**
+	 * Model Attrs
+	 */
+	public Map<String, Object> attrs() {
+		return this._getAttrs();
+	}
 
 	/**
 	 * auto sync to the redis: true-sync,false-cancel, default true
@@ -218,9 +239,15 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 */
 	@Override
 	public boolean save() {
+		for (CallbackListener callbackListener : this.callbackListeners) {
+			callbackListener.beforeSave(this);
+		}
 		boolean ret = super.save();
 		if (this.syncToRedis && ret) {
 			this.saveToRedis(this);
+		}
+		for (CallbackListener callbackListener : this.callbackListeners) {
+			callbackListener.afterSave(this);
 		}
 		return ret;
 	}
@@ -230,10 +257,16 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 */
 	@Override
 	public boolean delete() {
+        for (CallbackListener callbackListener : this.callbackListeners) {
+            callbackListener.beforeDelete(this);
+        }
 		boolean ret = super.delete();
 		if (this.syncToRedis && ret) {
 			this.redis().del(this.redisKey(this));
 		}
+        for (CallbackListener callbackListener : this.callbackListeners) {
+            callbackListener.afterDelete(this);
+        }
 		return ret;
 	}
 
@@ -242,10 +275,16 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 */
 	@Override
 	public boolean update() {
+        for (CallbackListener callbackListener : this.callbackListeners) {
+            callbackListener.beforeUpdate(this);
+        }
 		boolean ret = super.update();
 		if (this.syncToRedis && ret) {
 			this.redis().hmset(this.redisKey(this), this.attrsCp());
 		}
+        for (CallbackListener callbackListener : this.callbackListeners) {
+            callbackListener.afterUpdate(this);
+        }
 		return ret;
 	}
 
@@ -345,5 +384,116 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			return record.get("cnt");
 		}
 		return 0L;
+	}
+
+	@SuppressWarnings("unchecked")
+	private M cp(boolean cpAttrs) {
+		M m = null;
+		try {
+			m = (M) this._getUsefulClass().newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		if (cpAttrs) {
+			m.put(this._getAttrs());
+		}
+		return m;
+	}
+	
+
+	/**
+	 * Clone new instance[wrapper clone]
+	 */
+	public M cp() {
+		return this.cp(true);
+	}
+	
+	/**
+	 * Clone new instance[wrapper clone], just link attrs values
+	 * @param attrs
+	 */
+	public M cp(String... attrs) {
+		M m = this.cp(false);
+		for (String attr : attrs) {
+			m.set(attr, this.get(attr));
+		}
+		return m;
+	}
+	
+	/**
+	 * check current instance is equal obj or not.[wrapper equal]
+	 * @param obj
+	 * @return true:equal, false:not equal.
+	 */
+	public boolean eq(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this._getUsefulClass() != obj.getClass())
+            return false;
+        
+        Model<?> other = (Model<?>) obj;
+        Table tableinfo = this._getTable();
+        Set<Entry<String, Object>> attrsEntrySet = this._getAttrsEntrySet();
+        for (Entry<String, Object> entry : attrsEntrySet) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            Class<?> clazz = tableinfo.getColumnType(key);
+            if (clazz == Float.class) {
+            } else if (clazz == Double.class) {
+            } else if (clazz == Model.class) {
+            } else {
+                if (value == null) {
+                    if (other.get(key) != null)
+                        return false;
+                } else if (!value.equals(other.get(key)))
+                    return false;
+            }
+        }
+        return true;		
+	}
+	
+	/**
+	 * wrapper hash code
+	 */
+	public int hcode() {
+		final int prime = 31;
+		int result = 1;
+		Table tableinfo = TableMapping.me().getTable(this._getUsefulClass());
+		Set<Entry<String, Object>> attrsEntrySet = this._getAttrsEntrySet();
+		for (Entry<String, Object> entry : attrsEntrySet) {
+			String key = entry.getKey();
+			Object value = entry.getValue();
+			Class<?> clazz = tableinfo.getColumnType(key);
+			if (clazz == Integer.class) {
+				result = prime * result + (Integer) value;
+			} else if (clazz == Short.class) {
+				result = prime * result + (Short) value;
+			} else if (clazz == Long.class) {
+				result = prime * result + (int) ((Long) value ^ ((Long) value >>> 32));
+			} else if (clazz == Float.class) {
+				result = prime * result + Float.floatToIntBits((Float) value);
+			} else if (clazz == Double.class) {
+				long temp = Double.doubleToLongBits((Double) value);
+				result = prime * result + (int) (temp ^ (temp >>> 32));
+			} else if (clazz == Boolean.class) {
+				result = prime * result + ((Boolean) value ? 1231 : 1237);
+			} else if (clazz == Model.class) {
+				result = this.hcode();
+			} else {
+				result = prime * result + ((value == null) ? 0 : value.hashCode());
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Convert to Record
+	 */
+	public Record convertToRecord() {
+		Record r = new Record();
+		r.setColumns(this._getAttrs());
+		return r;
 	}
 }

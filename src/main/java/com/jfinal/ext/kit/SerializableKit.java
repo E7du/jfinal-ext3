@@ -22,8 +22,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-
-public class SerializableKit {
+final public class SerializableKit {
 	
     /**
      * 将对象序列化为byte[]
