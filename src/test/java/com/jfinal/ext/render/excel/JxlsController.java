@@ -23,7 +23,7 @@ public class JxlsController extends Controller {
         staff.add(new Employee("John", 35, 2800, 0.20));
         Map<String, Object> beans = new HashMap<String, Object>();
         beans.put("employee", staff);
-        String templateFileName = "/home/kid/git/jfinal-ext/resource/employees.xls";
+        String templateFileName = "src/test/resource/employees.xls";
         String filename = "test.xls";
         render(JxlsRender.me(templateFileName).filename(filename).beans(beans));
     }
@@ -46,6 +46,7 @@ public class JxlsController extends Controller {
     }
 
     public void para() {
+    	System.out.println("----");
         List<Employee> staff = new ArrayList<Employee>();
         staff.add(new Employee("Derek", 35, 3000, 0.30));
         staff.add(new Employee("Elsa", 28, 1500, 0.15));
@@ -55,6 +56,7 @@ public class JxlsController extends Controller {
         staff.add(new Employee("John", 35, 2800, 0.20));
         setAttr("employee", staff);
         String templateFileName = "src/test/resource/employees.xls";
+        System.out.println(".......");
         render(JxlsRender.me(templateFileName));
     }
 

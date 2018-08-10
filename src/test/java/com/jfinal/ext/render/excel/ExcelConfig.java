@@ -12,14 +12,14 @@ import com.jfinal.template.Engine;
 public class ExcelConfig extends JFinalConfig {
 
     public static void main(String[] args) {
-        JFinal.start("src/main/webapp", 8080, "/", 0);
+        JFinal.start("src/main/webapp", 8080, "/", 3);
     }
 
     @Override
     public void configConstant(Constants me) {
         me.setEncoding("utf-8");
         me.setDevMode(true);
-        loadPropertyFile("classes/config.txt");
+        //loadPropertyFile("classes/config.txt");
     }
 
     @Override
