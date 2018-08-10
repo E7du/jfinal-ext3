@@ -17,20 +17,13 @@ package com.jfinal.ext.kit.excel;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import com.google.common.collect.Lists;
 import com.jfinal.ext.interceptor.excel.PostExcelProcessor;
 import com.jfinal.ext.interceptor.excel.PostListProcessor;
 import com.jfinal.ext.interceptor.excel.PreExcelProcessor;
 import com.jfinal.ext.interceptor.excel.PreListProcessor;
 
-@XmlRootElement
-public class Rule {
+public class ReadRule {
 	
 	/**
 	 * Data From
@@ -41,6 +34,8 @@ public class Rule {
 	 * Data End
 	 */
 	private int end;
+	
+	private String dateFormat = "yyyy-MM-dd";
 
 	private PreExcelProcessor preExcelProcessor;
 
@@ -55,7 +50,7 @@ public class Rule {
 	 */
     private Class<?> clazz;
 
-    private List<Cell> cells = Lists.newArrayList();
+    private List<Column> columns = Lists.newArrayList();
 
     public int getStart() {
         return start;
@@ -72,8 +67,16 @@ public class Rule {
     public void setEnd(int value) {
         this.end = value;
     }
+    
+    public String getDateFormat() {
+		return dateFormat;
+	}
 
-    public PreExcelProcessor getPreExcelProcessor() {
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
+	public PreExcelProcessor getPreExcelProcessor() {
         return preExcelProcessor;
     }
 
@@ -113,54 +116,71 @@ public class Rule {
 		this.clazz = clazz;
 	}
 
-	@XmlElementWrapper(name = "cells")
-    @XmlElement(name = "cell")
-    public List<Cell> getCells() {
-        return cells;
+    public List<Column> getColumns() {
+        return columns;
     }
 
-    public void setCells(List<Cell> cells) {
-        this.cells = cells;
+    public void setColumns(List<Column> columns) {
+        this.columns = columns;
+    }
+    
+    public void alignColumn(String... columns) {
+    	if (null == columns) {
+			return;
+		}
+    	
+    	for (int idx = 0; idx < columns.length; idx++) {
+			Column col = Column.create(columns[idx]);
+			col.setIndex(idx);
+	    	this.columns.add(col);
+		}
     }
 
-    public Rule addCell(Cell cell) {
-        cells.add(cell);
-        return this;
+    public void alignColumn(Column... columns) {
+    	if (null == columns) {
+			return;
+		}
+    	for (int idx = 0; idx < columns.length; idx++) {
+			Column col = columns[idx];
+			col.index = idx;
+	    	this.columns.add(col);
+		}
     }
+    
+    public static class Column {
 
-    public Rule addCell(int index, String attrName) {
-        cells.add(Cell.create(index, attrName));
-        return this;
-    }
+    	private int index;
 
-    public Rule addCell(int index, String attribute, CellConvert convert, CellValidate validate) {
-        cells.add(Cell.create(index, attribute, convert, validate));
-        return this;
-    }
+    	private String attr;
+    	
+    	//TODO
+    	private String format;
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    public static class Cell {
+    	private ColumnConvert convert;
 
-        protected int index;
+    	private ColumnValidate validate;
+    	
+    	private Column() {
+    		
+    	}
 
-        protected String attr;
-
-        protected CellConvert convert;
-
-        protected CellValidate validate;
-
-        public static Cell create(int index, String attr) {
-            Cell cell = new Cell();
-            cell.setIndex(index);
-            cell.setAttr(attr);
-            return cell;
+    	public static Column create(String attr) {
+            Column column = new Column();
+            column.setAttr(attr);
+            return column;
         }
+    	
+    	public static Column create(String attr, String format) {
+    		Column column = Column.create(attr);
+    		column.setFormat(format);
+    		return column;
+    	}
 
-        public static Cell create(int index, String attr, CellConvert convert, CellValidate validate) {
-            Cell cell = create(index, attr);
-            cell.setConvert(convert);
-            cell.setValidate(validate);
-            return cell;
+        public static Column create(String attr, ColumnConvert convert, ColumnValidate validate) {
+            Column column = create(attr);
+            column.setConvert(convert);
+            column.setValidate(validate);
+            return column;
         }
 
         public int getIndex() {
@@ -179,34 +199,42 @@ public class Rule {
             this.attr = attr;
         }
 
-        public CellConvert getConvert() {
+        public String getFormat() {
+			return format;
+		}
+
+		public void setFormat(String format) {
+			this.format = format;
+		}
+
+		public ColumnConvert getConvert() {
             return convert;
         }
 
-        public void setConvert(CellConvert value) {
+        public void setConvert(ColumnConvert value) {
             this.convert = value;
         }
 
-        public CellValidate getValidate() {
+        public ColumnValidate getValidate() {
             return validate;
         }
 
-        public void setValidate(CellValidate value) {
+        public void setValidate(ColumnValidate value) {
             this.validate = value;
         }
 
         @Override
 		public String toString() {
-			return "Cell [index=" + index + ", attr=" + attr + ", convert=" + convert + ", validate="
+			return "Column [index=" + index + ", attr=" + attr + ", convert=" + convert + ", validate="
 					+ validate + "]";
 		}
     }
 
-//    @Override
-//	public String toString() {
-//		return "Rule [name=" + name + ", sheetNo=" + sheetNo + ", start=" + start + ", end=" + end + ", rowFilter="
-//				+ rowFilter + ", preExcelProcessor=" + preExcelProcessor + ", postExcelProcessor=" + postExcelProcessor
-//				+ ", preListProcessor=" + preListProcessor + ", postListProcessor=" + postListProcessor + ", clazz="
-//				+ clazz + ", cells=" + cells + "]";
-//	}
+	@Override
+	public String toString() {
+		return "ReadRule [start=" + start + ", end=" + end + ", dateFormat=" + dateFormat + ", preExcelProcessor="
+				+ preExcelProcessor + ", postExcelProcessor=" + postExcelProcessor + ", preListProcessor="
+				+ preListProcessor + ", postListProcessor=" + postListProcessor + ", clazz=" + clazz + ", columns="
+				+ columns + "]";
+	}
 }

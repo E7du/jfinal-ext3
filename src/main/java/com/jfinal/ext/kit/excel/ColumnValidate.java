@@ -15,16 +15,9 @@
 */
 package com.jfinal.ext.kit.excel;
 
-public class PoiException extends RuntimeException {
-
-	private static final long serialVersionUID = -3631194189331161688L;
-
-	public PoiException(String message) {
-		super(message);
-	}
-
-    public PoiException(Throwable cause) {
-        super(cause);
-    }
-    
+/**
+ * 单元格值合法性验证
+ */
+public interface ColumnValidate {
+	boolean validate(Object obj);
 }

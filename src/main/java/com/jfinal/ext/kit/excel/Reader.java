@@ -16,7 +16,6 @@
 package com.jfinal.ext.kit.excel;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -31,14 +30,15 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.google.common.collect.Lists;
 import com.jfinal.ext.kit.Reflect;
+import com.jfinal.ext.kit.poi.PoiException;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Model;
 
-public class PoiReader {
+public class Reader {
 
-	public static List<List<List<String>>> readExcel(File file, Rule rule) {
-        int start = rule.getStart();
-        int end = rule.getEnd();
+	public static List<List<List<String>>> readExcel(File file, ReadRule readRule) {
+        int start = readRule.getStart();
+        int end = readRule.getEnd();
         List<List<List<String>>> result = Lists.newArrayList();
         Workbook wb = null;
         try {
@@ -46,6 +46,8 @@ public class PoiReader {
         } catch (Exception e) {
             throw new PoiException(e);
         }
+        
+        String dateFormat = readRule.getDateFormat();
         
         for (int i = 0; i < wb.getNumberOfSheets(); i++) {
             Sheet sheet = wb.getSheetAt(i);
@@ -71,13 +73,11 @@ public class PoiReader {
                     CellType cellType = cell.getCellTypeEnum();
                     String column = "";
                     if (CellType.NUMERIC.equals(cellType)) {
-                    	//https://blog.csdn.net/ole_triangle_java/article/details/70254751
                     	if (HSSFDateUtil.isCellDateFormatted(cell)) {
                     		Date date = cell.getDateCellValue();
-                    		column = DateFormatUtils.format(date, "yyyy-MM-dd");
+                    		column = DateFormatUtils.format(date, dateFormat);
 						} else {
-							DecimalFormat df = new DecimalFormat("0");
-							column = df.format(cell.getNumericCellValue());
+							column = String.valueOf(cell.getNumericCellValue());
 						}
 					} else if (CellType.STRING.equals(cellType)) {
                         column = cell.getStringCellValue();
@@ -107,45 +107,45 @@ public class PoiReader {
         return result;
     }
 
-    public static List<List<String>> readSheet(File file, Rule rule) {
-        return readExcel(file, rule).get(0);
+    public static List<List<String>> read(File file, ReadRule readRule) {
+        return readExcel(file, readRule).get(0);
     }
 
-    public static List<Model<?>> processSheet(File file, Rule rule) {
-        List<List<String>> srcList = readSheet(file, rule);
+    public static List<Model<?>> readToModel(File file, ReadRule readRule) {
+        List<List<String>> srcList = read(file, readRule);
         List<Model<?>> results = Lists.newArrayList();
         for (int i = 0; i < srcList.size(); i++) {
             List<String> list = srcList.get(i);
-            Model<?> model = fillModel(rule.getClazz(), list, rule);
+            Model<?> model = fillModel(readRule.getClazz(), list, readRule);
             results.add(model);
         }
         return results;
     }
 
-	public static Model<?> fillModel(Class<?> clazz, List<String> list, Rule rule) {
+	private static Model<?> fillModel(Class<?> clazz, List<String> list, ReadRule readRule) {
 		Model<?> model = Reflect.on(clazz).create().get();
         String[] values = list.toArray(new String[]{});
         String message = "";
         for (int i = 0; i < values.length; i++) {
             String value = values[i];
-            Rule.Cell cell = matchCell(rule, i);
-            if (null == cell) {
+            ReadRule.Column column = alignCell(readRule, i);
+            if (null == column) {
 				continue;
 			}
-            String name = cell.getAttr();
-            CellValidate cellValidate = cell.getValidate();
+            String name = column.getAttr();
+            ColumnValidate columnValidate = column.getValidate();
             boolean valid = true;
-            if (null != cellValidate) {
-                valid = cellValidate.validate(value);
+            if (null != columnValidate) {
+                valid = columnValidate.validate(value);
                 if (!valid) {
-                    message = message + "value(" + value + ") is invalid in column " + cell.getIndex() + "</br>";
+                    message = message + "value(" + value + ") is invalid in column " + column.getIndex() + "</br>";
                 }
             }
             if (valid) {
                 Object convertedValue = value;
-                CellConvert cellConvert = cell.getConvert();
-                if (null != cellConvert) {
-                    convertedValue = cellConvert.convert(value, model);
+                ColumnConvert columnConvert = column.getConvert();
+                if (null != columnConvert) {
+                    convertedValue = columnConvert.convert(value, model);
                 }
                 model.set(name, convertedValue);
             }
@@ -156,13 +156,14 @@ public class PoiReader {
         return model;
     }
 
-    public static Rule.Cell matchCell(Rule rule, int index) {
-        List<Rule.Cell> cells = rule.getCells();
-        for (int i = 0; i < cells.size(); i++) {
-            Rule.Cell cell = cells.get(i);
-            if (index+1 == cell.getIndex()) return cell;
+    private static ReadRule.Column alignCell(ReadRule readRule, int index) {
+        List<ReadRule.Column> columns = readRule.getColumns();
+        for (int i = 0; i < columns.size(); i++) {
+            ReadRule.Column column = columns.get(i);
+            if (index == column.getIndex()) {
+            	return column;
+            }
         }
         return null;
     }
-
 }

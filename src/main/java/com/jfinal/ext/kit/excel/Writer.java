@@ -31,7 +31,7 @@ import com.google.common.collect.Lists;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 
-public class PoiWriter {
+public class Writer {
 
     private static final int HEADER_ROW = 1;
     private static final int MAX_ROWS = 65535;
@@ -42,12 +42,12 @@ public class PoiWriter {
     private String[][] columns;
     private List<?>[] data;
 
-    public PoiWriter(List<?>... data) {
+    public Writer(List<?>... data) {
         this.data = data;
     }
 
-    public static PoiWriter data(List<?>... data) {
-        return new PoiWriter(data);
+    public static Writer data(List<?>... data) {
+        return new Writer(data);
     }
 
     public static List<List<?>> dice(List<?> num, int chunkSize) {
@@ -197,42 +197,42 @@ public class PoiWriter {
         }
     }
 
-    public PoiWriter sheetName(String sheetName) {
+    public Writer sheetName(String sheetName) {
         this.sheetNames = new String[]{sheetName};
         return this;
     }
 
-    public PoiWriter sheetNames(String... sheetName) {
+    public Writer sheetNames(String... sheetName) {
         this.sheetNames = sheetName;
         return this;
     }
 
-    public PoiWriter cellWidth(int cellWidth) {
+    public Writer cellWidth(int cellWidth) {
         this.cellWidth = cellWidth;
         return this;
     }
 
-    public PoiWriter headerRow(int headerRow) {
+    public Writer headerRow(int headerRow) {
         this.headerRow = headerRow;
         return this;
     }
 
-    public PoiWriter header(String... header) {
+    public Writer header(String... header) {
         this.headers = new String[][]{header};
         return this;
     }
 
-    public PoiWriter headers(String[]... headers) {
+    public Writer headers(String[]... headers) {
         this.headers = headers;
         return this;
     }
 
-    public PoiWriter column(String... column) {
+    public Writer column(String... column) {
         this.columns = new String[][]{column};
         return this;
     }
 
-    public PoiWriter columns(String[]... columns) {
+    public Writer columns(String[]... columns) {
         this.columns = columns;
         return this;
     }

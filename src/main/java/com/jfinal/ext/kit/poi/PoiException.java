@@ -13,11 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.kit.excel;
+package com.jfinal.ext.kit.poi;
 
-/**
- * 单元格值合法性验证
- */
-public interface CellValidate {
-	boolean validate(Object obj);
+public class PoiException extends RuntimeException {
+
+	private static final long serialVersionUID = -3631194189331161688L;
+
+	public PoiException(String message) {
+		super(message);
+	}
+
+    public PoiException(Throwable cause) {
+        super(cause);
+    }
+    
 }

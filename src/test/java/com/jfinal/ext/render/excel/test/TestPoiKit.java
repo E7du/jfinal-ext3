@@ -1,7 +1,7 @@
 package com.jfinal.ext.render.excel.test;
 
 import com.google.common.collect.Lists;
-import com.jfinal.ext.kit.excel.PoiWriter;
+import com.jfinal.ext.kit.excel.Writer;
 import com.jfinal.kit.PathKit;
 import com.jfinal.plugin.activerecord.Record;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -22,7 +22,7 @@ public class TestPoiKit {
             record.set("姓名", "朱丛启走起" + i);
             data.add(record);
         }
-        Workbook workbook = PoiWriter.data(data).sheetNames("data")
+        Workbook workbook = Writer.data(data).sheetNames("data")
                 .columns(new String[]{"姓名"}).headers(new String[]{"姓名"}).write();
         String pathname = PathKit.getRootClassPath() + "/excel1.xls";
         System.out.println(pathname);

@@ -22,23 +22,23 @@ import com.jfinal.aop.Invocation;
 import com.jfinal.aop.PrototypeInterceptor;
 import com.jfinal.core.Controller;
 import com.jfinal.ext.kit.Reflect;
-import com.jfinal.ext.kit.excel.PoiReader;
+import com.jfinal.ext.kit.excel.Reader;
 import com.jfinal.ext.kit.excel.RowFilter;
-import com.jfinal.ext.kit.excel.Rule;
+import com.jfinal.ext.kit.excel.ReadRule;
 import com.jfinal.plugin.activerecord.Model;
 
 public abstract class ExcelUploadInterceptor<M extends Model<?>> extends PrototypeInterceptor {
 
-    private Rule rule;
+    private ReadRule readRule;
 
-    public abstract Rule configRule();
+    public abstract ReadRule configRule();
 
     public abstract void callback(Model<?> model);
 
     public void doIntercept(Invocation ai) {
-        rule = configRule();
+        readRule = configRule();
         Controller controller = ai.getController();
-        List<Model<?>> list = PoiReader.processSheet(controller.getFile().getFile(), rule);
+        List<Model<?>> list = Reader.readToModel(controller.getFile().getFile(), readRule);
         execPreListProcessor(list);
         for (Model<?> model : list) {
             execPreExcelProcessor(model);
@@ -50,28 +50,28 @@ public abstract class ExcelUploadInterceptor<M extends Model<?>> extends Prototy
     }
 
     private void execPreListProcessor(List<Model<?>> list) {
-        PreListProcessor preListProcessor = rule.getPreListProcessor();
+        PreListProcessor preListProcessor = readRule.getPreListProcessor();
         if (null != preListProcessor) {
         	preListProcessor.process(list);
         }
     }
 
     private void execPostListProcessor(List<Model<?>> list) {
-    	PostListProcessor postListProcessor = rule.getPostListProcessor();
+    	PostListProcessor postListProcessor = readRule.getPostListProcessor();
         if (null != postListProcessor) {
         	postListProcessor.process(list);
         }
     }
 
     private void execPreExcelProcessor(Model<?> model) {
-    	PreExcelProcessor preExcelProcessor = rule.getPreExcelProcessor();
+    	PreExcelProcessor preExcelProcessor = readRule.getPreExcelProcessor();
         if (null != preExcelProcessor) {
             preExcelProcessor.process(model);
         }
     }
 
     private void execPostExcelProcessor(Model<?> model) {
-    	PostExcelProcessor postExcelProcessor = rule.getPostExcelProcessor();
+    	PostExcelProcessor postExcelProcessor = readRule.getPostExcelProcessor();
         if (null != postExcelProcessor) {
             postExcelProcessor.process(model);
         }

@@ -22,6 +22,6 @@ import com.jfinal.plugin.activerecord.Model;
 /**
  *  单元格值转换器
  */
-public interface CellConvert {
+public interface ColumnConvert {
 	T convert(String val, Model<?> model);
 }

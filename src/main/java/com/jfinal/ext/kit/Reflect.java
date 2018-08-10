@@ -317,7 +317,7 @@ public class Reflect {
      * an instance method.
      * <p>
      * Just like {@link Method#invoke(Object, Object...)}, this will try to wrap primitive types or unwrap primitive
-     * type wrappers if applicable. If several methods are applicable, by that rule, the first one encountered is
+     * type wrappers if applicable. If several methods are applicable, by that readRule, the first one encountered is
      * called. i.e. when calling <code><pre>
      * on(...).call("method", 1, 1);
      * </pre></code> The first of the following methods will be called: <code><pre>
@@ -449,7 +449,7 @@ public class Reflect {
      * {@link Object}, then this will create a new object of the same type.
      * <p>
      * Just like {@link Constructor#newInstance(Object...)}, this will try to wrap primitive types or unwrap primitive
-     * type wrappers if applicable. If several constructors are applicable, by that rule, the first one encountered is
+     * type wrappers if applicable. If several constructors are applicable, by that readRule, the first one encountered is
      * called. i.e. when calling <code><pre>
      * on(C.class).create(1, 1);
      * </pre></code> The first of the following constructors will be applied: <code><pre>
