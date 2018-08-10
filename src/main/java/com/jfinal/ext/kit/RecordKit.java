@@ -15,41 +15,26 @@
 */
 package com.jfinal.ext.kit;
 
-import java.util.Random;
-import java.util.UUID;
+import com.jfinal.log.Log;
+import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Record;
 
-import com.jfinal.kit.HashKit;
+public class RecordKit {
 
-/**
- * @author Jobsz
- *
- */
-final public class RandomKit {
+    private static Log LOG = Log.getLog(RecordKit.class);
 
-	/**
-	 * 随机范围内的数
-	 * @param min
-	 * @param max
-	 * @return
-	 */
-	public static int random(int min, int max){
-		Random random = new Random();
-		return random.nextInt(max)%(max-min+1) + min;
-	}
-	
-	/**
-	 * 随机字符串：UUID方式
-	 * @return
-	 */
-	public static String randomStr(){
-		return UUID.randomUUID().toString().replace("-", "");
-	}
-	
-	/**
-	 *  随机字符串再 md5：UUID方式
-	 * @return
-	 */
-	public static String randomMD5Str(){
-		return HashKit.md5(randomStr());
-	}
+    public static Model<?> toModel(Class<? extends Model<?>> clazz, Record record) {
+        Model<?> model = null;
+        try {
+            model = clazz.newInstance();
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            return model;
+        }
+        for (String columnName : record.getColumnNames()) {
+            model.set(columnName, record.get("columnName"));
+        }
+        return model;
+    }
+
 }

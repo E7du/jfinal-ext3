@@ -20,6 +20,10 @@ import java.util.Properties;
 
 import com.jfinal.log.Log;
 
+/**
+ * 添加用Properties 构造 Prop
+ * @author Jobz
+ */
 public class Prop extends com.jfinal.kit.Prop {
 
 	private Log LOG = Log.getLog(Prop.class);
