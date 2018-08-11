@@ -9,7 +9,7 @@
 <dependency>
     <groupId>com.jfinal</groupId>
     <artifactId>jfinal-ext3</artifactId>
-    <version>3.0.6</version>
+    <version>${jfinal-ext3.version}</version>
 </dependency>
 ```
 

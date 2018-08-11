@@ -2,6 +2,52 @@
 jfinal-ext3，源自jfinal-ext，jfinal-ext2，基于jfinal3.x，扩展了很多特性。
 
 ### 新特性
+- v4.0.0 ：加入 Xls 读写，XlsRender等。
+ 
+ ```java
+	void readXls() {
+
+		XlsReadRule xlsReadRule = new XlsReadRule();
+		xlsReadRule.setStart(1);
+		xlsReadRule.setEnd(6);
+		xlsReadRule.setClazz(User.class);
+
+		Column id = Column.create("id");
+		Column name = Column.create("name");
+		Column addr = Column.create("addr");
+		xlsReadRule.alignColumn(id, name, addr);
+
+		String destFileName = "src/test/resources/users.xls";
+
+		List<User> ret = XlsReader.readToModel(User.class, new File(destFileName), xlsReadRule);
+		User u = ret.get(0);
+		String json = JsonKit.toJson(ret);
+		System.out.println(json + "id=" + u.getId() + ";name=" + u.getName() + ";addr=" + u.getAddr());
+
+	}    
+    
+
+	void writeXls() {
+		
+		List<User> users = new ArrayList<User>();
+		for (int i = 0; i < 5; i++) {
+			User u = new User();
+			u.setId(i);
+			u.setName("name"+i);
+			u.setAddr("addr"+i);
+			users.add(u);
+		}
+		
+		 //XlsWriter.data(users).headerRow(1).header("Id","Name", "Addr").column("id","name", "addr").writeToFile("src/test/resources/users.xls");
+		 
+		 Column id = Column.header("编号", "id");
+		 Column name = Column.header("姓名", "name");
+		 Column addr = Column.header("地址", "addr");
+		 XlsWriter.data(users).columns(id, name, addr).writeToFile("src/test/resources/users.xls");
+	}
+    
+ ```
+    
 - v3.1.1final,v3的最后一个版本。优化、修复 bug。
 - v3.1.0 优化ModelExt,find(),findOne()从数据库和redis取数逻辑：syncToRedis 为 true 时，先用数据库获取包含 primarykey的数据结合，在用这个数据去 redis 中获取全量。【注意：syncToRedis的取值，不能在 save 或 find 见取值不一致，也就是syncToRedis不可以中间修改取值。以避免 redis 或数据库数据不一致的情况出现。】新加入dataCount()，用于获取数据数量。新加入findPrimarykeyOnly()，用于获取 primarykeys。
 - v3.0.9 优化 loadPropertyFile
