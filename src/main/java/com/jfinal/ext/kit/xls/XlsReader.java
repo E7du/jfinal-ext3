@@ -176,7 +176,6 @@ public class XlsReader {
 
     private static XlsReadRule.Column alignCell(XlsReadRule xlsReadRule, int index) {
         Map<Integer, XlsReadRule.Column> columns = xlsReadRule.getColumns();
-        XlsReadRule.Column column = columns.get(index);
-        return column;
+        return columns.get(index);
     }
 }

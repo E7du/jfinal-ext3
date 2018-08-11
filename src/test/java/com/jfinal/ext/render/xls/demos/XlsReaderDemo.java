@@ -19,8 +19,8 @@ class XlsReaderDemo {
 	void test() {
 
 		xlsReadRule = new XlsReadRule();
-		xlsReadRule.setStart(2);
-		xlsReadRule.setEnd(4);
+		xlsReadRule.setStart(1);
+		xlsReadRule.setEnd(6);
 		xlsReadRule.setClazz(User.class);
 		
 		Column id = Column.create("id");
@@ -32,8 +32,8 @@ class XlsReaderDemo {
         
        List<User> ret = XlsReader.readToModel(User.class, new File(destFileName), xlsReadRule);
        User u = ret.get(0);
-      String json = JsonKit.toJson(ret.get(0));
-      System.out.println(json+"id"+u.getId());
+      String json = JsonKit.toJson(ret);
+      System.out.println(json+"id="+u.getId()+";name="+u.getName()+";addr="+u.getAddr());
         
 	}
 

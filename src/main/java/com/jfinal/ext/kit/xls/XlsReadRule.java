@@ -157,6 +157,8 @@ public class XlsReadRule {
 
     	private String attr;
     	
+    	private String header;
+    	
     	//TODO
     	private String format;
 
@@ -166,6 +168,13 @@ public class XlsReadRule {
     	
     	private Column() {
     		
+    	}
+    	
+    	public static Column header(String header, String attr) {
+            Column column = new Column();
+            column.setAttr(attr);
+            column.setHeader(header);
+            return column;
     	}
 
     	public static Column create(String attr) {
@@ -182,6 +191,13 @@ public class XlsReadRule {
 
         public static Column create(String attr, ColumnConvert convert, ColumnValidate validate) {
             Column column = create(attr);
+            column.setConvert(convert);
+            column.setValidate(validate);
+            return column;
+        }
+        
+        public static Column create(String attr, String format, ColumnConvert convert, ColumnValidate validate) {
+            Column column = create(attr, format);
             column.setConvert(convert);
             column.setValidate(validate);
             return column;
@@ -203,7 +219,15 @@ public class XlsReadRule {
             this.attr = attr;
         }
 
-        public String getFormat() {
+        public String getHeader() {
+			return header;
+		}
+
+		public void setHeader(String header) {
+			this.header = header;
+		}
+
+		public String getFormat() {
 			return format;
 		}
 
