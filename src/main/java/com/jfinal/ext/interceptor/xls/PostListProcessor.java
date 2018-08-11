@@ -13,12 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.interceptor.excel;
+package com.jfinal.ext.interceptor.xls;
 
 import java.util.List;
 
-import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.ext.plugin.activerecord.ModelExt;
 
 public interface PostListProcessor {
-	void process(List<Model<?>> list) ;
+	void process(List<ModelExt<?>> list) ;
 }

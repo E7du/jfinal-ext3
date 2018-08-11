@@ -13,12 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.interceptor.excel;
+package com.jfinal.ext.interceptor.xls;
 
-import java.util.List;
+import com.jfinal.ext.plugin.activerecord.ModelExt;
 
-import com.jfinal.plugin.activerecord.Model;
-
-public interface PreListProcessor {
-	void process(List<Model<?>> list);
+/**
+ *  excel解析前置处理器，在每一个元素 保存之前调用
+ */
+public interface PreXlsProcessor {
+	void process(ModelExt<?> m);
 }

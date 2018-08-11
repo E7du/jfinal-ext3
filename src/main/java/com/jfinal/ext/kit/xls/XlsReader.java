@@ -13,11 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.kit.excel;
+package com.jfinal.ext.kit.xls;
 
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -31,27 +32,31 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import com.google.common.collect.Lists;
 import com.jfinal.ext.kit.Reflect;
 import com.jfinal.ext.kit.poi.PoiException;
+import com.jfinal.ext.plugin.activerecord.ModelExt;
 import com.jfinal.kit.StrKit;
-import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.log.Log;
 
-public class Reader {
+public class XlsReader {
 
-	public static List<List<List<String>>> readExcel(File file, ReadRule readRule) {
-        int start = readRule.getStart();
-        int end = readRule.getEnd();
-        List<List<List<String>>> result = Lists.newArrayList();
+	private static final Log LOG = Log.getLog(XlsReader.class);
+	
+	public static List<List<List<Object>>> readXls(File file, XlsReadRule xlsReadRule) {
+        int start = xlsReadRule.getStart();
+        int end = xlsReadRule.getEnd();
+        List<List<List<Object>>> xlsDatas = Lists.newArrayList();
         Workbook wb = null;
         try {
             wb = WorkbookFactory.create(file);
         } catch (Exception e) {
+        	LOG.error(e.getLocalizedMessage());
             throw new PoiException(e);
         }
         
-        String dateFormat = readRule.getDateFormat();
+        String dateFormat = xlsReadRule.getDateFormat();
         
         for (int i = 0; i < wb.getNumberOfSheets(); i++) {
             Sheet sheet = wb.getSheetAt(i);
-            List<List<String>> sheetList = Lists.newArrayList();
+            List<List<Object>> sheetList = Lists.newArrayList();
             int rows = sheet.getLastRowNum();
             if (start <= sheet.getFirstRowNum()) {
                 start = sheet.getFirstRowNum();
@@ -63,7 +68,7 @@ public class Reader {
             }
             for (int rowIndex = start; rowIndex <= end; rowIndex++) {
                 Row row = sheet.getRow(rowIndex);
-                List<String> columns = Lists.newArrayList();
+                List<Object> columns = Lists.newArrayList();
                 int cellNum = row.getLastCellNum();
                 for (int cellIndex = row.getFirstCellNum(); cellIndex < cellNum; cellIndex++) {
                     Cell cell = row.getCell(cellIndex);
@@ -71,25 +76,26 @@ public class Reader {
 						continue;
 					}
                     CellType cellType = cell.getCellTypeEnum();
-                    String column = "";
+                    Object column = null;
                     if (CellType.NUMERIC.equals(cellType)) {
                     	if (HSSFDateUtil.isCellDateFormatted(cell)) {
                     		Date date = cell.getDateCellValue();
                     		column = DateFormatUtils.format(date, dateFormat);
 						} else {
-							column = String.valueOf(cell.getNumericCellValue());
+							column = cell.getNumericCellValue();
 						}
 					} else if (CellType.STRING.equals(cellType)) {
                         column = cell.getStringCellValue();
 					} else if (CellType.BOOLEAN.equals(cellType)) {
-                        column = cell.getBooleanCellValue() + "";
+                        column = cell.getBooleanCellValue();
 					} else if (CellType.FORMULA.equals(cellType)) {
                         column = cell.getCellFormula();
-					} else if (CellType.ERROR.equals(cellType)
-							|| CellType.BLANK.equals(cellType)) {
+					} else if (CellType.ERROR.equals(cellType)) {
+						column = cell.getErrorCellValue();
+					} else if (CellType.BLANK.equals(cellType)) {
 						column = "";
 					}
-                    columns.add(column.trim());
+                    columns.add(column);
                 }
 
                 List<Boolean> rowFilterFlagList = Lists.newArrayList();
@@ -102,33 +108,44 @@ public class Reader {
                     sheetList.add(columns);
                 }
             }
-            result.add(sheetList);
+            xlsDatas.add(sheetList);
         }
-        return result;
+        return xlsDatas;
     }
 
-    public static List<List<String>> read(File file, ReadRule readRule) {
-        return readExcel(file, readRule).get(0);
+    public static List<List<Object>> read(File file, XlsReadRule xlsReadRule) {
+        return readXls(file, xlsReadRule).get(0);
     }
 
-    public static List<Model<?>> readToModel(File file, ReadRule readRule) {
-        List<List<String>> srcList = read(file, readRule);
-        List<Model<?>> results = Lists.newArrayList();
+    public static List<ModelExt<?>> readToModel(File file, XlsReadRule xlsReadRule) {
+        List<List<Object>> srcList = read(file, xlsReadRule);
+        List<ModelExt<?>> xlsDatass = Lists.newArrayList();
         for (int i = 0; i < srcList.size(); i++) {
-            List<String> list = srcList.get(i);
-            Model<?> model = fillModel(readRule.getClazz(), list, readRule);
-            results.add(model);
+            List<Object> list = srcList.get(i);
+            ModelExt<?> model = toModel(xlsReadRule.getClazz(), list, xlsReadRule);
+            xlsDatass.add(model);
         }
-        return results;
+        return xlsDatass;
+    }
+    
+    public static <T extends ModelExt<T>> List<T> readToModel(Class<? extends ModelExt<?>> clazz, File file, XlsReadRule xlsReadRule) {
+        List<List<Object>> srcList = read(file, xlsReadRule);
+        List<T> xlsDatass = Lists.newArrayList();
+        for (int i = 0; i < srcList.size(); i++) {
+            List<Object> list = srcList.get(i);
+            T model = toModel(xlsReadRule.getClazz(), list, xlsReadRule);
+            xlsDatass.add(model);
+        }
+        return xlsDatass;
     }
 
-	private static Model<?> fillModel(Class<?> clazz, List<String> list, ReadRule readRule) {
-		Model<?> model = Reflect.on(clazz).create().get();
-        String[] values = list.toArray(new String[]{});
+	private static <T extends ModelExt<T>> T toModel(Class<? extends ModelExt<?>> clazz, List<Object> list, XlsReadRule xlsReadRule) {
+		T model = Reflect.on(clazz).create().get();
+        Object[] values = list.toArray(new Object[]{});
         String message = "";
         for (int i = 0; i < values.length; i++) {
-            String value = values[i];
-            ReadRule.Column column = alignCell(readRule, i);
+            Object value = values[i];
+            XlsReadRule.Column column = alignCell(xlsReadRule, i);
             if (null == column) {
 				continue;
 			}
@@ -151,19 +168,15 @@ public class Reader {
             }
         }
         if (StrKit.notBlank(message)) {
+        	LOG.error(message);
             throw new PoiException(message);
         }
         return model;
     }
 
-    private static ReadRule.Column alignCell(ReadRule readRule, int index) {
-        List<ReadRule.Column> columns = readRule.getColumns();
-        for (int i = 0; i < columns.size(); i++) {
-            ReadRule.Column column = columns.get(i);
-            if (index == column.getIndex()) {
-            	return column;
-            }
-        }
-        return null;
+    private static XlsReadRule.Column alignCell(XlsReadRule xlsReadRule, int index) {
+        Map<Integer, XlsReadRule.Column> columns = xlsReadRule.getColumns();
+        XlsReadRule.Column column = columns.get(index);
+        return column;
     }
 }

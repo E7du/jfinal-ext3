@@ -13,13 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.interceptor.excel;
-
-import com.jfinal.plugin.activerecord.Model;
+package com.jfinal.ext.kit.xls;
 
 /**
- *  excel解析后置处理器 ,在整个excel对象保存完毕之后调用
+ * 单元格值合法性验证
  */
-public interface PostExcelProcessor {
-	void process(Model<?> m);
+public interface ColumnValidate {
+	boolean validate(Object obj);
 }

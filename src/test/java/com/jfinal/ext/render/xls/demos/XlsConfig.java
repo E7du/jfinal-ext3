@@ -1,4 +1,4 @@
-package com.jfinal.ext.render.excel.test;
+package com.jfinal.ext.render.xls.demos;
 
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
@@ -9,7 +9,7 @@ import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
 import com.jfinal.template.Engine;
 
-public class ExcelConfig extends JFinalConfig {
+public class XlsConfig extends JFinalConfig {
 
     public static void main(String[] args) {
         JFinal.start("src/main/webapp", 8080, "/", 3);
@@ -36,7 +36,7 @@ public class ExcelConfig extends JFinalConfig {
 
     @Override
     public void configRoute(Routes me) {
-        me.add("/poi", PoiController.class);
+        me.add("/poi", XlsController.class);
     }
 
 	@Override

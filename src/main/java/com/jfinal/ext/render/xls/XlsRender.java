@@ -13,18 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.render.excel;
+package com.jfinal.ext.render.xls;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import com.jfinal.ext.kit.excel.Writer;
+import com.jfinal.ext.kit.xls.XlsWriter;
 import com.jfinal.log.Log;
 import com.jfinal.render.Render;
 import com.jfinal.render.RenderException;
 
-public class ExcelRender extends Render {
+public class XlsRender extends Render {
 
     private final Log LOG = Log.getLog(getClass());
     private final static String CONTENT_TYPE = "application/msexcel;charset=" + getEncoding();
@@ -36,12 +36,12 @@ public class ExcelRender extends Render {
     private String fileName = "file1.xls";
     private int headerRow;
 
-    public ExcelRender(List<?>[] data) {
+    public XlsRender(List<?>[] data) {
         this.data = data;
     }
 
-    public static ExcelRender me(List<?>... data) {
-        return new ExcelRender(data);
+    public static XlsRender me(List<?>... data) {
+        return new XlsRender(data);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ExcelRender extends Render {
         OutputStream os = null;
         try {
             os = response.getOutputStream();
-            Writer.data(data).sheetNames(sheetNames).headerRow(headerRow).headers(headers).columns(columns)
+            XlsWriter.data(data).sheetNames(sheetNames).headerRow(headerRow).headers(headers).columns(columns)
                     .cellWidth(cellWidth).write().write(os);
         } catch (Exception e) {
             throw new RenderException(e);
@@ -69,32 +69,32 @@ public class ExcelRender extends Render {
         }
     }
 
-    public ExcelRender headers(String[]... headers) {
+    public XlsRender headers(String[]... headers) {
         this.headers = headers;
         return this;
     }
 
-    public ExcelRender headerRow(int headerRow) {
+    public XlsRender headerRow(int headerRow) {
         this.headerRow = headerRow;
         return this;
     }
 
-    public ExcelRender columns(String... columns) {
+    public XlsRender columns(String... columns) {
         this.columns = columns;
         return this;
     }
 
-    public ExcelRender sheetName(String... sheetName) {
+    public XlsRender sheetName(String... sheetName) {
         this.sheetNames = sheetName;
         return this;
     }
 
-    public ExcelRender cellWidth(int cellWidth) {
+    public XlsRender cellWidth(int cellWidth) {
         this.cellWidth = cellWidth;
         return this;
     }
 
-    public ExcelRender fileName(String fileName) {
+    public XlsRender fileName(String fileName) {
         this.fileName = fileName;
         return this;
     }

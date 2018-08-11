@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.interceptor.excel;
+package com.jfinal.ext.interceptor.xls;
 
 import java.util.List;
 
@@ -22,25 +22,26 @@ import com.jfinal.aop.Invocation;
 import com.jfinal.aop.PrototypeInterceptor;
 import com.jfinal.core.Controller;
 import com.jfinal.ext.kit.Reflect;
-import com.jfinal.ext.kit.excel.Reader;
-import com.jfinal.ext.kit.excel.RowFilter;
-import com.jfinal.ext.kit.excel.ReadRule;
+import com.jfinal.ext.kit.xls.RowFilter;
+import com.jfinal.ext.kit.xls.XlsReadRule;
+import com.jfinal.ext.kit.xls.XlsReader;
+import com.jfinal.ext.plugin.activerecord.ModelExt;
 import com.jfinal.plugin.activerecord.Model;
 
-public abstract class ExcelUploadInterceptor<M extends Model<?>> extends PrototypeInterceptor {
+public abstract class XlsUploadInterceptor extends PrototypeInterceptor {
 
-    private ReadRule readRule;
+    private XlsReadRule xlsReadRule;
 
-    public abstract ReadRule configRule();
+    public abstract XlsReadRule configRule();
 
     public abstract void callback(Model<?> model);
 
     public void doIntercept(Invocation ai) {
-        readRule = configRule();
+        xlsReadRule = configRule();
         Controller controller = ai.getController();
-        List<Model<?>> list = Reader.readToModel(controller.getFile().getFile(), readRule);
+        List<ModelExt<?>> list = XlsReader.readToModel(controller.getFile().getFile(), xlsReadRule);
         execPreListProcessor(list);
-        for (Model<?> model : list) {
+        for (ModelExt<?> model : list) {
             execPreExcelProcessor(model);
             callback(model);
             execPostExcelProcessor(model);
@@ -49,31 +50,31 @@ public abstract class ExcelUploadInterceptor<M extends Model<?>> extends Prototy
         ai.invoke();
     }
 
-    private void execPreListProcessor(List<Model<?>> list) {
-        PreListProcessor preListProcessor = readRule.getPreListProcessor();
+    private void execPreListProcessor(List<ModelExt<?>> list) {
+        PreListProcessor preListProcessor = xlsReadRule.getPreListProcessor();
         if (null != preListProcessor) {
         	preListProcessor.process(list);
         }
     }
 
-    private void execPostListProcessor(List<Model<?>> list) {
-    	PostListProcessor postListProcessor = readRule.getPostListProcessor();
+    private void execPostListProcessor(List<ModelExt<?>> list) {
+    	PostListProcessor postListProcessor = xlsReadRule.getPostListProcessor();
         if (null != postListProcessor) {
         	postListProcessor.process(list);
         }
     }
 
-    private void execPreExcelProcessor(Model<?> model) {
-    	PreExcelProcessor preExcelProcessor = readRule.getPreExcelProcessor();
-        if (null != preExcelProcessor) {
-            preExcelProcessor.process(model);
+    private void execPreExcelProcessor(ModelExt<?> model) {
+    	PreXlsProcessor preXlsProcessor = xlsReadRule.getPreExcelProcessor();
+        if (null != preXlsProcessor) {
+            preXlsProcessor.process(model);
         }
     }
 
     private void execPostExcelProcessor(Model<?> model) {
-    	PostExcelProcessor postExcelProcessor = readRule.getPostExcelProcessor();
-        if (null != postExcelProcessor) {
-            postExcelProcessor.process(model);
+    	PostXlsProcessor postXlsProcessor = xlsReadRule.getPostExcelProcessor();
+        if (null != postXlsProcessor) {
+            postXlsProcessor.process(model);
         }
     }
     

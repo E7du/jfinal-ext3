@@ -13,11 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.kit.excel;
+package com.jfinal.ext.interceptor.xls;
 
-/**
- * 单元格值合法性验证
- */
-public interface ColumnValidate {
-	boolean validate(Object obj);
+import java.util.List;
+
+import com.jfinal.ext.plugin.activerecord.ModelExt;
+
+public interface PreListProcessor {
+	void process(List<ModelExt<?>> list);
 }

@@ -13,10 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.kit.excel;
+package com.jfinal.ext.interceptor.xls;
 
-import java.util.List;
+import com.jfinal.plugin.activerecord.Model;
 
-public interface RowFilter {
-    boolean doFilter(int rowNum, List<String> list);
+/**
+ *  excel解析后置处理器 ,在整个excel对象保存完毕之后调用
+ */
+public interface PostXlsProcessor {
+	void process(Model<?> m);
 }

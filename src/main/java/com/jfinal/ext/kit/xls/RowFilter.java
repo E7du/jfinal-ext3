@@ -13,15 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.kit.excel;
+package com.jfinal.ext.kit.xls;
 
-import org.apache.poi.ss.formula.functions.T;
+import java.util.List;
 
-import com.jfinal.plugin.activerecord.Model;
-
-/**
- *  单元格值转换器
- */
-public interface ColumnConvert {
-	T convert(String val, Model<?> model);
+public interface RowFilter {
+    boolean doFilter(int rowNum, List<Object> list);
 }

@@ -13,26 +13,33 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.kit.excel;
+package com.jfinal.ext.kit.xls;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.jfinal.ext.kit.TypeKit;
+import com.jfinal.ext.plugin.activerecord.ModelExt;
+import com.jfinal.log.Log;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 
-public class Writer {
+public class XlsWriter {
 
+	private Log LOG = Log.getLog(XlsWriter.class);
     private static final int HEADER_ROW = 1;
     private static final int MAX_ROWS = 65535;
     private String[] sheetNames = new String[]{"Sheet"};
@@ -42,12 +49,12 @@ public class Writer {
     private String[][] columns;
     private List<?>[] data;
 
-    public Writer(List<?>... data) {
+    public XlsWriter(List<?>... data) {
         this.data = data;
     }
 
-    public static Writer data(List<?>... data) {
-        return new Writer(data);
+    public static XlsWriter data(List<?>... data) {
+        return new XlsWriter(data);
     }
 
     public static List<List<?>> dice(List<?> num, int chunkSize) {
@@ -58,6 +65,21 @@ public class Writer {
             result.add(Lists.newArrayList(num.subList(i * chunkSize, i == chunk_num - 1 ? size : (i + 1) * chunkSize)));
         }
         return result;
+    }
+    
+    public boolean writeToFile(String fileName) {
+		try {
+			File file = new File(fileName);
+			if(!file.exists()) {
+				file.createNewFile();
+			}
+			OutputStream outputStream = new FileOutputStream(file);
+			this.write().write(outputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+			LOG.error(e.getLocalizedMessage());
+		}
+		return true;
     }
 
     public Workbook write() {
@@ -141,98 +163,68 @@ public class Writer {
     private static void processAsMap(String[] columns, Row row, Object obj) {
         Cell cell = null;
         Map<String, Object> map = (Map<String, Object>) obj;
-        if (columns.length == 0) { // show all if column not specified
-            Set<String> keys = map.keySet();
-            int columnIndex = 0;
-            for (String key : keys) {
-                cell = row.createCell(columnIndex);
-                cell.setCellValue(map.get(key) + "");
-                columnIndex++;
-            }
-        } else {
-            for (int j = 0, len = columns.length; j < len; j++) {
-                cell = row.createCell(j);
-                cell.setCellValue(map.get(columns[j]) == null ? "" : map.get(columns[j]) + "");
-            }
+        for (int j = 0, len = columns.length; j < len; j++) {
+        	cell = row.createCell(j);
+            Object val = map.get(columns[j]);
+            if (null == val) {
+                cell.setCellValue("");
+                continue;
+			}
+            if (TypeKit.isNumeric(val)) {
+				cell.setCellType(CellType.NUMERIC);
+				cell.setCellValue(Double.valueOf(val.toString()));
+				continue;
+			}
+            cell.setCellValue(val + "");
         }
     }
 
     private static void processAsModel(String[] columns, Row row, Object obj) {
-        Cell cell = null;
-        Model<?> model = (Model<?>) obj;
-        Set<Entry<String, Object>> entries = model._getAttrsEntrySet();
-        if (columns.length == 0) { // show all if column not specified
-            int columnIndex = 0;
-            for (Entry<String, Object> entry : entries) {
-                cell = row.createCell(columnIndex);
-                cell.setCellValue(entry.getValue() + "");
-                columnIndex++;
-            }
-        } else {
-            for (int j = 0, len = columns.length; j < len; j++) {
-                cell = row.createCell(j);
-                cell.setCellValue(model.get(columns[j]) == null ? "" : model.get(columns[j]) + "");
-            }
-        }
+        ModelExt<?> model = (ModelExt<?>) obj;
+        XlsWriter.processAsMap(columns, row, model.attrs());
     }
 
     private static void processAsRecord(String[] columns, Row row, Object obj) {
-        Cell cell = null;
         Record record = (Record) obj;
-        Map<String, Object> map = record.getColumns();
-        if (columns.length == 0) { // show all if column not specified
-            record.getColumns();
-            Set<String> keys = map.keySet();
-            int columnIndex = 0;
-            for (String key : keys) {
-                cell = row.createCell(columnIndex);
-                cell.setCellValue(record.get(key) + "");
-                columnIndex++;
-            }
-        } else {
-            for (int j = 0, len = columns.length; j < len; j++) {
-                cell = row.createCell(j);
-                cell.setCellValue(map.get(columns[j]) == null ? "" : map.get(columns[j]) + "");
-            }
-        }
+        XlsWriter.processAsMap(columns, row, record.getColumns());
     }
 
-    public Writer sheetName(String sheetName) {
+    public XlsWriter sheetName(String sheetName) {
         this.sheetNames = new String[]{sheetName};
         return this;
     }
 
-    public Writer sheetNames(String... sheetName) {
+    public XlsWriter sheetNames(String... sheetName) {
         this.sheetNames = sheetName;
         return this;
     }
 
-    public Writer cellWidth(int cellWidth) {
+    public XlsWriter cellWidth(int cellWidth) {
         this.cellWidth = cellWidth;
         return this;
     }
 
-    public Writer headerRow(int headerRow) {
+    public XlsWriter headerRow(int headerRow) {
         this.headerRow = headerRow;
         return this;
     }
 
-    public Writer header(String... header) {
+    public XlsWriter header(String... header) {
         this.headers = new String[][]{header};
         return this;
     }
 
-    public Writer headers(String[]... headers) {
+    public XlsWriter headers(String[]... headers) {
         this.headers = headers;
         return this;
     }
 
-    public Writer column(String... column) {
+    public XlsWriter column(String... column) {
         this.columns = new String[][]{column};
         return this;
     }
 
-    public Writer columns(String[]... columns) {
+    public XlsWriter columns(String[]... columns) {
         this.columns = columns;
         return this;
     }

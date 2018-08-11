@@ -13,13 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.interceptor.excel;
+package com.jfinal.ext.kit.xls;
+
+import org.apache.poi.ss.formula.functions.T;
 
 import com.jfinal.plugin.activerecord.Model;
 
 /**
- *  excel解析前置处理器，在每一个元素 保存之前调用
+ *  单元格值转换器
  */
-public interface PreExcelProcessor {
-	void process(Model<?> m);
+public interface ColumnConvert {
+	T convert(Object val, Model<?> model);
 }

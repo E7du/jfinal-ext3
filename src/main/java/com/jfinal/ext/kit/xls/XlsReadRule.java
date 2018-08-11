@@ -13,17 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.kit.excel;
+package com.jfinal.ext.kit.xls;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.google.common.collect.Lists;
-import com.jfinal.ext.interceptor.excel.PostExcelProcessor;
-import com.jfinal.ext.interceptor.excel.PostListProcessor;
-import com.jfinal.ext.interceptor.excel.PreExcelProcessor;
-import com.jfinal.ext.interceptor.excel.PreListProcessor;
+import com.jfinal.ext.interceptor.xls.PostListProcessor;
+import com.jfinal.ext.interceptor.xls.PostXlsProcessor;
+import com.jfinal.ext.interceptor.xls.PreListProcessor;
+import com.jfinal.ext.interceptor.xls.PreXlsProcessor;
+import com.jfinal.ext.plugin.activerecord.ModelExt;
 
-public class ReadRule {
+public class XlsReadRule {
 	
 	/**
 	 * Data From
@@ -35,11 +36,14 @@ public class ReadRule {
 	 */
 	private int end;
 	
+	/**
+	 * Date Column's Format
+	 */
 	private String dateFormat = "yyyy-MM-dd";
 
-	private PreExcelProcessor preExcelProcessor;
+	private PreXlsProcessor preXlsProcessor;
 
-	private PostExcelProcessor postExcelProcessor;
+	private PostXlsProcessor postXlsProcessor;
 
 	private PreListProcessor preListProcessor;
 
@@ -48,9 +52,9 @@ public class ReadRule {
 	/**
 	 * Data Convert Model's Class
 	 */
-    private Class<?> clazz;
+    private Class<? extends ModelExt<?>> clazz;
 
-    private List<Column> columns = Lists.newArrayList();
+    private Map<Integer, Column> columns = new HashMap<Integer, Column>();
 
     public int getStart() {
         return start;
@@ -76,20 +80,20 @@ public class ReadRule {
 		this.dateFormat = dateFormat;
 	}
 
-	public PreExcelProcessor getPreExcelProcessor() {
-        return preExcelProcessor;
+	public PreXlsProcessor getPreExcelProcessor() {
+        return preXlsProcessor;
     }
 
-    public void setPreExcelProcessor(PreExcelProcessor value) {
-        this.preExcelProcessor = value;
+    public void setPreExcelProcessor(PreXlsProcessor value) {
+        this.preXlsProcessor = value;
     }
 
-    public PostExcelProcessor getPostExcelProcessor() {
-        return postExcelProcessor;
+    public PostXlsProcessor getPostExcelProcessor() {
+        return postXlsProcessor;
     }
 
-    public void setPostExcelProcessor(PostExcelProcessor value) {
-        this.postExcelProcessor = value;
+    public void setPostExcelProcessor(PostXlsProcessor value) {
+        this.postXlsProcessor = value;
     }
 
     public PreListProcessor getPreListProcessor() {
@@ -108,19 +112,19 @@ public class ReadRule {
         this.postListProcessor = value;
     }
     
-    public Class<?> getClazz() {
+    public Class<? extends ModelExt<?>> getClazz() {
 		return clazz;
 	}
 
-	public void setClazz(Class<?> clazz) {
+	public void setClazz(Class<? extends ModelExt<?>> clazz) {
 		this.clazz = clazz;
 	}
 
-    public List<Column> getColumns() {
+    public Map<Integer, Column> getColumns() {
         return columns;
     }
 
-    public void setColumns(List<Column> columns) {
+    public void setColumns(Map<Integer, Column> columns) {
         this.columns = columns;
     }
     
@@ -132,7 +136,7 @@ public class ReadRule {
     	for (int idx = 0; idx < columns.length; idx++) {
 			Column col = Column.create(columns[idx]);
 			col.setIndex(idx);
-	    	this.columns.add(col);
+	    	this.columns.put(idx, col);
 		}
     }
 
@@ -143,7 +147,7 @@ public class ReadRule {
     	for (int idx = 0; idx < columns.length; idx++) {
 			Column col = columns[idx];
 			col.index = idx;
-	    	this.columns.add(col);
+	    	this.columns.put(idx, col);
 		}
     }
     
@@ -232,8 +236,8 @@ public class ReadRule {
 
 	@Override
 	public String toString() {
-		return "ReadRule [start=" + start + ", end=" + end + ", dateFormat=" + dateFormat + ", preExcelProcessor="
-				+ preExcelProcessor + ", postExcelProcessor=" + postExcelProcessor + ", preListProcessor="
+		return "XlsReadRule [start=" + start + ", end=" + end + ", dateFormat=" + dateFormat + ", preXlsProcessor="
+				+ preXlsProcessor + ", postXlsProcessor=" + postXlsProcessor + ", preListProcessor="
 				+ preListProcessor + ", postListProcessor=" + postListProcessor + ", clazz=" + clazz + ", columns="
 				+ columns + "]";
 	}
