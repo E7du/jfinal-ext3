@@ -55,6 +55,8 @@ public class XlsRender extends Render {
             XlsWriter.data(data).sheetNames(sheetNames).headerRow(headerRow).headers(headers).columns(columns)
                     .cellWidth(cellWidth).write().write(os);
         } catch (Exception e) {
+        	e.printStackTrace();
+            LOG.error(e.getMessage(), e);
             throw new RenderException(e);
         } finally {
             try {
@@ -63,9 +65,10 @@ public class XlsRender extends Render {
                     os.close();
                 }
             } catch (IOException e) {
+            	e.printStackTrace();
                 LOG.error(e.getMessage(), e);
+                throw new RenderException(e);
             }
-
         }
     }
 
