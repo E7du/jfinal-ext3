@@ -56,4 +56,16 @@ public final class TypeKit {
 	public static boolean isString(Object obj) {
 		return !TypeKit.isNumeric(obj);
 	}
+	
+	public static boolean isBoolean(Object obj) {
+		if (null == obj) {
+			return false;
+		}
+		String val = obj.toString().toUpperCase();
+		if (Boolean.TRUE.toString().toUpperCase().equals(val)
+				|| Boolean.FALSE.toString().toUpperCase().equals(val)) {
+			return true;
+		}
+		return false;
+	}
 }

@@ -127,7 +127,7 @@
 			<artifactId>guava</artifactId>
 			<version>18.0</version>
 		</dependency>
-		<!-- merge ext -->
+		<!-- excel -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>

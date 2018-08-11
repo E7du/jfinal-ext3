@@ -9,7 +9,7 @@
 		<init-param>
 			<param-name>configClass</param-name>
 			<!-- <param-value>test.com.jfinal.ext.render.chart.ChartConfig</param-value> -->
-			<param-value>com.jfinal.ext.render.excel.test.ExcelConfig</param-value>
+			<param-value>com.jfinal.ext.render.xls.test.XlsConfig</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
