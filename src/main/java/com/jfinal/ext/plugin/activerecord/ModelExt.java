@@ -68,13 +68,10 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		//fetch primary keys' values
 		String[] primaryKeys = table.getPrimaryKey();
 		//format key
-		boolean first = true;
 		for (int idx = 0; idx < primaryKeys.length; idx++) {
 			Object primaryKeyVal = m.get(primaryKeys[idx]);
 			if (null != primaryKeyVal) {
-				if (first) {
-					first = false;
-				} else {
+				if (idx > 0) {
 					key.append("|");
 				}
 				key.append(primaryKeyVal);
@@ -141,14 +138,13 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		// use primay key fetch from redis
 		Map<String, Object> attrs = this.redis().get(this.redisKey(m));
 		if (null != attrs) {
-			m = m.put(attrs);
-		} else {
-			// fetch from db
-			m = this.findFirst(SqlpKit.selectOne(m));
-			// save to redis
-			if (null != m) {
-				m.saveToRedis();
-			}
+			return m.put(attrs);
+		}
+		// fetch from db
+		m = this.findFirst(SqlpKit.selectOne(m));
+		// save to redis
+		if (null != m) {
+			m.saveToRedis();
 		}
 		return m;
 	}
@@ -272,6 +268,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
         }
 		boolean ret = super.delete();
 		if (this.syncToRedis && ret) {
+			//delete from Redis
 			this.redis().del(this.redisKey(this));
 		}
         for (CallbackListener callbackListener : this.callbackListeners) {
@@ -300,8 +297,10 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 
 	/**
 	 * <b>Advanced Function</b>. 
-	 * you can fetch Models: will fetch all columns, use any column value can do this.
-	 * if `syncToRedis` is true, the data from redis , else from DB.
+	 * List All data. <br/>
+	 * 1. You can use any column value fetch Models;<br/>
+	 * 2. The fetched Models contains all columns, <br/>
+	 * 3. if `syncToRedis` is true, the data from Redis else from DB.<br/>
 	 */
 	public List<M> fetch() {
 		//from db
@@ -309,16 +308,22 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			return this.find(SqlpKit.select(this));
 		}
 		//from redis
-		// fetch primary keys
+		//fetch primary keys from db and then use the primary keys fetch from Redis
 		return this.fetchDatasFromRedis(this.primaryKeys());
 	}
 
 	/**
 	 * <b>Advanced Function</b>. 
-	 * List All data just contains columns, use any column value can do this. the data from DB.
+	 * List All data. <br/>
+	 * 1. The data from DB just contains `columns` and primary keys; <br/>
+	 * 2. The data from Redis will contain all columns. <br/>
+	 * 3. Use any column value can do this. <br/>
 	 * @param columns: will fetch columns
 	 */
 	public List<M> fetch(String... columns) {
+		if (null == columns) {
+			return this.fetch();
+		}
 		//from db
 		if (!this.syncToRedis) {
 			return this.find(SqlpKit.select(this, columns));
@@ -326,6 +331,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		//from redis
 		//union the fetch columns , make the column contains primary keys.
 		String[] fetchColoumns = ArrayKit.union(this.primaryKeys(), columns);
+		//fetch fetchColoumns from db and then use the primary keys fetch from Redis.
 		return this.fetchDatasFromRedis(fetchColoumns);
 	}
 	
@@ -347,6 +353,9 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 * you can fetch FirstOne Model:just contains columns, use any column value can do this.the data from DB.
 	 */
 	public M fetchOne(String... columns) {
+		if (null == columns) {
+			return this.fetchOne();
+		}
 		//from db
 		if (!this.syncToRedis) {
 			return this.findFirst(SqlpKit.selectOne(this, columns));

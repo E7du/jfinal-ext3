@@ -15,43 +15,41 @@
 */
 package com.jfinal.ext.plugin.activerecord;
 
-import com.jfinal.plugin.activerecord.Model;
-
 public interface CallbackListener {
 
 	/**
 	 * Call before Save
 	 * @param m
 	 */
-	void beforeSave(Model<?> m);
+	void beforeSave(ModelExt<?> m);
 
 	/**
 	 * Call after Save
 	 * @param m
 	 */
-	void afterSave(Model<?> m);
+	void afterSave(ModelExt<?> m);
 	
 	/**
 	 * Call before Update
 	 * @param m
 	 */
-	void beforeUpdate(Model<?> m);
+	void beforeUpdate(ModelExt<?> m);
 
 	/**
-	 * Call after Upate
+	 * Call after Update
 	 * @param m
 	 */
-	void afterUpdate(Model<?> m);
+	void afterUpdate(ModelExt<?> m);
 
 	/**
 	 * Call before Delete
 	 * @param m
 	 */
-	void beforeDelete(Model<?> m);
+	void beforeDelete(ModelExt<?> m);
 
 	/**
 	 * Call after Delete
 	 * @param m
 	 */
-	void afterDelete(Model<?> m);
+	void afterDelete(ModelExt<?> m);
 }

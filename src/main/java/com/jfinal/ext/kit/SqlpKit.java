@@ -50,44 +50,36 @@ public final class SqlpKit {
 					fetchList.append("`").append(col).append("`");
 				}
 			} else {
-				boolean first = true;
 				for (String col : fetchColumns) {
-					if (first) {
-						first = false;
-					} else {
-						fetchList.append(",");
-					}
 					fetchList.append("`");
 					fetchList.append(col);
 					fetchList.append("`");
+					fetchList.append(",");
 				}
+				fetchList.deleteCharAt(fetchList.length() - 1);
 			}
 		}
 		
 		StringBuilder sbr = new StringBuilder(String.format(SELECT_ST, fetchList.toString(), model.tableName()));
-
-		boolean first = true;
+		//add where
+		sbr.append(SqlpKit.space);
+		sbr.append(SqlpKit.where);
+		sbr.append(SqlpKit.space);
+		//add columns
 		for (Integer i = 0; i < columns.length; i++) {
-			if (first) {
-				first = false;
-
-				sbr.append(SqlpKit.space);
-				sbr.append(SqlpKit.where);
-				sbr.append(SqlpKit.space);
-			} else {
-				sbr.append(SqlpKit.space);
-				sbr.append(SqlpKit.and);
-				sbr.append(SqlpKit.space);
-			}
-
 			sbr.append("`");
 			sbr.append(columns[i]);
 			sbr.append("`");
 			sbr.append(SqlpKit.space);
 			sbr.append("= ?");
+			sbr.append(SqlpKit.space);
+			sbr.append(SqlpKit.and);
+			sbr.append(SqlpKit.space);
 			sqlPara.addPara(model.get(columns[i]));
 		}
-
+		// " AND ".lenght() = 5;
+		sbr.delete(sbr.length()-5, sbr.length());
+		
 		if (flag == FLAG.ONE) {
 			sbr.append(SqlpKit.space);
 			sbr.append("LIMIT 1");
