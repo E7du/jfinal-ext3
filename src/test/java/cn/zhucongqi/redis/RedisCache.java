@@ -44,7 +44,7 @@ public class RedisCache {
 		redis.start();
 		
 		StandaloneAppConfig.start();
-		id = 1029;
+		id = 1037;
 		name = "姓名"+id;
 	}
 
@@ -63,13 +63,12 @@ public class RedisCache {
 		user.setId(id);
 		
 		//save
-		user.save();
+		//user.save();
 		// update
 		user.setAddr("新地址");
-		user.update();
+		//user.update();
 		
 		user = new User();
-		user.syncToRedis(true);
 		
 		List<User> users = user.fetch();
 		for (User u : users) {
@@ -79,7 +78,7 @@ public class RedisCache {
 		u.setId(id);
 		u.setName(name);
 		System.out.println(JsonKit.toJson(u));
-		u = u.fetchByRedis();
+		u = u.fetchOne();
 		System.out.println(JsonKit.toJson(u));
 		
 		Hello hl = new Hello();
@@ -88,7 +87,7 @@ public class RedisCache {
 		hl.setHello("hello");
 		
 		hl.syncToRedis(true);
-		hl.save();
+		//hl.save();
 		
 	}
 	

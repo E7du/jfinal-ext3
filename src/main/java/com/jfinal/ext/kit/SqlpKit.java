@@ -29,7 +29,7 @@ public final class SqlpKit {
 	private static final String and = "AND";
 	private static final String space = " ";
 	
-	private static final String SELECT_ST = "SELECT %s FROM `%s` ";
+	private static final String SELECT_ST = "SELECT %s FROM `%s`";
 	
 	private enum FLAG {
 		ALL,
