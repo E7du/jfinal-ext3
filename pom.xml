@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jfinal</groupId>
 	<artifactId>jfinal-ext3</artifactId>
-	<version>4.0.1</version>
+	<version>4.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>jfinal-ext3</name>
 	<description>jfinal-ext3</description>
@@ -32,119 +32,138 @@
 	<properties>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jfinal.version>3.4</jfinal.version>
+		<druid.version>1.1.10</druid.version>
+		<hikaricp.version>2.3.13</hikaricp.version>
+		<mysqlcj.version>8.0.12</mysqlcj.version>
+		<fastjson.version>1.2.49</fastjson.version>
+		<log4j.version>1.2.17</log4j.version>
+		<jetty.version>8.1.8</jetty.version>
+		<spring.version>5.0.8.RELEASE</spring.version>
+		<encache.version>2.6.6</encache.version>
+		<cglib.version>3.2.7</cglib.version>
+		<jedis.version>2.9.0</jedis.version>
+		<commonpool2.version>2.6.0</commonpool2.version>
+		<commonlang3.version>3.7</commonlang3.version>
+		<commoncollections.version>3.2.2</commoncollections.version>
+		<fst.version>2.57</fst.version>
+		<guava.version>26.0-jre</guava.version>
+		<poi.version>3.17</poi.version>
+		<poiooxml.version>3.17</poiooxml.version>
+		<slf4jnop.version>1.7.25</slf4jnop.version>
 	</properties>
 	<dependencies>
 		<!-- jfinal core -->
 		<dependency>
 			<groupId>com.jfinal</groupId>
 			<artifactId>jfinal</artifactId>
-			<version>3.4</version>
+			<version>${jfinal.version}</version>
 		</dependency>
 		<!-- DB -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
-			<version>1.1.10</version>
+			<version>${druid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP-java6</artifactId>
-			<version>2.3.13</version>
+			<version>${hikaricp.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.11</version>
+			<version>${mysqlcj.version}</version>
 		</dependency>
 		<!-- json -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.47</version>
+			<version>${fastjson.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jfinal</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>8.1.8</version>
+			<version>${jetty.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>4.3.8.RELEASE</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- cache -->
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
-			<version>2.6.6</version>
+			<version>${encache.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- redis -->
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
-			<version>3.2.5</version>
+			<version>${cglib.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<version>2.8.0</version>
+			<version>${jedis.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-pool2</artifactId>
-			<version>2.4.2</version>
+			<version>${commonpool2.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.ruedigermoeller</groupId>
 			<artifactId>fst</artifactId>
-			<version>2.29</version>
+			<version>${fst.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.1</version>
+			<version>${commonlang3.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-			<version>3.2.2</version>
+			<version>${commoncollections.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>18.0</version>
+			<version>${guava.version}</version>
 		</dependency>
 		<!-- excel -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.17</version>
+			<version>${poi.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>3.17</version>
+			<version>${poiooxml.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- test -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-nop</artifactId>
-			<version>1.7.25</version>
+			<version>${slf4jnop.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
