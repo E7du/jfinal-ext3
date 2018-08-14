@@ -61,24 +61,27 @@ public final class SqlpKit {
 		}
 		
 		StringBuilder sbr = new StringBuilder(String.format(SELECT_ST, fetchList.toString(), model.tableName()));
-		//add where
-		sbr.append(SqlpKit.space);
-		sbr.append(SqlpKit.where);
-		sbr.append(SqlpKit.space);
-		//add columns
-		for (Integer i = 0; i < columns.length; i++) {
-			sbr.append("`");
-			sbr.append(columns[i]);
-			sbr.append("`");
+		Integer columnsLen = columns.length;
+		if (columnsLen != 0) {
+			//add where
 			sbr.append(SqlpKit.space);
-			sbr.append("= ?");
+			sbr.append(SqlpKit.where);
 			sbr.append(SqlpKit.space);
-			sbr.append(SqlpKit.and);
-			sbr.append(SqlpKit.space);
-			sqlPara.addPara(model.get(columns[i]));
+			//add columns
+			for (Integer i = 0; i < columnsLen; i++) {
+				sbr.append("`");
+				sbr.append(columns[i]);
+				sbr.append("`");
+				sbr.append(SqlpKit.space);
+				sbr.append("= ?");
+				sbr.append(SqlpKit.space);
+				sbr.append(SqlpKit.and);
+				sbr.append(SqlpKit.space);
+				sqlPara.addPara(model.get(columns[i]));
+			}
+			// " AND ".lenght() = 5;
+			sbr.delete(sbr.length()-5, sbr.length());
 		}
-		// " AND ".lenght() = 5;
-		sbr.delete(sbr.length()-5, sbr.length());
 		
 		if (flag == FLAG.ONE) {
 			sbr.append(SqlpKit.space);
