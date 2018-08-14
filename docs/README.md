@@ -4,6 +4,7 @@ jfinal-ext3，源自jfinal-ext，jfinal-ext2，基于jfinal3.x，扩展了很多
 ![maven](https://img.shields.io/maven-central/v/com.jfinal/jfinal-ext3.svg)
 
 ### 新特性
+- v4.0.1：修改ModelToRedis的存储方式，由Hash模式变为Generic模式。
 - v4.0.0 ：加入 Xls 读写，XlsRender等。
  
  ```java
