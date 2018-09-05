@@ -112,13 +112,11 @@
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
 			<version>${cglib.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<version>${jedis.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -129,7 +127,6 @@
 			<groupId>de.ruedigermoeller</groupId>
 			<artifactId>fst</artifactId>
 			<version>${fst.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
