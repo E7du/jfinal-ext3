@@ -15,6 +15,9 @@
 */
 package com.jfinal.ext.plugin.activerecord;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -178,6 +181,51 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			m.saveToRedis();
 		}
 		return m;
+	}
+	
+	/**
+	 * Get attr type
+	 * @param attr
+	 * @return attr type class
+	 */
+	public Class<?> attrType(String attr) {
+		Table table = this.table();
+		if (null != table) {
+			return table.getColumnType(attr);
+		}
+		
+		Method[] methods = this._getUsefulClass().getMethods();
+		String methodName;
+		for (Method method : methods) {
+			methodName = method.getName();
+			if (methodName.startsWith("set") && methodName.substring(3).toLowerCase().equals(attr)) {
+				return method.getParameterTypes()[0];
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Get attr names
+	 */
+	public List<String> attrNames() {
+		String[] names = this._getAttrNames();
+		if (null != names && names.length != 0) {
+			return Arrays.asList(names);
+		}
+		Method[] methods = this._getUsefulClass().getMethods();
+		String methodName;
+		List<String> attrs = new ArrayList<String>();
+		for (Method method : methods) {
+			methodName = method.getName();
+			if (methodName.startsWith("set") ) {
+				String attr = methodName.substring(3).toLowerCase();
+				if (StrKit.notBlank(attr)) {
+					attrs.add(attr);
+				}
+			}
+		}
+		return attrs;
 	}
 
 	/**

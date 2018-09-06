@@ -19,7 +19,10 @@ public final class GlobalSyncRedis {
 	
 	private static boolean sync = true;
 	
-	private static Integer syncExpire;
+	/**
+	 * default 30mins
+	 */
+	private static Integer syncExpire = 1800;
 	
 	public static void openSync() {
 		GlobalSyncRedis.sync = true;
