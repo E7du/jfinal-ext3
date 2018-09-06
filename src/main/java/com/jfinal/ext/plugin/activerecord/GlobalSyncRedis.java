@@ -19,6 +19,8 @@ public final class GlobalSyncRedis {
 	
 	private static boolean sync = true;
 	
+	private static Integer syncExpire;
+	
 	public static void openSync() {
 		GlobalSyncRedis.sync = true;
 	}
@@ -29,5 +31,21 @@ public final class GlobalSyncRedis {
 	
 	public static boolean syncState() {
 		return GlobalSyncRedis.sync;
+	}
+	
+	/**
+	 * Set default expire time
+	 * @param expire
+	 */
+	public static void setSyncExpire(Integer expire) {
+		GlobalSyncRedis.syncExpire = expire;
+	}
+	
+	/**
+	 * Get default expire time
+	 * @return
+	 */
+	public static Integer syncExpire() {
+		return GlobalSyncRedis.syncExpire;
 	}
 }
