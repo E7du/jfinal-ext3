@@ -15,14 +15,14 @@
 */
 package com.jfinal.ext.kit.demos;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.jfinal.ext.kit.excel.ExcelReadRule;
-import com.jfinal.ext.kit.excel.ExcelReadRule.ReadColumn;
+import com.jfinal.ext.kit.excel.ExcelColumn;
 import com.jfinal.ext.kit.excel.ExcelReader;
-import com.jfinal.ext.kit.excel.ExcelRowReadFeedback;
-import com.jfinal.ext.plugin.activerecord.ModelExt;
+import com.jfinal.ext.kit.excel.ExcelRule;
 import com.test.api.model.User;
 
 class ExcelReaderDemo {
@@ -37,25 +37,31 @@ class ExcelReaderDemo {
 //		StandaloneAppConfig.start();
 		
 		ExcelReader reader = new ExcelReader("users.xls", User.class);
-		reader.setReadFeedback(new ExcelRowReadFeedback() {
-			
-			@Override
-			public void readRow(ModelExt<?> model) {
-				System.out.println("read2 model="+model+"class"+model.getClass());
-			}
-		});
 		
-		ExcelReadRule readRule = new ExcelReadRule();
+//		ExcelRowReadFeedback feedback = new ExcelRowReadFeedback() {
+//			
+//			@Override
+//			public void readRow(ModelExt<?> model) {
+//				System.out.println("read2 model="+model+"class"+model.getClass());
+//			}
+//		};
 		
-		readRule.setHasHeader(1, true);
-		readRule.setHasHeader(2, true);
+		//reader.setReadFeedback(feedback);
+		
+		ExcelRule rule = new ExcelRule();
+		
+		rule.setHasHeader(1, true);
+		rule.setHasHeader(2, true);
 
-		ReadColumn id = ReadColumn.create("id");
-		ReadColumn name = ReadColumn.create("name");
-		ReadColumn addr = ReadColumn.create("addr");
-		readRule.alignColumn(id, name, addr);
-		reader.setReadRule(readRule);
+		ExcelColumn id = ExcelColumn.create("id");
+		ExcelColumn name = ExcelColumn.create("name");
+		ExcelColumn addr = ExcelColumn.create("addr");
+		rule.alignColumn(id, name, addr);
+		reader.setReadRule(rule);
 		reader.read();
+		
+		List<User> users = reader.getDatas();
+		System.out.println(users.size());
 	}
 
 }

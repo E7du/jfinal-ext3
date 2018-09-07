@@ -5,8 +5,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.jfinal.ext.kit.xls.XlsReadRule.Column;
-import com.jfinal.ext.kit.xls.XlsWriter;
+import com.jfinal.ext.kit.excel.ExcelColumn;
 import com.test.api.model.User;
 
 class XlsWriterDemo {
@@ -25,10 +24,10 @@ class XlsWriterDemo {
 		
 		 //XlsWriter.data(users).headerRow(1).header("Id","Name", "Addr").column("id","name", "addr").writeToFile("src/test/resources/users.xls");
 		 
-		 Column id = Column.header("编号", "id");
-		 Column name = Column.header("姓名", "name");
-		 Column addr = Column.header("地址", "addr");
-		 XlsWriter.data(users).columns(id, name, addr).writeToFile("src/test/resources/users.xls");
+		 //ExcelColumn id = ExcelColumn.header("编号", "id");
+		 //ExcelColumn name = ExcelColumn.header("姓名", "name");
+		 //ExcelColumn addr = ExcelColumn.header("地址", "addr");
+		// XlsWriter.data(users).columns(id, name, addr).writeToFile("src/test/resources/users.xls");
 	}
 
 }

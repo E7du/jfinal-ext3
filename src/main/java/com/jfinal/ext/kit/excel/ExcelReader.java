@@ -29,13 +29,13 @@ public class ExcelReader {
 	public ExcelReader(String fileName, Class<? extends ModelExt<?>> readToModel, boolean trim) {
 		this();
 		this.validateFile(fileName);
-		this.reader = new com.alibaba.excel.ExcelReader(this.getInputStream(fileName), this.getExcelType(fileName), readToModel, this.listener, trim);
+		this.reader = new com.alibaba.excel.ExcelReader(this.getInputStream(fileName), ExcelKit.getExcelType(fileName), readToModel, this.listener, trim);
 	}
 	
 	public ExcelReader(String fileName, Class<? extends ModelExt<?>> readToModel) {
 		this();
 		this.validateFile(fileName);
-		this.reader = new com.alibaba.excel.ExcelReader(this.getInputStream(fileName), this.getExcelType(fileName), readToModel, this.listener, true);
+		this.reader = new com.alibaba.excel.ExcelReader(this.getInputStream(fileName), ExcelKit.getExcelType(fileName), readToModel, this.listener, true);
 	}
 	
 	public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent, boolean trim) {
@@ -56,8 +56,17 @@ public class ExcelReader {
 		this.listener.setReadFeedback(feedback);
 	}
 	
-	public void setReadRule(ExcelReadRule readRule) {
+	/**
+	 * Set reader rule
+	 * @param readRule
+	 */
+	public void setReadRule(ExcelRule readRule) {
 		this.listener.setReadRule(readRule);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getDatas() {
+		return (T)this.listener.getDatas();
 	}
 	
 	public void read() {
@@ -82,11 +91,5 @@ public class ExcelReader {
     private InputStream getInputStream(String fileName) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
     }
-    
-    private ExcelTypeEnum getExcelType(String fileName) {
-    	if (fileName.endsWith(ExcelTypeEnum.XLSX.getValue())) {
-			return ExcelTypeEnum.XLSX;
-		}
-    	return ExcelTypeEnum.XLS;
-    }
+  
 }

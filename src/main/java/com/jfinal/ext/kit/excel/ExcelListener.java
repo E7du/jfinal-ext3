@@ -28,7 +28,6 @@ import com.alibaba.excel.read.event.AnalysisEventListener;
 import com.alibaba.excel.write.exception.ExcelGenerateException;
 import com.jfinal.ext.kit.AppDateFormatKit;
 import com.jfinal.ext.kit.TypeKit;
-import com.jfinal.ext.kit.excel.ExcelReadRule.ReadColumn;
 import com.jfinal.ext.kit.poi.PoiException;
 import com.jfinal.ext.plugin.activerecord.ModelExt;
 
@@ -36,15 +35,14 @@ import com.jfinal.ext.plugin.activerecord.ModelExt;
 public class ExcelListener extends AnalysisEventListener {
 
 	private ExcelRowReadFeedback feedback;
-	private List<ModelExt<?>> readModels;
-	private ExcelReadRule readRule;
+	private List<ModelExt<?>> datas;
+	private ExcelRule readRule;
 
 	public ExcelListener() {
-		this.readModels = new ArrayList<ModelExt<?>>();
+		this.datas = new ArrayList<ModelExt<?>>();
 	}
 	
-	
-	public void setReadRule(ExcelReadRule readRule) {
+	public void setReadRule(ExcelRule readRule) {
 		this.readRule = readRule;
 	}
 
@@ -52,9 +50,12 @@ public class ExcelListener extends AnalysisEventListener {
 		this.feedback = feedback;
 	}
 	
+	public List<ModelExt<?>> getDatas() {
+		return this.datas;
+	}
 
 	@Override
-	public void doAfterAllAnalysed(AnalysisContext arg0) {
+	public void doAfterAllAnalysed(AnalysisContext context) {
 
 	}
 
@@ -73,8 +74,8 @@ public class ExcelListener extends AnalysisEventListener {
 			return;
 		}
 		
-		Class clazz = (Class) context.getCustom();
-		ModelExt<?> model = null;
+		Class<?> clazz = (Class<?>) context.getCustom();
+		ModelExt<?>  model = null;
 		if (ModelExt.class.isAssignableFrom(clazz)) {
 			try {
 				model = (ModelExt<?>) clazz.newInstance();
@@ -92,7 +93,7 @@ public class ExcelListener extends AnalysisEventListener {
 				
 				// put data to model
 				String format = AppDateFormatKit.getAppDateFormat();
-				ReadColumn col;
+				ExcelColumn col;
 				for (int i = 0; i < dest.size(); i++) {
 					col = this.readRule.getColumn(i);
 					if (null == col) {
@@ -126,10 +127,8 @@ public class ExcelListener extends AnalysisEventListener {
 				}
 			}
 		}
-
-
 		
-		this.readModels.add(model);
+		this.datas.add(model);
 		this.read(model);
 	}
 
@@ -138,5 +137,4 @@ public class ExcelListener extends AnalysisEventListener {
 			this.feedback.readRow(model);
 		}
 	}
-
 }

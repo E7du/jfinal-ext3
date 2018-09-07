@@ -33,7 +33,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jfinal.ext.kit.TypeKit;
 import com.jfinal.ext.kit.poi.PoiException;
-import com.jfinal.ext.kit.xls.XlsReadRule.Column;
 import com.jfinal.ext.plugin.activerecord.ModelExt;
 import com.jfinal.log.Log;
 import com.jfinal.plugin.activerecord.Model;
@@ -253,18 +252,4 @@ public class XlsWriter {
         this.columns = columns;
         return this;
     }
-    
-    public XlsWriter columns(Column... columns) {
-    	String[] headers = new String[columns.length];
-    	String[] cols = new String[columns.length];
-    	for (int i = 0; i < columns.length; i++) {
-			Column col = columns[i];
-			headers[i] = col.getHeader();
-			cols[i] = col.getAttr();
-		}
-    	this.header(headers);
-    	this.column(cols);
-    	return this;
-    }
-
 }
