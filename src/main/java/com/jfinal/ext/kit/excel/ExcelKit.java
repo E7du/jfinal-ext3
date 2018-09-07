@@ -15,7 +15,7 @@
 */
 package com.jfinal.ext.kit.excel;
 
-import com.alibaba.excel.support.ExcelTypeEnum;
+import cn.zhucongqi.excel.support.ExcelTypeEnum;
 
 public final class ExcelKit {
 

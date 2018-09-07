@@ -19,17 +19,17 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.metadata.Table;
-import com.alibaba.excel.support.ExcelTypeEnum;
+import cn.zhucongqi.excel.metadata.Sheet;
+import cn.zhucongqi.excel.metadata.Table;
+import cn.zhucongqi.excel.support.ExcelTypeEnum;
 import com.jfinal.ext.plugin.activerecord.ModelExt;
 
 public class ExcelWriter {
 
-	private com.alibaba.excel.ExcelWriter writer;
+	private cn.zhucongqi.excel.ExcelWriter writer;
 	
 	public ExcelWriter(OutputStream outputStream, ExcelTypeEnum typeEnum) {
-		this.writer = new com.alibaba.excel.ExcelWriter(outputStream, typeEnum);
+		this.writer = new cn.zhucongqi.excel.ExcelWriter(outputStream, typeEnum);
 	}
 
 	public void writeModel(List<? extends ModelExt<?>> models) {

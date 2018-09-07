@@ -20,12 +20,17 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.alibaba.excel.support.ExcelTypeEnum;
-import com.jfinal.ext.kit.excel.ExcelWriter;
 import com.test.api.model.User;
+
+import cn.zhucongqi.excel.ExcelWriter;
+import cn.zhucongqi.excel.metadata.Font;
+import cn.zhucongqi.excel.metadata.Sheet;
+import cn.zhucongqi.excel.metadata.TableStyle;
+import cn.zhucongqi.excel.support.ExcelTypeEnum;
 
 class ExcelWriterDemo {
 
@@ -33,11 +38,29 @@ class ExcelWriterDemo {
 	void setUp() throws Exception {
 	}
 
+	 private TableStyle getTableStyle1() {
+	        TableStyle tableStyle = new TableStyle();
+	        Font headFont = new Font();
+	        headFont.setBold(true);
+	        headFont.setFontHeightInPoints((short)22);
+	        headFont.setFontName("楷体");
+	        tableStyle.setTableHeadFont(headFont);
+	        tableStyle.setTableHeadBackGroundColor(IndexedColors.LIGHT_BLUE);
+
+	        Font contentFont = new Font();
+	        contentFont.setBold(true);
+	        contentFont.setFontHeightInPoints((short)22);
+	        contentFont.setFontName("黑体");
+	        tableStyle.setTableContentFont(contentFont);
+	        tableStyle.setTableContentBackGroundColor(IndexedColors.LIGHT_GREEN);
+	        return tableStyle;
+	    }
+	
 	@Test
 	void test() {
 		
 		List<User> users = new ArrayList<User>();
-		for (int i = 0; i < 665; i++) {
+		for (int i = 0; i < 65; i++) {
 			User u = new User();
 			u.setId(i+3);
 			u.setAddr("addr"+i);
@@ -48,7 +71,9 @@ class ExcelWriterDemo {
 		
 		try {
 			ExcelWriter writer = new ExcelWriter(new FileOutputStream("./src/test/resources/userswrite.xls"), ExcelTypeEnum.XLS);
-			writer.writeModel(users);
+			Sheet sh = new Sheet(1, 0);
+			sh.setTableStyle(this.getTableStyle1());
+			writer.write(users, sh);
 			writer.finish();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

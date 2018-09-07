@@ -36,7 +36,7 @@ class ExcelReaderDemo {
 		
 //		StandaloneAppConfig.start();
 		
-		ExcelReader reader = new ExcelReader("users.xls", User.class);
+		ExcelReader reader = new ExcelReader("userswrite.xls", User.class);
 		
 //		ExcelRowReadFeedback feedback = new ExcelRowReadFeedback() {
 //			
@@ -56,12 +56,12 @@ class ExcelReaderDemo {
 		ExcelColumn id = ExcelColumn.create("id");
 		ExcelColumn name = ExcelColumn.create("name");
 		ExcelColumn addr = ExcelColumn.create("addr");
-		rule.alignColumn(id, name, addr);
+		rule.alignColumn(name, id, addr);
 		reader.setReadRule(rule);
 		reader.read();
 		
 		List<User> users = reader.getDatas();
-		System.out.println(users.size());
+		System.out.println(users);
 	}
 
 }

@@ -17,35 +17,36 @@ package com.jfinal.ext.kit.excel;
 
 import java.io.InputStream;
 
-import com.alibaba.excel.support.ExcelTypeEnum;
 import com.jfinal.ext.plugin.activerecord.ModelExt;
 import com.jfinal.kit.StrKit;
 
+import cn.zhucongqi.excel.support.ExcelTypeEnum;
+
 public class ExcelReader {
 
-	private com.alibaba.excel.ExcelReader reader;
+	private cn.zhucongqi.excel.ExcelReader reader;
 	private ExcelListener listener;
 	
 	public ExcelReader(String fileName, Class<? extends ModelExt<?>> readToModel, boolean trim) {
 		this();
 		this.validateFile(fileName);
-		this.reader = new com.alibaba.excel.ExcelReader(this.getInputStream(fileName), ExcelKit.getExcelType(fileName), readToModel, this.listener, trim);
+		this.reader = new cn.zhucongqi.excel.ExcelReader(this.getInputStream(fileName), ExcelKit.getExcelType(fileName), readToModel, this.listener, trim);
 	}
 	
 	public ExcelReader(String fileName, Class<? extends ModelExt<?>> readToModel) {
 		this();
 		this.validateFile(fileName);
-		this.reader = new com.alibaba.excel.ExcelReader(this.getInputStream(fileName), ExcelKit.getExcelType(fileName), readToModel, this.listener, true);
+		this.reader = new cn.zhucongqi.excel.ExcelReader(this.getInputStream(fileName), ExcelKit.getExcelType(fileName), readToModel, this.listener, true);
 	}
 	
 	public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent, boolean trim) {
 		this();
-		this.reader = new com.alibaba.excel.ExcelReader(in, excelTypeEnum, customContent, this.listener, trim);
+		this.reader = new cn.zhucongqi.excel.ExcelReader(in, excelTypeEnum, customContent, this.listener, trim);
 	}
 	
 	public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent) {
 		this();
-		this.reader = new com.alibaba.excel.ExcelReader(in, excelTypeEnum, customContent, this.listener, true);
+		this.reader = new cn.zhucongqi.excel.ExcelReader(in, excelTypeEnum, customContent, this.listener, true);
 	}
 
 	/**
