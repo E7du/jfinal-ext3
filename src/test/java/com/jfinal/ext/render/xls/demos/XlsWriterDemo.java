@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.jfinal.ext.kit.excel.ExcelColumn;
 import com.test.api.model.User;
 
 class XlsWriterDemo {

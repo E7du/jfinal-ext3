@@ -24,8 +24,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.jfinal.ext.kit.excel.ExcelColumn;
-import com.jfinal.ext.kit.excel.ExcelRule;
 import com.jfinal.ext.kit.excel.ExcelWriter;
 import com.test.api.model.User;
 
@@ -38,18 +36,8 @@ class ExcelWriterDemo {
 	@Test
 	void test() {
 		
-		ExcelRule rule = new ExcelRule();
-		
-		rule.setHasHeader(1, true);
-		rule.setHasHeader(2, true);
-
-		ExcelColumn id = ExcelColumn.create("id");
-		ExcelColumn name = ExcelColumn.create("name");
-		ExcelColumn addr = ExcelColumn.create("addr");
-		rule.alignColumn(id, name, addr);
-		
 		List<User> users = new ArrayList<User>();
-		for (int i = 0; i < 65365; i++) {
+		for (int i = 0; i < 665; i++) {
 			User u = new User();
 			u.setId(i+3);
 			u.setAddr("addr"+i);
@@ -60,7 +48,6 @@ class ExcelWriterDemo {
 		
 		try {
 			ExcelWriter writer = new ExcelWriter(new FileOutputStream("./src/test/resources/userswrite.xls"), ExcelTypeEnum.XLS);
-			writer.setWriteRule(rule);
 			writer.writeModel(users);
 			writer.finish();
 		} catch (FileNotFoundException e) {

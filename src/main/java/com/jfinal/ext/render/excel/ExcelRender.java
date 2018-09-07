@@ -20,7 +20,6 @@ import java.io.OutputStream;
 import java.util.List;
 
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.jfinal.ext.kit.excel.ExcelRule;
 import com.jfinal.ext.kit.excel.ExcelWriter;
 import com.jfinal.ext.plugin.activerecord.ModelExt;
 import com.jfinal.log.Log;
@@ -33,15 +32,13 @@ public class ExcelRender extends Render {
     private final static String CONTENT_TYPE = "application/msexcel;charset=" + getEncoding();
     private List<? extends ModelExt<?>> data;
     private String fileName = "file1.xls";
-    private ExcelRule rule;
 
-    public ExcelRender(List<? extends ModelExt<?>> data, ExcelRule rule) {
+    public ExcelRender(List<? extends ModelExt<?>> data) {
         this.data = data;
-        this.rule = rule;
     }
 
-    public static ExcelRender me(List<? extends ModelExt<?>> data, ExcelRule rule) {
-        return new ExcelRender(data, rule);
+    public static ExcelRender me(List<? extends ModelExt<?>> data) {
+        return new ExcelRender(data);
     }
 
     @Override
@@ -53,7 +50,6 @@ public class ExcelRender extends Render {
         try {
             os = response.getOutputStream();
             ExcelWriter writer = new ExcelWriter(os, ExcelTypeEnum.XLSX);
-			writer.setWriteRule(this.rule);
 			writer.writeModel(this.data);
 			writer.finish();
         } catch (Exception e) {

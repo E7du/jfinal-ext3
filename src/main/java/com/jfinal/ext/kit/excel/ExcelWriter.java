@@ -27,14 +27,9 @@ import com.jfinal.ext.plugin.activerecord.ModelExt;
 public class ExcelWriter {
 
 	private com.alibaba.excel.ExcelWriter writer;
-	private ExcelRule writeRule;
 	
 	public ExcelWriter(OutputStream outputStream, ExcelTypeEnum typeEnum) {
 		this.writer = new com.alibaba.excel.ExcelWriter(outputStream, typeEnum);
-	}
-	
-	public void setWriteRule(ExcelRule writeRule) {
-		this.writeRule = writeRule;
 	}
 
 	public void writeModel(List<? extends ModelExt<?>> models) {
@@ -50,15 +45,13 @@ public class ExcelWriter {
 	}
 	
 	private List<List<String>> modelToString(List<? extends ModelExt<?>> models) {
-		Integer colCnt = this.writeRule.getColumnsCount();
 		List<List<String>> datas = new ArrayList<List<String>>();
-		ExcelColumn col;
 		Object val;
 		for (ModelExt<?> m : models) {
 			List<String> rowData = new ArrayList<String>();
-			for (int i = 0; i < colCnt; i++) {
-				col = this.writeRule.getColumn(i);
-				val = m.get(col.getAttr());
+			String[] attrs = m._getAttrNames();
+			for (int i = 0; i < attrs.length; i++) {
+				val = m.get(attrs[i]);
 				if (null == val) {
 					rowData.add("");
 				} else {
