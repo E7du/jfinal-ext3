@@ -13,35 +13,35 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.jfinal.ext.render.xls;
+package com.jfinal.ext.render.excel;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import com.jfinal.ext.kit.xls.XlsWriter;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.jfinal.ext.kit.excel.ExcelRule;
+import com.jfinal.ext.kit.excel.ExcelWriter;
+import com.jfinal.ext.plugin.activerecord.ModelExt;
 import com.jfinal.log.Log;
 import com.jfinal.render.Render;
 import com.jfinal.render.RenderException;
 
-public class XlsRender extends Render {
+public class ExcelRender extends Render {
 
     private final Log LOG = Log.getLog(getClass());
     private final static String CONTENT_TYPE = "application/msexcel;charset=" + getEncoding();
-    private List<?>[] data;
-    private String[][] headers;
-    private String[] sheetNames = new String[]{"Sheet"};
-    private int cellWidth;
-    private String[] columns = new String[]{};
+    private List<? extends ModelExt<?>> data;
     private String fileName = "file1.xls";
-    private int headerRow;
+    private ExcelRule rule;
 
-    public XlsRender(List<?>[] data) {
+    public ExcelRender(List<? extends ModelExt<?>> data, ExcelRule rule) {
         this.data = data;
+        this.rule = rule;
     }
 
-    public static XlsRender me(List<?>... data) {
-        return new XlsRender(data);
+    public static ExcelRender me(List<? extends ModelExt<?>> data, ExcelRule rule) {
+        return new ExcelRender(data, rule);
     }
 
     @Override
@@ -52,8 +52,10 @@ public class XlsRender extends Render {
         OutputStream os = null;
         try {
             os = response.getOutputStream();
-            XlsWriter.data(data).sheetNames(sheetNames).headerRow(headerRow).headers(headers).columns(columns)
-                    .cellWidth(cellWidth).write().write(os);
+            ExcelWriter writer = new ExcelWriter(os, ExcelTypeEnum.XLSX);
+			writer.setWriteRule(this.rule);
+			writer.writeModel(this.data);
+			writer.finish();
         } catch (Exception e) {
         	e.printStackTrace();
             LOG.error(e.getMessage(), e);
@@ -72,32 +74,7 @@ public class XlsRender extends Render {
         }
     }
 
-    public XlsRender headers(String[]... headers) {
-        this.headers = headers;
-        return this;
-    }
-
-    public XlsRender headerRow(int headerRow) {
-        this.headerRow = headerRow;
-        return this;
-    }
-
-    public XlsRender columns(String... columns) {
-        this.columns = columns;
-        return this;
-    }
-
-    public XlsRender sheetName(String... sheetName) {
-        this.sheetNames = sheetName;
-        return this;
-    }
-
-    public XlsRender cellWidth(int cellWidth) {
-        this.cellWidth = cellWidth;
-        return this;
-    }
-
-    public XlsRender fileName(String fileName) {
+    public ExcelRender fileName(String fileName) {
         this.fileName = fileName;
         return this;
     }

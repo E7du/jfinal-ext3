@@ -19,6 +19,11 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 
 public final class ExcelKit {
 
+	/**
+	 * Get Excel file type by file name
+	 * @param fileName
+	 * @return ExcelTypeEnum
+	 */
 	public static ExcelTypeEnum getExcelType(String fileName) {
     	if (fileName.endsWith(ExcelTypeEnum.XLSX.getValue())) {
 			return ExcelTypeEnum.XLSX;

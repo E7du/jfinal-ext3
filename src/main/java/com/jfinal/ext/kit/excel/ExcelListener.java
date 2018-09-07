@@ -25,7 +25,6 @@ import java.util.List;
 
 import com.alibaba.excel.read.context.AnalysisContext;
 import com.alibaba.excel.read.event.AnalysisEventListener;
-import com.alibaba.excel.write.exception.ExcelGenerateException;
 import com.jfinal.ext.kit.AppDateFormatKit;
 import com.jfinal.ext.kit.TypeKit;
 import com.jfinal.ext.kit.poi.PoiException;
@@ -65,9 +64,6 @@ public class ExcelListener extends AnalysisEventListener {
 		if (null == this.readRule) {
 			throw (new PoiException("Please set read rule first."));
 		}
-		System.out.println("当前表格数" + context.getCurrentSheet().getSheetNo() + " 当前行：" + context.getCurrentRowNum());
-
-		
 		Integer currentSheetNo = context.getCurrentSheet().getSheetNo();
 		Integer currentRow = context.getCurrentRowNum();
 		if (this.readRule.getHasHedaer(currentSheetNo) && currentRow == 0) {
@@ -80,7 +76,7 @@ public class ExcelListener extends AnalysisEventListener {
 			try {
 				model = (ModelExt<?>) clazz.newInstance();
 			} catch (Exception e) {
-				throw new ExcelGenerateException(e);
+				throw new PoiException(e);
 			}
 			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 			ObjectOutputStream out = null;
@@ -109,20 +105,20 @@ public class ExcelListener extends AnalysisEventListener {
 					}
 				}
 			} catch (Exception e) {
-				throw new ExcelGenerateException(e);
+				throw new PoiException(e);
 			} finally {
 				if (null != out) {
 					try {
 						out.close();
 					} catch (IOException e) {
-						throw new ExcelGenerateException(e);
+						throw new PoiException(e);
 					}
 				}
 				if (null != byteOut) {
 					try {
 						byteOut.close();
 					} catch (IOException e) {
-						throw new ExcelGenerateException(e);
+						throw new PoiException(e);
 					}
 				}
 			}
