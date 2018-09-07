@@ -25,7 +25,7 @@ public class MYSQLTableMappingKit {
 	
 	public static void mapping(ActiveRecordPlugin arp) {
 		// Composite Primary Key order: id,name
-		arp.addMapping("hello", "id,name", Hello.class);
+		//arp.addMapping("hello", "id,name", Hello.class);
 		// Composite Primary Key order: id,name
 		arp.addMapping("user", "id,name", User.class);
 	}
