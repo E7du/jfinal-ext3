@@ -48,7 +48,7 @@
 		<commoncollections.version>3.2.2</commoncollections.version>
 		<fst.version>2.57</fst.version>
 		<guava.version>26.0-jre</guava.version>
-		<swift-poi-excel.version>1.0.1</swift-poi-excel.version>
+		<swift-poi.version>1.0.2</swift-poi.version>
 		<poi.version>3.17</poi.version>
 		<poiooxml.version>3.17</poiooxml.version>
 		<slf4jnop.version>1.7.25</slf4jnop.version>
@@ -148,7 +148,7 @@
 		<dependency>
 			<groupId>cn.zhucongqi</groupId>
 			<artifactId>swift-poi-excel</artifactId>
-			<version>${swift-poi-excel.version}</version>
+			<version>${swift-poi.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
