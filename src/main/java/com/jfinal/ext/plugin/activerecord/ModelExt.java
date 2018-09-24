@@ -175,10 +175,11 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			return m.put(attrs);
 		}
 		// fetch from db
-		m = this.findFirst(SqlpKit.selectOne(m));
+		M tmp = this.findFirst(SqlpKit.selectOne(m));
 		// save to redis
-		if (null != m) {
-			m.saveToRedis();
+		if (null != tmp) {
+			m.put(tmp._getAttrs());
+			tmp.saveToRedis();
 		}
 		return m;
 	}
