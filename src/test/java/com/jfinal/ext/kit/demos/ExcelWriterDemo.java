@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import com.test.api.model.User;
 
-import cn.zhucongqi.excel.ExcelWriter;
+import cn.zhucongqi.excel.Writer;
 import cn.zhucongqi.excel.metadata.Font;
 import cn.zhucongqi.excel.metadata.Sheet;
 import cn.zhucongqi.excel.metadata.TableStyle;
@@ -38,7 +38,8 @@ class ExcelWriterDemo {
 	void setUp() throws Exception {
 	}
 
-	 private TableStyle getTableStyle1() {
+	 @SuppressWarnings("unused")
+	private TableStyle getTableStyle1() {
 	        TableStyle tableStyle = new TableStyle();
 	        Font headFont = new Font();
 	        headFont.setBold(true);
@@ -66,18 +67,46 @@ class ExcelWriterDemo {
 			u.setAddr("addr"+i);
 			u.setName("名字"+i);
 			users.add(u);
+			
+			String[] attr = u._getAttrNames();
+			for (int j = 0; j < attr.length; j++) {
+				System.out.println(attr[j]);
+			}
 		}
 //		System.out.println(users);
 		
 		try {
-			ExcelWriter writer = new ExcelWriter(new FileOutputStream("./src/test/resources/userswrite.xls"), ExcelTypeEnum.XLS);
-			Sheet sh = new Sheet(1, 0);
-			sh.setTableStyle(this.getTableStyle1());
+			Writer writer = new Writer(new FileOutputStream("./src/test/resources/userswrite4.xls"), ExcelTypeEnum.XLS);
+			
+			Sheet sh = new Sheet(0, 1);
+			
+			List<List<String>> head = new ArrayList<List<String>>();
+			List<String> id = new ArrayList<String>();
+			id.add("编号");
+			List<String> addr = new ArrayList<String>();
+			addr.add("地址");
+			List<String> name = new ArrayList<String>();
+			name.add("姓名");
+			head.add(id);
+			head.add(name);
+			head.add(addr);
+			
+			
+//			writer.setRule(this.rule());
 			writer.write(users, sh);
 			writer.finish();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
+	
+//	private Rule rule() {
+//		Rule rule = new Rule();
+//		Column id = Column.one("id", "编号");
+//		Column name = Column.one("name", "姓名");
+//		Column addr = Column.one("addr", "地址");
+//		rule.alignColumn(name, id, addr);
+//		return rule;
+//	}
 
 }

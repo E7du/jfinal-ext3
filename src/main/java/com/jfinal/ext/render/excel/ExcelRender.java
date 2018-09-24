@@ -19,11 +19,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import com.jfinal.ext.kit.excel.ExcelWriter;
 import com.jfinal.ext.plugin.activerecord.ModelExt;
 import com.jfinal.log.Log;
 import com.jfinal.render.Render;
 import com.jfinal.render.RenderException;
+
+import cn.zhucongqi.excel.Writer;
 
 public class ExcelRender extends Render {
 
@@ -39,6 +40,8 @@ public class ExcelRender extends Render {
     public static ExcelRender me(List<? extends ModelExt<?>> data) {
         return new ExcelRender(data);
     }
+    
+    //TODO header
 
     @Override
     public void render() {
@@ -48,8 +51,8 @@ public class ExcelRender extends Render {
         OutputStream os = null;
         try {
             os = response.getOutputStream();
-            ExcelWriter writer = new ExcelWriter(os, cn.zhucongqi.excel.support.ExcelTypeEnum.XLSX);
-			writer.writeModel(this.data);
+            Writer writer = new Writer(os, cn.zhucongqi.excel.support.ExcelTypeEnum.XLSX);
+			writer.write(this.data);
 			writer.finish();
         } catch (Exception e) {
         	e.printStackTrace();
