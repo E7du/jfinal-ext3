@@ -149,6 +149,7 @@
 			<groupId>cn.zhucongqi</groupId>
 			<artifactId>swift-poi-excel</artifactId>
 			<version>${swift-poi-excel.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
