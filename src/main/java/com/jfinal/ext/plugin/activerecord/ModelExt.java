@@ -25,7 +25,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
-import com.jfinal.ext.kit.ArrayKit;
 import com.jfinal.ext.kit.SqlpKit;
 import com.jfinal.ext.plugin.redis.ModelRedisMapping;
 import com.jfinal.kit.HashKit;
@@ -85,20 +84,21 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	}
 	
 	/**
-	 * redis key for columns
-	 * @param columns : current fetch columns
-	 * @return ids:md5(concat(columns))
+	 * redis key for attrs' values
+	 * @param flag : ids or id store
+	 * @return data[s]:md5(concat(columns' value))
 	 */
-	private String redisColumnKey(String[] columns, SqlpKit.FLAG flag) {
+	private String redisColumnKey(SqlpKit.FLAG flag) {
 		StringBuilder key = new StringBuilder();
-		for (String column : columns) {
-			key.append(column);
+		String[] attrs = this._getAttrNames();
+		for (String attr : attrs) {
+			key.append(this.get(attr).toString());
 		}
 		key = new StringBuilder(HashKit.md5(key.toString()));
 		if (flag.equals(SqlpKit.FLAG.ONE)) {
-			return "id:"+key;
+			return "data:"+key;
 		}
-		return "ids:"+key;
+		return "datas:"+key;
 	}
 
 	protected void saveToRedis() {
@@ -130,14 +130,14 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 * Use the columns that must contains primary keys fetch Data from db, and use the fetched primary keys fetch from redis.
 	 * @param columns
 	 */
-	private List<M> fetchDatasFromRedis(String[] columns) {
+	private List<M> fetchDatasFromRedis() {
 		// redis key
-		String key = this.redisColumnKey(columns, SqlpKit.FLAG.ALL);
-		// fetch ids from redis
+		String key = this.redisColumnKey(SqlpKit.FLAG.ALL);
+		// fetch from redis
 		List<M> fetchDatas = this.redis().get(key);
 		if (null == fetchDatas) {
-			// use columns fetch primary keys from db.
-			fetchDatas = this.find(SqlpKit.select(this, columns));
+			// fetch ids from db.
+			fetchDatas = this.find(SqlpKit.select(this, this.primaryKeys()));
 		}
 		
 		if (null == fetchDatas || fetchDatas.size() == 0) {
@@ -147,7 +147,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		this.redis().setex(key, GlobalSyncRedis.syncExpire(), fetchDatas);
 		for (M m : fetchDatas) {
 			// fetch data from redis
-			if (null == m || m._isNull()) {
+			if (null == m) {
 				continue;
 			}
 			m = this.fetchOne(m);
@@ -155,16 +155,16 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		return fetchDatas;
 	}
 	
-	private M fetchOneFromRedis(String[] columns) {
+	private M fetchOneFromRedis() {
 		// redis key
-		String key = this.redisColumnKey(columns, SqlpKit.FLAG.ONE);
-		// fetch id from redis
+		String key = this.redisColumnKey(SqlpKit.FLAG.ONE);
+		// fetch from redis
 		M m = this.redis().get(key);
 		if (null == m) {
-			// use columns fetch primary keys from db.
-			m = this.findFirst(SqlpKit.selectOne(this, columns));
+			// fetch id from db.
+			m = this.findFirst(SqlpKit.selectOne(this, this.primaryKeys()));
 		}
-		if (null == m || m._isNull()) {
+		if (null == m) {
 			return m;
 		}
 		//put id to redis 
@@ -392,8 +392,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			return this.find(SqlpKit.select(this));
 		}
 		//from redis
-		//fetch primary keys from db and then use the primary keys fetch from Redis
-		return this.fetchDatasFromRedis(this.primaryKeys());
+		return this.fetchDatasFromRedis();
 	}
 
 	/**
@@ -413,10 +412,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			return this.find(SqlpKit.select(this, columns));
 		}
 		//from redis
-		//union the fetch columns , make the column contains primary keys.
-		String[] fetchColoumns = ArrayKit.union(this.primaryKeys(), columns);
-		//fetch fetchColoumns from db and then use the primary keys fetch from Redis.
-		return this.fetchDatasFromRedis(fetchColoumns);
+		return this.fetchDatasFromRedis();
 	}
 	
 	/**
@@ -429,7 +425,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			return this.findFirst(SqlpKit.selectOne(this));
 		}
 		//from redis
-		return this.fetchOneFromRedis(this.primaryKeys());
+		return this.fetchOneFromRedis();
 	}
 	
 	/**
@@ -445,8 +441,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			return this.findFirst(SqlpKit.selectOne(this, columns));
 		}
 		//from redis
-		String[] fetchColoumns = ArrayKit.union(this.primaryKeys(), columns);
-		return this.fetchOneFromRedis(fetchColoumns);
+		return this.fetchOneFromRedis();
 	}
 	
 	/**
