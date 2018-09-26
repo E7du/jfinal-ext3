@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.jfinal.core.Controller;
-import com.jfinal.ext.render.xls.XlsRender;
+import com.jfinal.ext.render.excel.ExcelRender;
 import com.jfinal.plugin.auth.AccessTokenBuilder;
 import com.test.api.model.User;
 
@@ -27,6 +27,6 @@ public class XlsController extends Controller {
         	u.setAddr("addr"+id);
             data.add(u);
         }
-        render(XlsRender.me(data).fileName("your_file_name.xls").headers(headers).sheetName("ok").columns(columns).cellWidth(5000).headerRow(2));
+        render(ExcelRender.me(data).fileName("your_file_name.xls"));
     }
 }

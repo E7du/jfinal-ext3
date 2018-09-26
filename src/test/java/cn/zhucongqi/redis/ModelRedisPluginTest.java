@@ -61,9 +61,9 @@ class ModelRedisPluginTest {
 		Long cnt = u.dataCount();
 		System.out.println("cnt"+cnt);
 		
-		us = u.fetch();
+		List<User> usus = u.fetch();
 		System.out.println("find\n");
-		for (User user : us) {
+		for (User user : usus) {
 			System.out.println(JsonKit.toJson(user));
 		}
 		

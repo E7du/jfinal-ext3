@@ -15,6 +15,9 @@
 */
 package com.jfinal.ext.plugin.activerecord;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +28,7 @@ import com.google.common.collect.Lists;
 import com.jfinal.ext.kit.ArrayKit;
 import com.jfinal.ext.kit.SqlpKit;
 import com.jfinal.ext.plugin.redis.ModelRedisMapping;
+import com.jfinal.kit.HashKit;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
@@ -79,6 +83,19 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		}
 		return key.toString();
 	}
+	
+	/**
+	 * redis key for columns
+	 * @param columns : current fetch columns
+	 * @return ids:md5(concat(columns))
+	 */
+	private String redisColumnKey(String[] columns) {
+		StringBuilder key = new StringBuilder();
+		for (String column : columns) {
+			key.append(column);
+		}
+		return "ids:"+HashKit.md5(key.toString());
+	}
 
 	protected void saveToRedis() {
 		//save total data: generic save
@@ -110,11 +127,20 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 * @param columns
 	 */
 	private List<M> fetchDatasFromRedis(String[] columns) {
-		// use columns fetch primary keys from db.
-		List<M> fetchDatas = this.find(SqlpKit.select(this, columns));
+		// redis key
+		String key = this.redisColumnKey(columns);
+		// fetch ids from redis
+		List<M> fetchDatas = this.redis().get(key);
+		if (null == fetchDatas) {
+			// use columns fetch primary keys from db.
+			fetchDatas = this.find(SqlpKit.select(this, columns));
+		}
+		
 		if (null == fetchDatas || fetchDatas.size() == 0) {
 			return fetchDatas;
 		}
+		//put ids to redis 
+		this.redis().setex(key, GlobalSyncRedis.syncExpire(), fetchDatas);
 		for (M m : fetchDatas) {
 			// fetch data from redis
 			if (null == m || m._isNull()) {
@@ -126,11 +152,19 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	}
 	
 	private M fetchOneFromRedis(String[] columns) {
-		// use columns fetch primary keys from db.
-		M m = this.findFirst(SqlpKit.selectOne(this, columns));
+		// redis key
+		String key = this.redisColumnKey(columns);
+		// fetch id from redis
+		M m = this.redis().get(key);
+		if (null == m) {
+			// use columns fetch primary keys from db.
+			m = this.findFirst(SqlpKit.selectOne(this, columns));
+		}
 		if (null == m || m._isNull()) {
 			return m;
 		}
+		//put id to redis 
+		this.redis().setex(key, GlobalSyncRedis.syncExpire(), m);
 		return this.fetchOne(m);
 	}
 
@@ -141,12 +175,58 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			return m.put(attrs);
 		}
 		// fetch from db
-		m = this.findFirst(SqlpKit.selectOne(m));
+		M tmp = this.findFirst(SqlpKit.selectOne(m));
 		// save to redis
-		if (null != m) {
-			m.saveToRedis();
+		if (null != tmp) {
+			m.put(tmp._getAttrs());
+			tmp.saveToRedis();
 		}
 		return m;
+	}
+	
+	/**
+	 * Get attr type
+	 * @param attr
+	 * @return attr type class
+	 */
+	public Class<?> attrType(String attr) {
+		Table table = this.table();
+		if (null != table) {
+			return table.getColumnType(attr);
+		}
+		
+		Method[] methods = this._getUsefulClass().getMethods();
+		String methodName;
+		for (Method method : methods) {
+			methodName = method.getName();
+			if (methodName.startsWith("set") && methodName.substring(3).toLowerCase().equals(attr)) {
+				return method.getParameterTypes()[0];
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Get attr names
+	 */
+	public List<String> attrNames() {
+		String[] names = this._getAttrNames();
+		if (null != names && names.length != 0) {
+			return Arrays.asList(names);
+		}
+		Method[] methods = this._getUsefulClass().getMethods();
+		String methodName;
+		List<String> attrs = new ArrayList<String>();
+		for (Method method : methods) {
+			methodName = method.getName();
+			if (methodName.startsWith("set") ) {
+				String attr = methodName.substring(3).toLowerCase();
+				if (StrKit.notBlank(attr)) {
+					attrs.add(attr);
+				}
+			}
+		}
+		return attrs;
 	}
 
 	/**

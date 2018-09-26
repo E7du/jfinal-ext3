@@ -24,8 +24,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import com.google.common.base.Throwables;
-
 public class JaxbKit {
 
     /**
@@ -43,7 +41,7 @@ public class JaxbKit {
             Unmarshaller avm = JAXBContext.newInstance(clazz).createUnmarshaller();
             result = (T) avm.unmarshal(new StringReader(src));
         } catch (JAXBException e) {
-            Throwables.propagate(e);
+        	throw new RuntimeException(e);
         }
         return result;
     }
@@ -55,7 +53,7 @@ public class JaxbKit {
             Unmarshaller avm = JAXBContext.newInstance(clazz).createUnmarshaller();
             result = (T) avm.unmarshal(xmlFile);
         } catch (JAXBException e) {
-            Throwables.propagate(e);
+        	throw new RuntimeException(e);
         }
         return result;
     }
