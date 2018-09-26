@@ -4,6 +4,8 @@ jfinal-ext3，源自jfinal-ext，jfinal-ext2，基于jfinal3.x，扩展了很多
 ![maven](https://img.shields.io/maven-central/v/com.jfinal/jfinal-ext3.svg)
 
 ### 新特性
+- v4.0.3：修复ModelExt bug。
+- v4.0.2：重构和优化Excel读写。
 - v4.0.1：修改ModelToRedis的存储方式，由Hash模式变为Generic模式。
 - v4.0.0 ：加入 Xls 读写，XlsRender等。
  
@@ -59,7 +61,7 @@ jfinal-ext3，源自jfinal-ext，jfinal-ext2，基于jfinal3.x，扩展了很多
 ```java
 /**
 	 * Lazy Config Prop
-	 * 
+	 *
 	 * <pre>
 	 * Properties prop = new Properties();
 	 * !// config db
