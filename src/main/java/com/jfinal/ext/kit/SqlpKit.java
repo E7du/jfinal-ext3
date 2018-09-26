@@ -31,7 +31,7 @@ public final class SqlpKit {
 	
 	private static final String SELECT_ST = "SELECT %s FROM `%s`";
 	
-	private enum FLAG {
+	public enum FLAG {
 		ALL,
 		ONE
 	}

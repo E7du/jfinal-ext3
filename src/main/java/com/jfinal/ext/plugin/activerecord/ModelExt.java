@@ -89,12 +89,16 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 * @param columns : current fetch columns
 	 * @return ids:md5(concat(columns))
 	 */
-	private String redisColumnKey(String[] columns) {
+	private String redisColumnKey(String[] columns, SqlpKit.FLAG flag) {
 		StringBuilder key = new StringBuilder();
 		for (String column : columns) {
 			key.append(column);
 		}
-		return "ids:"+HashKit.md5(key.toString());
+		key = new StringBuilder(HashKit.md5(key.toString()));
+		if (flag.equals(SqlpKit.FLAG.ONE)) {
+			return "id:"+key;
+		}
+		return "ids:"+key;
 	}
 
 	protected void saveToRedis() {
@@ -128,7 +132,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 */
 	private List<M> fetchDatasFromRedis(String[] columns) {
 		// redis key
-		String key = this.redisColumnKey(columns);
+		String key = this.redisColumnKey(columns, SqlpKit.FLAG.ALL);
 		// fetch ids from redis
 		List<M> fetchDatas = this.redis().get(key);
 		if (null == fetchDatas) {
@@ -153,7 +157,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	
 	private M fetchOneFromRedis(String[] columns) {
 		// redis key
-		String key = this.redisColumnKey(columns);
+		String key = this.redisColumnKey(columns, SqlpKit.FLAG.ONE);
 		// fetch id from redis
 		M m = this.redis().get(key);
 		if (null == m) {
