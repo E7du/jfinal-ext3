@@ -158,7 +158,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	private M fetchOneFromRedis() {
 		Object pk = this.primaryKeyValue();
 		if (null != pk) {
-			//TODO
+			return this.fetchOne(this);
 		}
 		// redis key
 		String key = this.redisColumnKey(SqlpKit.FLAG.ONE);
@@ -176,11 +176,12 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		return this.fetchOne(m);
 	}
 
-	private M fetchOne(M m) {
+	@SuppressWarnings("unchecked")
+	private M fetchOne(ModelExt<?> m) {
 		// use primay key fetch from redis
 		Map<String, Object> attrs = this.redis().get(this.redisKey(m));
 		if (null != attrs) {
-			return m.put(attrs);
+			return (M)m.put(attrs);
 		}
 		// fetch from db
 		M tmp = this.findFirst(SqlpKit.selectOne(m));
@@ -189,7 +190,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			m.put(tmp._getAttrs());
 			tmp.saveToRedis();
 		}
-		return m;
+		return (M)m;
 	}
 	
 	/**
