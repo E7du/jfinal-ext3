@@ -89,7 +89,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 * @return data[s]:md5(concat(columns' value))
 	 */
 	private String redisColumnKey(SqlpKit.FLAG flag) {
-		StringBuilder key = new StringBuilder();
+		StringBuilder key = new StringBuilder(this._getUsefulClass().toGenericString());
 		String[] attrs = this._getAttrNames();
 		Object val;
 		for (String attr : attrs) {
