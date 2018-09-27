@@ -91,8 +91,13 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	private String redisColumnKey(SqlpKit.FLAG flag) {
 		StringBuilder key = new StringBuilder();
 		String[] attrs = this._getAttrNames();
+		Object val;
 		for (String attr : attrs) {
-			key.append(this.get(attr).toString());
+			val = this.get(attr);
+			if (null == val) {
+				continue;
+			}
+			key.append(val.toString());
 		}
 		key = new StringBuilder(HashKit.md5(key.toString()));
 		if (flag.equals(SqlpKit.FLAG.ONE)) {
