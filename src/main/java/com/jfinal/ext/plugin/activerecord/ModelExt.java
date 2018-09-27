@@ -156,6 +156,10 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	}
 	
 	private M fetchOneFromRedis() {
+		Object pk = this.primaryKeyValue();
+		if (null != pk) {
+			//TODO
+		}
 		// redis key
 		String key = this.redisColumnKey(SqlpKit.FLAG.ONE);
 		// fetch from redis
