@@ -107,7 +107,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 
 	protected void saveToRedis() {
 		//save total data: generic save
-		this.redis().set(this.redisKey(this), this);
+		this.redis().set(this.redisKey(this), this.attrsCp());
 	}
 	
 	private Cache redis() {
@@ -190,12 +190,12 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	@SuppressWarnings("unchecked")
 	private M fetchOne(ModelExt<?> m) {
 		// use primay key fetch from redis
-		M tmp = this.redis().get(this.redisKey(m));
-		if (null != tmp) {
-			return (M)m.put(tmp._getAttrs());
+		Map<String, Object> attrs = this.redis().get(this.redisKey(m));
+		if (null != attrs) {
+			return (M)m.put(attrs);
 		}
 		// fetch from db
-		tmp = this.findFirst(SqlpKit.selectOne(m));
+		M tmp = this.findFirst(SqlpKit.selectOne(m));
 		// save to redis
 		if (null != tmp) {
 			m.put(tmp._getAttrs());
