@@ -44,7 +44,6 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	private static final String RECORDS = "records:";
 	//default sync to redis
 	private boolean syncToRedis = GlobalSyncRedis.syncState();
-	private Cache redis = null;
 	private String cacheName = null;
 	//call back
     private List<CallbackListener> callbackListeners = Lists.newArrayList();
@@ -108,12 +107,17 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 
 	protected void saveToRedis() {
 		//save total data: generic save
-		this.redis().set(this.redisKey(this), this.attrsCp());
+		this.redis().set(this.redisKey(this), this);
 	}
 	
 	private Cache redis() {
-		if (null != this.redis) {
-			return this.redis;
+		Cache redis = null;
+		if (StrKit.notBlank(this.cacheName)) {
+			redis = GlobalSyncRedis.getSyncCache(this.cacheName);
+		}
+		
+		if (null != redis) {
+			return redis;
 		}
 		
 		if (StrKit.isBlank(this.cacheName)) {
@@ -121,14 +125,16 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		}
 		
 		if (StrKit.notBlank(this.cacheName)) {
-			this.redis = Redis.use(this.cacheName);
+			redis = Redis.use(this.cacheName);
 		} else {
-			this.redis = Redis.use();
+			redis = Redis.use();
 		}
-		if (null == this.redis) {
+		if (null == redis) {
 			throw new IllegalArgumentException(String.format("The Cache with the name '%s' was Not Found.", this.cacheName));	
 		}
-		return this.redis;
+		//sync to memory.
+		GlobalSyncRedis.setSyncCache(this.cacheName, redis);
+		return redis;
 	}
 	
 	/**
@@ -184,12 +190,12 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	@SuppressWarnings("unchecked")
 	private M fetchOne(ModelExt<?> m) {
 		// use primay key fetch from redis
-		Map<String, Object> attrs = this.redis().get(this.redisKey(m));
-		if (null != attrs) {
-			return (M)m.put(attrs);
+		M tmp = this.redis().get(this.redisKey(m));
+		if (null != tmp) {
+			return (M)m.put(tmp._getAttrs());
 		}
 		// fetch from db
-		M tmp = this.findFirst(SqlpKit.selectOne(m));
+		tmp = this.findFirst(SqlpKit.selectOne(m));
 		// save to redis
 		if (null != tmp) {
 			m.put(tmp._getAttrs());
@@ -284,7 +290,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	public void shotCacheName(String cacheName) {
 		//reset cache
 		if (StrKit.notBlank(cacheName) && !cacheName.equals(this.cacheName)) {
-			this.redis = null;
+			GlobalSyncRedis.removeSyncCache(this.cacheName);
 		}
 		this.cacheName = cacheName;
 		//auto open sync to redis

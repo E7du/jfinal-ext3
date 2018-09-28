@@ -15,9 +15,17 @@
 */
 package com.jfinal.ext.plugin.activerecord;
 
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.redis.Cache;
+import com.jfinal.plugin.redis.Redis;
+
 public final class GlobalSyncRedis {
 	
 	private static boolean sync = true;
+	
+	private static ConcurrentHashMap<String, Cache> caches = new ConcurrentHashMap<String, Cache>();
 	
 	/**
 	 * default 30mins
@@ -50,5 +58,42 @@ public final class GlobalSyncRedis {
 	 */
 	public static Integer syncExpire() {
 		return GlobalSyncRedis.syncExpire;
+	}
+	
+	/**
+	 * Set cache to the memory.
+	 * @param name
+	 * @param cache
+	 */
+	public static void setSyncCache(String name, Cache cache) {
+		if (null == name || "".equals(name.trim()) || null == cache) {
+			return;
+		}
+		GlobalSyncRedis.caches.put(name, cache);
+	}
+	
+	/**
+	 * remove cache from memory.
+	 * @param name
+	 */
+	public static void removeSyncCache(String name) {
+		if (StrKit.isBlank(name)) {
+			return;
+		}
+		if (GlobalSyncRedis.caches.containsKey(name)) {
+			GlobalSyncRedis.caches.remove(name);
+		}
+	}
+	
+	/**
+	 * Get cache from memory.
+	 * @param name
+	 * @return
+	 */
+	public static Cache getSyncCache(String name) {
+		if (StrKit.isBlank(name) || !GlobalSyncRedis.caches.containsKey(name)) {
+			return Redis.use();
+		}
+		return GlobalSyncRedis.caches.get(name);
 	}
 }
