@@ -21,11 +21,14 @@ import com.jfinal.core.Controller;
  * @author Jobsz
  *
  */
-public class ValidatorExt extends com.jfinal.validate.Validator {
+public abstract class ValidatorExt extends com.jfinal.validate.Validator {
+	
+	protected abstract void validateParams(Controller c);
 	
 	@Override
 	protected void validate(Controller c) {
 		this.setShortCircuit(true);
+		this.validateParams(c);
 	}
 	
 	@Override
