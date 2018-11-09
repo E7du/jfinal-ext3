@@ -141,7 +141,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	 * Use the columns that must contains primary keys fetch Data from db, and use the fetched primary keys fetch from redis.
 	 * @param columns
 	 */
-	private List<M> fetchDatasFromRedis() {
+	private List<M> fetchDatasFromRedis(String... columns) {
 		// redis key
 		String key = this.redisColumnKey(SqlpKit.FLAG.ALL);
 		// fetch from redis
@@ -161,15 +161,15 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			if (null == m) {
 				continue;
 			}
-			m = this.fetchOne(m);
+			m = this.fetchOne(m, columns);
 		}
 		return fetchDatas;
 	}
 	
-	private M fetchOneFromRedis() {
+	private M fetchOneFromRedis(String... columns) {
 		Object pk = this.primaryKeyValue();
 		if (null != pk) {
-			return this.fetchOne(this);
+			return this.fetchOne(this, columns);
 		}
 		// redis key
 		String key = this.redisColumnKey(SqlpKit.FLAG.ONE);
@@ -184,21 +184,28 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		}
 		//put id to redis 
 		this.redis().setex(key, GlobalSyncRedis.syncExpire(), m);
-		return this.fetchOne(m);
+		return this.fetchOne(m, columns);
 	}
 
 	@SuppressWarnings("unchecked")
-	private M fetchOne(ModelExt<?> m) {
+	private M fetchOne(ModelExt<?> m, String... columns) {
 		// use primay key fetch from redis
 		Map<String, Object> attrs = this.redis().get(this.redisKey(m));
 		if (null != attrs) {
-			return (M)m.put(attrs);
+			if (null == columns || columns.length == 0) {
+				return (M)m.put(attrs);
+			}
+			return (M)m.put(attrs).keep(columns);
 		}
 		// fetch from db
 		M tmp = this.findFirst(SqlpKit.selectOne(m));
 		// save to redis
 		if (null != tmp) {
-			m.put(tmp._getAttrs());
+			if (null == columns || columns.length == 0) {
+				m.put(tmp._getAttrs());
+			} else {
+				m.put(tmp._getAttrs()).keep(columns);
+			}
 			tmp.saveToRedis();
 		}
 		return (M)m;
@@ -428,7 +435,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			return this.find(SqlpKit.select(this, columns));
 		}
 		//from redis
-		return this.fetchDatasFromRedis();
+		return this.fetchDatasFromRedis(columns);
 	}
 	
 	/**
@@ -457,7 +464,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 			return this.findFirst(SqlpKit.selectOne(this, columns));
 		}
 		//from redis
-		return this.fetchOneFromRedis();
+		return this.fetchOneFromRedis(columns);
 	}
 	
 	/**
