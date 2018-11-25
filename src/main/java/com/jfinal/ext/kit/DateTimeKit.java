@@ -100,6 +100,28 @@ final public class DateTimeKit {
 		return (new Date());
 	}
 	
+	/*=============================================TO Date ===================*/
+	
+	/**
+     * @param date
+     * @param day 想要获取的日期与传入日期的差值 比如想要获取传入日期前四天的日期 day=-4即可
+     */
+    public static Date getSomeDay(Date date, Integer day){
+        cal.setTime(date);
+        cal.add(Calendar.DATE, day);
+        return cal.getTime();
+    }
+	
+    /**
+     * @param day 想要获取的日期与传入日期的差值 比如想要获取传入日期前四天的日期 day=-4即可
+     * @return
+     */
+    public static Date getSomeDay(Integer day){
+        setTime();
+        cal.add(Calendar.DATE, day);
+        return cal.getTime();
+    }
+    
 	/*=============================================TO int ===================*/
 	
 	/**
