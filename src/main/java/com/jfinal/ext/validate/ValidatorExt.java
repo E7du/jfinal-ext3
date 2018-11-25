@@ -45,6 +45,14 @@ public abstract class ValidatorExt extends com.jfinal.validate.Validator {
 		}
 		c.renderError(403);
 	}
+	
+	protected void validateRequired(String... fields) {
+		if (null != fields) {
+			for (String field : fields) {
+				this.validateRequired(field);
+			}
+		}
+	}
 
 	protected void validateRequired(String field) {
 		super.validateRequired(field, RespData.EM, "参数" + field + "不能为空!");
@@ -54,12 +62,28 @@ public abstract class ValidatorExt extends com.jfinal.validate.Validator {
 		super.validateRequired(index, RespData.EM, "参数" + index + "不能为空!");
 	}
 
+	protected void validateRequiredString(String... fields) {
+		if (null != fields) {
+			for (String field : fields) {
+				this.validateRequiredString(field);
+			}
+		}
+	}
+	
 	protected void validateRequiredString(String field) {
 		super.validateRequiredString(field, RespData.EM, "参数" + field + "不能为空!");
 	}
 
 	protected void validateRequiredString(int index) {
 		super.validateRequiredString(index, RespData.EM, "参数" + index + "不能为空!");
+	}
+	
+	protected void validateInteger(String... fields) {
+		if (null != fields) {
+			for (String field : fields) {
+				this.validateInteger(field);
+			}
+		}
 	}
 
 	protected void validateInteger(String field, int min, int max) {
@@ -76,6 +100,14 @@ public abstract class ValidatorExt extends com.jfinal.validate.Validator {
 
 	protected void validateInteger(int index) {
 		super.validateInteger(index, RespData.EM, "参数" + index + "不能为空!");
+	}
+	
+	protected void validateLong(String... fields) {
+		if (null != fields) {
+			for (String field : fields) {
+				this.validateLong(field);
+			}
+		}
 	}
 
 	protected void validateLong(String field, long min, long max) {
@@ -94,6 +126,14 @@ public abstract class ValidatorExt extends com.jfinal.validate.Validator {
 		super.validateLong(index, RespData.EM, "参数" + index + "不能为空!");
 	}
 
+	protected void validateDouble(String... fields) {
+		if (null != fields) {
+			for (String field : fields) {
+				this.validateDouble(field);
+			}
+		}
+	}
+	
 	protected void validateDouble(String field, double min, double max) {
 		super.validateDouble(field, min, max, RespData.EM, "参数"+field + "范围在"+ min +"~"+ max +"!");
 	}
@@ -102,6 +142,14 @@ public abstract class ValidatorExt extends com.jfinal.validate.Validator {
 		super.validateDouble(field, RespData.EM, "参数" + field + "不能为空!");
 	}
 
+	protected void validateDate(String... fields) {
+		if (null != fields) {
+			for (String field : fields) {
+				this.validateDate(field);
+			}
+		}
+	}
+	
 	protected void validateDate(String field) {
 		super.validateDate(field, RespData.EM, "参数" + field + "不能为空!");
 	}
