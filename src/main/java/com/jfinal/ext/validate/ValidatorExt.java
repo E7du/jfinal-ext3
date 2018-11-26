@@ -15,9 +15,11 @@
 */
 package com.jfinal.ext.validate;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 import com.jfinal.core.Controller;
+import com.jfinal.ext.core.ControllerExt;
 import com.jfinal.kit.StrKit;
 import com.jfinal.resp.RespData;
 
@@ -170,10 +172,31 @@ public abstract class ValidatorExt extends com.jfinal.validate.Validator {
 		super.validateEqualString(s1, s2, RespData.EM, s1 + "!=" + s2);
 	}
 
+	protected void validateNotEqualString(String field, String value) {
+		String fieldValue = controller.getPara(field);
+		if (fieldValue == null || (fieldValue.equals(value))) {
+			addError(RespData.EM, "参数" + field + "取值不可="+value);
+		}
+	}
+	
 	protected void validateEqualInteger(Integer i1, Integer i2) {
 		super.validateEqualInteger(i1, i2, RespData.EM, i1 + "!=" + i2);
 	}
 
+	protected void validateNotEqualInteger(String field, Integer value) {
+		Integer fieldValue = controller.getParaToInt(field);
+		if (fieldValue == null || (fieldValue.equals(value))) {
+			addError(RespData.EM, "参数" + field + "取值不可="+value);
+		}
+	}
+	
+	protected void validateNotEqualBigInteger(String field, BigInteger value) {
+		BigInteger fieldValue = ((ControllerExt)controller).getParaToBigInteger(field);
+		if (fieldValue == null || (fieldValue.equals(value))) {
+			addError(RespData.EM, "参数" + field + "取值不可="+value);
+		}
+	}
+	
 	protected void validateEmail(String field) {
 		super.validateEmail(field, RespData.EM, "参数" + field + "不是一个邮箱!");
 	}

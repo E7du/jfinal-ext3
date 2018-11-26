@@ -359,7 +359,7 @@ public abstract class JFinalConfigExt extends com.jfinal.config.JFinalConfig {
 	private DruidPlugin getDruidPlugin(String ds) {
 		String url = this.getProperty(String.format("db.%s.url", ds));
 		url = String.format(URL_TEMPLATE, ds, url);
-		String endsWith = "?characterEncoding=UTF8&zeroDateTimeBehavior=CONVERT_TO_NULL";
+		String endsWith = "?characterEncoding=UTF8&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=Asia/Shanghai";
 		if (!url.endsWith(endsWith)) {
 			url += endsWith;
 		}
