@@ -172,10 +172,15 @@ public abstract class ValidatorExt extends com.jfinal.validate.Validator {
 		super.validateEqualString(s1, s2, RespData.EM, s1 + "!=" + s2);
 	}
 
-	protected void validateNotEqualString(String field, String value) {
-		String fieldValue = controller.getPara(field);
-		if (fieldValue == null || (fieldValue.equals(value))) {
-			addError(RespData.EM, "参数" + field + "取值不可="+value);
+	protected void validateNotEqualString(String value, String... fields) {
+		if (null == fields) {
+			addError(RespData.EM, "操作不合法!");
+		}
+		for (String field : fields) {
+			String fieldValue = controller.getPara(field);
+			if (fieldValue == null || (fieldValue.equals(value))) {
+				addError(RespData.EM, "参数" + field + "取值不可="+value);
+			}
 		}
 	}
 	
@@ -183,17 +188,27 @@ public abstract class ValidatorExt extends com.jfinal.validate.Validator {
 		super.validateEqualInteger(i1, i2, RespData.EM, i1 + "!=" + i2);
 	}
 
-	protected void validateNotEqualInteger(String field, Integer value) {
-		Integer fieldValue = controller.getParaToInt(field);
-		if (fieldValue == null || (fieldValue.equals(value))) {
-			addError(RespData.EM, "参数" + field + "取值不可="+value);
+	protected void validateNotEqualInteger(Integer value, String... fields) {
+		if (null == fields) {
+			addError(RespData.EM, "操作不合法!");
+		}
+		for (String field : fields) {
+			Integer fieldValue = controller.getParaToInt(field);
+			if (fieldValue == null || (fieldValue.equals(value))) {
+				addError(RespData.EM, "参数" + field + "取值不可="+value);
+			}
 		}
 	}
 	
-	protected void validateNotEqualBigInteger(String field, BigInteger value) {
-		BigInteger fieldValue = ((ControllerExt)controller).getParaToBigInteger(field);
-		if (fieldValue == null || (fieldValue.equals(value))) {
-			addError(RespData.EM, "参数" + field + "取值不可="+value);
+	protected void validateNotEqualBigInteger(BigInteger value, String... fields) {
+		if (null == fields) {
+			addError(RespData.EM, "操作不合法!");
+		}
+		for (String field : fields) {
+			BigInteger fieldValue = ((ControllerExt)controller).getParaToBigInteger(field);
+			if (fieldValue == null || (fieldValue.equals(value))) {
+				addError(RespData.EM, "参数" + field + "取值不可="+value);
+			}
 		}
 	}
 	

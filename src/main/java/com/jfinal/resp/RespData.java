@@ -48,6 +48,23 @@ public class RespData extends ConcurrentHashMap<String, Object> {
 	}
 	
 	/**
+	 * 服务处理异常
+	 */
+	public static RespData invalidResp() {
+		return RespData.failure("出了点小差错,稍后再试试");
+	}
+	
+	/**
+	 * 反馈数据
+	 */
+	public static RespData ret(RespData data) {
+		if (null == data) {
+			return RespData.invalidResp();
+		}
+		return data;
+	}
+	
+	/**
 	 * 成功
 	 * @return
 	 */
