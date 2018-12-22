@@ -282,7 +282,20 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	public Map<String, Object> attrs() {
 		return this._getAttrs();
 	}
-
+	
+	/**
+	 * 此方法修正，Jfinal put 时未设置 ModifyFlag 的 bug
+	 */
+	@SuppressWarnings("rawtypes")
+	@Override
+	public M put(Model model) {
+		String[] attrs = model._getAttrNames();
+		for (String attr : attrs) {
+			this.set(attr, model.get(attr));
+		}
+		return super.put(model);
+	}
+	
 	/**
 	 * auto sync to the redis: true-sync,false-cancel, default true
 	 * @param syncToRedis
