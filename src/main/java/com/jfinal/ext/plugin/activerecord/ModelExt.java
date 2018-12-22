@@ -291,7 +291,7 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 	public M put(Model model) {
 		String[] attrs = model._getAttrNames();
 		for (String attr : attrs) {
-			this.set(attr, model.get(attr));
+			_getModifyFlag().add(attr);
 		}
 		return super.put(model);
 	}
