@@ -200,14 +200,15 @@ public abstract class ModelExt<M extends ModelExt<M>> extends Model<M> {
 		// fetch from db
 		M tmp = this.findFirst(SqlpKit.selectOne(m));
 		// save to redis
-		if (null != tmp) {
-			if (null == columns || columns.length == 0) {
-				m.put(tmp._getAttrs());
-			} else {
-				m.put(tmp._getAttrs()).keep(columns);
-			}
-			tmp.saveToRedis();
+		if (null == tmp) {
+			return tmp;
+		} 
+		if (null == columns || columns.length == 0) {
+			m.put(tmp._getAttrs());
+		} else {
+			m.put(tmp._getAttrs()).keep(columns);
 		}
+		tmp.saveToRedis();
 		return (M)m;
 	}
 	

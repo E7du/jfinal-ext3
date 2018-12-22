@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.jfinal.core.NotAction;
 import com.jfinal.ext.kit.UploadPathKit;
 import com.jfinal.log.Log;
 import com.jfinal.upload.UploadFile;
@@ -58,26 +59,32 @@ public abstract class ControllerExt extends com.jfinal.core.Controller {
 	/**
 	 * Get upload file save to date path.
 	 */
+	@NotAction
 	public List<UploadFile> getFilesSaveToDatePath(Integer maxPostSize, String encoding) {
 		return super.getFiles(UploadPathKit.getDatePath(), maxPostSize, encoding);
 	}
-	
+
+	@NotAction
 	public UploadFile getFileSaveToDatePath(String parameterName, Integer maxPostSize, String encoding) {
 		return super.getFile(parameterName, UploadPathKit.getDatePath(), maxPostSize, encoding);
 	}
-	
+
+	@NotAction
 	public List<UploadFile> getFilesSaveToDatePath(Integer maxPostSize) {
 		return super.getFiles(UploadPathKit.getDatePath(), maxPostSize);
 	}
-	
+
+	@NotAction
 	public UploadFile getFileSaveToDatePath(String parameterName, Integer maxPostSize) {
 		return super.getFile(parameterName, UploadPathKit.getDatePath(), maxPostSize);
 	}
-	
+
+	@NotAction
 	public List<UploadFile> getFilesSaveToDatePath() {
 		return super.getFiles(UploadPathKit.getDatePath());
 	}
-	
+
+	@NotAction
 	public UploadFile getFileSaveToDatePath(String parameterName) {
 		return super.getFile(parameterName, UploadPathKit.getDatePath());
 	}
@@ -89,6 +96,7 @@ public abstract class ControllerExt extends com.jfinal.core.Controller {
 	 * @param name a String specifying the name of the parameter
 	 * @return a BigInteger representing the single value of the parameter
 	 */
+	@NotAction
 	public BigInteger getParaToBigInteger(String name){
 		return this.toBigInteger(getPara(name), null);
 	}
@@ -98,6 +106,7 @@ public abstract class ControllerExt extends com.jfinal.core.Controller {
 	 * @param name a String specifying the name of the parameter
 	 * @return a BigInteger representing the single value of the parameter
 	 */
+	@NotAction
 	public BigInteger getParaToBigInteger(String name,BigInteger defaultValue){
 		return this.toBigInteger(getPara(name), defaultValue);
 	}
@@ -112,5 +121,6 @@ public abstract class ControllerExt extends com.jfinal.core.Controller {
 	 * Reflect Exception
 	 * @param e
 	 */
+	@NotAction
 	public abstract void onExceptionError(Exception e);
 }

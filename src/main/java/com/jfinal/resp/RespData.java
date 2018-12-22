@@ -15,10 +15,13 @@ public class RespData extends ConcurrentHashMap<String, Object> {
 	
 	private static final String SUCCESS_EC = "200";
 	private static final String FAILURE_EC = "500";
+	private static final String DATA = "data";
+	private static final String SUCCESS = "Successed!";
+	private static final String REQUEST_DATA_INVALID = "Request_data_invalid!";
+	private static final String RESPONSE_DATA_INVALID = "Response_data_invalid!";
 	
 	public static final String EC = "ec";
 	public static final String EM = "em";
-	public static final String DATA = "data";
 	
 	/**
 	 * Get data
@@ -44,14 +47,14 @@ public class RespData extends ConcurrentHashMap<String, Object> {
 	 * 请求不合法
 	 */
 	public static RespData invalidReq() {
-		return RespData.failure("请求数据不合法");
+		return RespData.failure(REQUEST_DATA_INVALID);
 	}
 	
 	/**
 	 * 服务处理异常
 	 */
 	public static RespData invalidResp() {
-		return RespData.failure("出了点小差错,稍后再试试");
+		return RespData.failure(RESPONSE_DATA_INVALID);
 	}
 	
 	/**
@@ -69,7 +72,7 @@ public class RespData extends ConcurrentHashMap<String, Object> {
 	 * @return
 	 */
 	public static RespData success() {
-		return (new RespData(SUCCESS_EC, "请求成功"));
+		return (new RespData(SUCCESS_EC, SUCCESS));
 	}
 	
 	/**
@@ -77,7 +80,7 @@ public class RespData extends ConcurrentHashMap<String, Object> {
 	 * @return
 	 */
 	public static RespData success(Object data) {
-		return (new RespData(SUCCESS_EC, "请求成功", data));
+		return (new RespData(SUCCESS_EC, SUCCESS, data));
 	}
 	
 	/**
